@@ -1,44 +1,54 @@
 #pragma once
 
-// Windows Header Files:
-#include <windows.h>
+#include "StepTimer.h"
 
-// C RunTime Header Files:
-#include <stdlib.h>
-#include <malloc.h>
-#include <memory.h>
-#include <wchar.h>
-#include <math.h>
+class PonyGame {
+public:
 
-#include <d2d1.h>
-#include <d2d1helper.h>
-#include <dwrite.h>
-#include <wincodec.h>
+    PonyGame() noexcept;
 
-#include <d2d1.h>
-#include <d2d1_1.h>
+    // Initialization and management
+    void Initialize(HWND window, int width, int height);
 
-namespace ParticleHomeEntertainment {
-    class PonyGame {
-    private:
-        HWND _Window;
-        ID2D1Factory* pDirect2dFactory;
-        ID2D1HwndRenderTarget* pRenderTarget;
-        ID2D1SolidColorBrush* pLightSlateGrayBrush;
-        ID2D1SolidColorBrush* pCornflowerBlueBrush;
+    // Basic game loop
+    void Tick();
 
+    // Messages
+    void OnActivated();
+    void OnDeactivated();
+    void OnSuspending();
+    void OnResuming();
+    void OnWindowSizeChanged(int width, int height);
 
-        template<class Interface>
-        inline void SafeRelease(Interface** ppInterfaceToRelease) {
-            if (*ppInterfaceToRelease != nullptr) {
-                (*ppInterfaceToRelease)->Release();
-                (*ppInterfaceToRelease) = nullptr;
-            }
-        }
+    // Properties
+    void GetDefaultSize(int& width, int& height) const;
 
-    public:
-        PonyGame();
+private:
 
-        void Start();
-    };
-}
+    void Update(DX::StepTimer const& timer);
+    void Render();
+
+    void Clear();
+    void Present();
+
+    void CreateDevice();
+    void CreateResources();
+
+    void OnDeviceLost();
+
+    // Device resources.
+    HWND                                            m_window;
+    int                                             m_outputWidth;
+    int                                             m_outputHeight;
+
+    D3D_FEATURE_LEVEL                               m_featureLevel;
+    Microsoft::WRL::ComPtr<ID3D11Device1>           m_d3dDevice;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext1>    m_d3dContext;
+
+    Microsoft::WRL::ComPtr<IDXGISwapChain1>         m_swapChain;
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  m_renderTargetView;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_depthStencilView;
+
+    // Rendering loop timer.
+    DX::StepTimer                                   m_timer;
+};
