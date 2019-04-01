@@ -16,6 +16,7 @@
 //#define NOHELP
 
 #include "PonyGame.h"
+#include "Constants.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -29,9 +30,14 @@ extern void ExitGame();
 
 PonyGame::PonyGame() noexcept :
     _Window(nullptr),
-    _OutputWidth(800),
-    _OutputHeight(600),
-    _FeatureLevel(D3D_FEATURE_LEVEL_11_1) {
+    _OutputWidth(SCREEN_WIDTH),
+    _OutputHeight(240),
+    _FeatureLevel(D3D_FEATURE_LEVEL_11_1),
+    _PonyCurrentFrame(0),
+    _PonySpriteSheetWidth(0),
+    _PonySpriteSheetHeight(0),
+    _PonyIdleTimePerFrameSec(0),
+    _Paused(false) {
 }
 
 // Initialize the Direct3D resources required to run.
@@ -63,10 +69,20 @@ void PonyGame::Tick() {
 
 // Updates the world.
 void PonyGame::Update(const DX::StepTimer& timer) {
-    float elapsedTime = float(timer.GetElapsedSeconds());
+    float elapsedSec = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    elapsedTime;
+    // Add your game logic here.
+    if (_Paused) {
+        return;
+    }
+
+    _TotalElapsedSec += elapsedSec;
+
+    if (_TotalElapsedSec > _PonyIdleTimePerFrameSec) {
+        _PonyCurrentFrame++;
+        _PonyCurrentFrame = _PonyCurrentFrame % PONY_IDLE_TOTAL_FRAMES;
+        _TotalElapsedSec -= _PonyIdleTimePerFrameSec;
+    }
 }
 
 // Draws the scene.
@@ -78,17 +94,23 @@ void PonyGame::Render() {
 
     Clear();
 
-    // TODO: Add your rendering code here.
-    //float time = float(_Timer.GetTotalSeconds());
-
+    // Rendering code
     _SpriteBatch->Begin();
 
-    RECT sourceRectangle;
-    sourceRectangle.top = 0;
-    sourceRectangle.left = 0;
-    sourceRectangle.bottom = 65;
-    sourceRectangle.right = 65;
-    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRectangle, Colors::White, 0, _Origin);
+    //RECT sourceRect;
+    //sourceRect.top = 0;
+    //sourceRect.left = SPRITE_SIZE_WIDTH * (1);
+    //sourceRect.bottom = SPRITE_SIZE_WIDTH;
+    //sourceRect.right = SPRITE_SIZE_WIDTH; // * (_PonyCurrentFrame + 1);
+
+    int frameWidth = _PonySpriteSheetWidth / PONY_IDLE_TOTAL_FRAMES;
+    RECT sourceRect;
+    sourceRect.left = frameWidth * _PonyCurrentFrame;
+    sourceRect.top = 0;
+    sourceRect.right = sourceRect.left + frameWidth;
+    sourceRect.bottom = _PonySpriteSheetHeight;
+
+    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRect, Colors::White, 0, _Origin);
 
     _SpriteBatch->End();
 
@@ -153,18 +175,18 @@ void PonyGame::OnWindowSizeChanged(int width, int height) {
 
 // Properties
 void PonyGame::GetDefaultSize(int& width, int& height) const {
-    // TODO: Change to desired default window size (note minimum size is 320x200).
-    width = 800;
-    height = 600;
+    // Desired default window size (note minimum size is 320x200).
+    width = SCREEN_WIDTH;
+    height = SCREEN_HEIGHT;
 }
 
 // These are the resources that depend on the device.
 void PonyGame::CreateDevice() {
     UINT creationFlags = 0;
 
-//#ifdef _DEBUG
-//    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-//#endif
+    //#ifdef _DEBUG
+    //    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    //#endif
 
     static const D3D_FEATURE_LEVEL featureLevels[] =
     {
@@ -229,14 +251,22 @@ void PonyGame::CreateDevice() {
             resource.GetAddressOf(),
             _Texture.ReleaseAndGetAddressOf()));
 
-    ComPtr<ID3D11Texture2D> cat;
-    DX::ThrowIfFailed(resource.As(&cat));
+    ComPtr<ID3D11Texture2D> pony;
+    DX::ThrowIfFailed(resource.As(&pony));
 
-    CD3D11_TEXTURE2D_DESC catDesc;
-    cat->GetDesc(&catDesc);
+    CD3D11_TEXTURE2D_DESC ponyDesc;
+    pony->GetDesc(&ponyDesc);
 
-    _Origin.x = float(catDesc.Width / 2);
-    _Origin.y = float(catDesc.Height / 2);
+    // Get total sprite sheet size
+    _PonySpriteSheetWidth = static_cast<int>(ponyDesc.Width);
+    _PonySpriteSheetHeight = static_cast<int>(ponyDesc.Height);
+
+    // Sprite sheet animation frames are laid out horizontally, so divide by number of frames
+    _Origin.x = static_cast<float>((_PonySpriteSheetWidth / 2) / PONY_IDLE_TOTAL_FRAMES);
+    _Origin.y = static_cast<float>(_PonySpriteSheetHeight / 2);
+
+    _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_IDLE_FRAMES_PER_SEC);
+    _TotalElapsedSec = 0.f;
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

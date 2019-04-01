@@ -1,4 +1,5 @@
 #include "PonyGame.h"
+#include "Constants.h"
 
 using namespace ParticleHomeEntertainment;
 using namespace DirectX;
@@ -147,8 +148,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     case WM_GETMINMAXINFO:
     {
         auto info = reinterpret_cast<MINMAXINFO*>(lParam);
-        info->ptMinTrackSize.x = 320;
-        info->ptMinTrackSize.y = 200;
+        info->ptMinTrackSize.x = SCREEN_WIDTH;
+        info->ptMinTrackSize.y = SCREEN_HEIGHT;
     }
     break;
 
@@ -191,8 +192,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
                 SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
 
-                int width = 800;
-                int height = 600;
+                int width = SCREEN_WIDTH;
+                int height = SCREEN_HEIGHT;
                 if (game)
                     game->GetDefaultSize(width, height);
 

@@ -47,6 +47,13 @@ namespace ParticleHomeEntertainment {
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
         DirectX::SimpleMath::Vector2 _ScreenPos;
         DirectX::SimpleMath::Vector2 _Origin;
+        bool _Paused;
+
+        uint32_t _PonySpriteSheetWidth;
+        uint32_t _PonySpriteSheetHeight;
+        uint8_t _PonyCurrentFrame;
+        float _PonyIdleTimePerFrameSec;
+        float _TotalElapsedSec;
 
         void Update(DX::StepTimer const& timer);
         void Render();
