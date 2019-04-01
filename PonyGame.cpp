@@ -31,11 +31,12 @@ extern void ExitGame();
 PonyGame::PonyGame() noexcept :
     _Window(nullptr),
     _OutputWidth(SCREEN_WIDTH),
-    _OutputHeight(240),
+    _OutputHeight(SCREEN_HEIGHT),
     _FeatureLevel(D3D_FEATURE_LEVEL_11_1),
+    _TotalElapsedSec(0),
     _PonyCurrentFrame(0),
-    _PonySpriteSheetWidth(0),
-    _PonySpriteSheetHeight(0),
+    _PonyIdleSpriteSheetWidth(0),
+    _PonyIdleSpriteSheetHeight(0),
     _PonyIdleTimePerFrameSec(0),
     _Paused(false) {
 }
@@ -85,6 +86,26 @@ void PonyGame::Update(const DX::StepTimer& timer) {
     }
 }
 
+void PonyGame::DrawBackground() {
+    // Don't have a background to draw yet
+}
+
+void PonyGame::DrawPony() {
+    // Rendering code
+    _SpriteBatch->Begin();
+
+    const uint32_t FRAME_WIDTH = _PonyIdleSpriteSheetWidth / PONY_IDLE_TOTAL_FRAMES;
+    RECT sourceRect;
+    sourceRect.left = FRAME_WIDTH * _PonyCurrentFrame;
+    sourceRect.top = 0;
+    sourceRect.right = sourceRect.left + FRAME_WIDTH;
+    sourceRect.bottom = _PonyIdleSpriteSheetHeight;
+
+    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRect, Colors::White, 0, _Origin);
+
+    _SpriteBatch->End();
+}
+
 // Draws the scene.
 void PonyGame::Render() {
     // Don't try to render anything before the first Update.
@@ -94,25 +115,9 @@ void PonyGame::Render() {
 
     Clear();
 
-    // Rendering code
-    _SpriteBatch->Begin();
+    DrawBackground();
 
-    //RECT sourceRect;
-    //sourceRect.top = 0;
-    //sourceRect.left = SPRITE_SIZE_WIDTH * (1);
-    //sourceRect.bottom = SPRITE_SIZE_WIDTH;
-    //sourceRect.right = SPRITE_SIZE_WIDTH; // * (_PonyCurrentFrame + 1);
-
-    int frameWidth = _PonySpriteSheetWidth / PONY_IDLE_TOTAL_FRAMES;
-    RECT sourceRect;
-    sourceRect.left = frameWidth * _PonyCurrentFrame;
-    sourceRect.top = 0;
-    sourceRect.right = sourceRect.left + frameWidth;
-    sourceRect.bottom = _PonySpriteSheetHeight;
-
-    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRect, Colors::White, 0, _Origin);
-
-    _SpriteBatch->End();
+    DrawPony();
 
     Present();
 }
@@ -184,9 +189,9 @@ void PonyGame::GetDefaultSize(int& width, int& height) const {
 void PonyGame::CreateDevice() {
     UINT creationFlags = 0;
 
-    //#ifdef _DEBUG
-    //    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-    //#endif
+#ifdef _DEBUG
+    //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
     static const D3D_FEATURE_LEVEL featureLevels[] =
     {
@@ -225,8 +230,7 @@ void PonyGame::CreateDevice() {
             d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
             d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
 #endif
-            D3D11_MESSAGE_ID hide[] =
-            {
+            D3D11_MESSAGE_ID hide[] = {
                 D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS,
                 // TODO: Add more message IDs here as needed.
             };
@@ -245,25 +249,26 @@ void PonyGame::CreateDevice() {
     // TODO: Initialize device dependent objects here (independent of window size).
     _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
 
-    ComPtr<ID3D11Resource> resource;
+    ComPtr<ID3D11Resource> ponyIdleResource;
     DX::ThrowIfFailed(
-        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/horse_idle_cycle.png",
-            resource.GetAddressOf(),
-            _Texture.ReleaseAndGetAddressOf()));
+        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/horse_idle_cycle.bmp",
+            ponyIdleResource.GetAddressOf(),
+            _Texture.ReleaseAndGetAddressOf())
+    );
 
-    ComPtr<ID3D11Texture2D> pony;
-    DX::ThrowIfFailed(resource.As(&pony));
+    ComPtr<ID3D11Texture2D> ponyIdleTexture;
+    DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
 
-    CD3D11_TEXTURE2D_DESC ponyDesc;
-    pony->GetDesc(&ponyDesc);
+    CD3D11_TEXTURE2D_DESC ponyIdleDesc;
+    ponyIdleTexture->GetDesc(&ponyIdleDesc);
 
     // Get total sprite sheet size
-    _PonySpriteSheetWidth = static_cast<int>(ponyDesc.Width);
-    _PonySpriteSheetHeight = static_cast<int>(ponyDesc.Height);
+    _PonyIdleSpriteSheetWidth = static_cast<int>(ponyIdleDesc.Width);
+    _PonyIdleSpriteSheetHeight = static_cast<int>(ponyIdleDesc.Height);
 
     // Sprite sheet animation frames are laid out horizontally, so divide by number of frames
-    _Origin.x = static_cast<float>((_PonySpriteSheetWidth / 2) / PONY_IDLE_TOTAL_FRAMES);
-    _Origin.y = static_cast<float>(_PonySpriteSheetHeight / 2);
+    _Origin.x = static_cast<float>((_PonyIdleSpriteSheetWidth / 2) / PONY_IDLE_TOTAL_FRAMES);
+    _Origin.y = static_cast<float>(_PonyIdleSpriteSheetHeight / 2);
 
     _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_IDLE_FRAMES_PER_SEC);
     _TotalElapsedSec = 0.f;

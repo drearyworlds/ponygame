@@ -49,11 +49,15 @@ namespace ParticleHomeEntertainment {
         DirectX::SimpleMath::Vector2 _Origin;
         bool _Paused;
 
-        uint32_t _PonySpriteSheetWidth;
-        uint32_t _PonySpriteSheetHeight;
+        uint32_t _PonyIdleSpriteSheetWidth;
+        uint32_t _PonyIdleSpriteSheetHeight;
         uint8_t _PonyCurrentFrame;
         float _PonyIdleTimePerFrameSec;
         float _TotalElapsedSec;
+
+        void DrawBackground();
+
+        void DrawPony();
 
         void Update(DX::StepTimer const& timer);
         void Render();
