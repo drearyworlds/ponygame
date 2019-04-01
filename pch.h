@@ -1,13 +1,8 @@
-//
-// pch.h
-// Header for standard system include files.
-//
-
 #pragma once
 
-#include <WinSDKVer.h>
-#define _WIN32_WINNT 0x0601
-#include <SDKDDKVer.h>
+//#include <WinSDKVer.h>
+//#define _WIN32_WINNT 0x0601
+//#include <SDKDDKVer.h>
 
 // Use the C++ standard templated min/max
 #define NOMINMAX
@@ -26,39 +21,41 @@
 // WinHelp is deprecated
 #define NOHELP
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+//#define WIN32_LEAN_AND_MEAN
+//#include <windows.h>
 
 #include <wrl/client.h>
 
+#define D3D_DEBUG_INFO
+
 #include <d3d11_1.h>
-#include <dxgi1_2.h>
+//#include <dxgi1_2.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
 #include <algorithm>
 #include <exception>
 #include <memory>
-#include <stdexcept>
+//#include <stdexcept>
 
-#include "CommonStates.h"
-#include "DDSTextureLoader.h"
-#include "DirectXHelpers.h"
-#include "Effects.h"
-#include "GamePad.h"
-#include "GeometricPrimitive.h"
-#include "GraphicsMemory.h"
-#include "Keyboard.h"
-#include "Model.h"
-#include "Mouse.h"
-#include "PostProcess.h"
-#include "PrimitiveBatch.h"
-#include "ScreenGrab.h"
+//#include "CommonStates.h"
+//#include "DDSTextureLoader.h"
+//#include "DirectXHelpers.h"
+//#include "Effects.h"
+//#include "GamePad.h"
+//#include "GeometricPrimitive.h"
+//#include "GraphicsMemory.h"
+//#include "Keyboard.h"
+//#include "Model.h"
+//#include "Mouse.h"
+//#include "PostProcess.h"
+//#include "PrimitiveBatch.h"
+//#include "ScreenGrab.h"
 #include "SimpleMath.h"
-#include "SpriteBatch.h"
-#include "SpriteFont.h"
-#include "VertexTypes.h"
-#include "WICTextureLoader.h"
+//#include "SpriteBatch.h"
+//#include "SpriteFont.h"
+//#include "VertexTypes.h"
+//#include "WICTextureLoader.h"
 
 namespace DX {
     inline void ThrowIfFailed(HRESULT hr) {

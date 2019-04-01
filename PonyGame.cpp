@@ -1,17 +1,12 @@
 #include "pch.h"
 #include "PonyGame.h"
-#include <d3dcompiler.h> 
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 using Microsoft::WRL::ComPtr;
 
-#define D3D_DEBUG_INFO
-
-//#pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "D3D11.lib")
-//#pragma comment(lib, "d3dcompiler.lib")
 
 extern void ExitGame();
 
@@ -138,9 +133,9 @@ void PonyGame::GetDefaultSize(int& width, int& height) const {
 void PonyGame::CreateDevice() {
     UINT creationFlags = 0;
 
-#ifdef _DEBUG
-    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
+//#ifdef _DEBUG
+//    creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+//#endif
 
     static const D3D_FEATURE_LEVEL featureLevels[] =
     {
