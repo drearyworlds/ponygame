@@ -1,15 +1,9 @@
-//
-// Main.cpp
-//
-
-#include "pch.h"
 #include "PonyGame.h"
 
+using namespace ParticleHomeEntertainment;
 using namespace DirectX;
 
-namespace {
-    std::unique_ptr<PonyGame> g_game;
-};
+std::unique_ptr<PonyGame> _Game;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -32,7 +26,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     if (FAILED(hr))
         return 1;
 
-    g_game = std::make_unique<PonyGame>();
+    _Game = std::make_unique<PonyGame>();
 
     // Register class and create window
     {
@@ -52,7 +46,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
         // Create window
         int w, h;
-        g_game->GetDefaultSize(w, h);
+        _Game->GetDefaultSize(w, h);
 
         RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
 
@@ -70,11 +64,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         ShowWindow(hwnd, nCmdShow);
         // TODO: Change nCmdShow to SW_SHOWMAXIMIZED to default to fullscreen.
 
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(g_game.get()));
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_Game.get()));
 
         GetClientRect(hwnd, &rc);
 
-        g_game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+        _Game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
     }
 
     // Main message loop
@@ -84,11 +78,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         } else {
-            g_game->Tick();
+            _Game->Tick();
         }
     }
 
-    g_game.reset();
+    _Game.reset();
 
     CoUninitialize();
 

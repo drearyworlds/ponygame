@@ -1,27 +1,44 @@
-#include "pch.h"
+// Use the C++ standard templated min/max
+#define NOMINMAX
+
+// DirectX apps don't need GDI
+//#define NODRAWTEXT
+//#define NOGDI
+//#define NOBITMAP
+
+// Include <mcx.h> if you need this
+//#define NOMCX
+
+// Include <winsvc.h> if you need this
+//#define NOSERVICE
+
+// WinHelp is deprecated
+//#define NOHELP
+
 #include "PonyGame.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+using namespace ParticleHomeEntertainment;
 
 using Microsoft::WRL::ComPtr;
 
-#pragma comment(lib, "D3D11.lib")
+#pragma comment(lib, "d3d11.lib")
 
 extern void ExitGame();
 
 PonyGame::PonyGame() noexcept :
-    m_window(nullptr),
-    m_outputWidth(800),
-    m_outputHeight(600),
-    m_featureLevel(D3D_FEATURE_LEVEL_11_1) {
+    _Window(nullptr),
+    _OutputWidth(800),
+    _OutputHeight(600),
+    _FeatureLevel(D3D_FEATURE_LEVEL_11_1) {
 }
 
 // Initialize the Direct3D resources required to run.
 void PonyGame::Initialize(HWND window, int width, int height) {
-    m_window = window;
-    m_outputWidth = std::max(width, 1);
-    m_outputHeight = std::max(height, 1);
+    _Window = window;
+    _OutputWidth = std::max(width, 1);
+    _OutputHeight = std::max(height, 1);
 
     CreateDevice();
 
@@ -30,22 +47,22 @@ void PonyGame::Initialize(HWND window, int width, int height) {
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
     /*
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
+    _Timer.SetFixedTimeStep(true);
+    _Timer.SetTargetElapsedSeconds(1.0 / 60);
     */
 }
 
 // Executes the basic game loop.
 void PonyGame::Tick() {
-    m_timer.Tick([&]() {
-        Update(m_timer);
+    _Timer.Tick([&]() {
+        Update(_Timer);
     });
 
     Render();
 }
 
 // Updates the world.
-void PonyGame::Update(DX::StepTimer const& timer) {
+void PonyGame::Update(const DX::StepTimer& timer) {
     float elapsedTime = float(timer.GetElapsedSeconds());
 
     // TODO: Add your game logic here.
@@ -55,13 +72,25 @@ void PonyGame::Update(DX::StepTimer const& timer) {
 // Draws the scene.
 void PonyGame::Render() {
     // Don't try to render anything before the first Update.
-    if (m_timer.GetFrameCount() == 0) {
+    if (_Timer.GetFrameCount() == 0) {
         return;
     }
 
     Clear();
 
     // TODO: Add your rendering code here.
+    //float time = float(_Timer.GetTotalSeconds());
+
+    _SpriteBatch->Begin();
+
+    RECT sourceRectangle;
+    sourceRectangle.top = 0;
+    sourceRectangle.left = 0;
+    sourceRectangle.bottom = 65;
+    sourceRectangle.right = 65;
+    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRectangle, Colors::White, 0, _Origin);
+
+    _SpriteBatch->End();
 
     Present();
 }
@@ -69,14 +98,14 @@ void PonyGame::Render() {
 // Helper method to clear the back buffers.
 void PonyGame::Clear() {
     // Clear the views.
-    m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::CornflowerBlue);
-    m_d3dContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    _D3dContext->ClearRenderTargetView(_RenderTargetView.Get(), Colors::CornflowerBlue);
+    _D3dContext->ClearDepthStencilView(_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    m_d3dContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
+    _D3dContext->OMSetRenderTargets(1, _RenderTargetView.GetAddressOf(), _DepthStencilView.Get());
 
     // Set the viewport.
-    CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
-    m_d3dContext->RSSetViewports(1, &viewport);
+    CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(_OutputWidth), static_cast<float>(_OutputHeight));
+    _D3dContext->RSSetViewports(1, &viewport);
 }
 
 // Presents the back buffer contents to the screen.
@@ -84,7 +113,7 @@ void PonyGame::Present() {
     // The first argument instructs DXGI to block until VSync, putting the application
     // to sleep until the next VSync. This ensures we don't waste any cycles rendering
     // frames that will never be displayed to the screen.
-    HRESULT hr = m_swapChain->Present(1, 0);
+    HRESULT hr = _SwapChain->Present(1, 0);
 
     // If the device was reset we must completely reinitialize the renderer.
     if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
@@ -108,14 +137,14 @@ void PonyGame::OnSuspending() {
 }
 
 void PonyGame::OnResuming() {
-    m_timer.ResetElapsedTime();
+    _Timer.ResetElapsedTime();
 
     // TODO: PonyGame is being power-resumed (or returning from minimize).
 }
 
 void PonyGame::OnWindowSizeChanged(int width, int height) {
-    m_outputWidth = std::max(width, 1);
-    m_outputHeight = std::max(height, 1);
+    _OutputWidth = std::max(width, 1);
+    _OutputHeight = std::max(height, 1);
 
     CreateResources();
 
@@ -161,7 +190,7 @@ void PonyGame::CreateDevice() {
         _countof(featureLevels),
         D3D11_SDK_VERSION,
         device.ReleaseAndGetAddressOf(),    // returns the Direct3D device created
-        &m_featureLevel,                    // returns feature level of device created
+        &_FeatureLevel,                    // returns feature level of device created
         context.ReleaseAndGetAddressOf()    // returns the device immediate context
     ));
 
@@ -187,30 +216,47 @@ void PonyGame::CreateDevice() {
     }
 #endif
 
-    DX::ThrowIfFailed(device.As(&m_d3dDevice));
-    DX::ThrowIfFailed(context.As(&m_d3dContext));
+    DX::ThrowIfFailed(device.As(&_D3dDevice));
+    DX::ThrowIfFailed(context.As(&_D3dContext));
+
 
     // TODO: Initialize device dependent objects here (independent of window size).
+    _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
+
+    ComPtr<ID3D11Resource> resource;
+    DX::ThrowIfFailed(
+        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/horse_idle_cycle.png",
+            resource.GetAddressOf(),
+            _Texture.ReleaseAndGetAddressOf()));
+
+    ComPtr<ID3D11Texture2D> cat;
+    DX::ThrowIfFailed(resource.As(&cat));
+
+    CD3D11_TEXTURE2D_DESC catDesc;
+    cat->GetDesc(&catDesc);
+
+    _Origin.x = float(catDesc.Width / 2);
+    _Origin.y = float(catDesc.Height / 2);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
 void PonyGame::CreateResources() {
     // Clear the previous window size specific context.
     ID3D11RenderTargetView* nullViews[] = { nullptr };
-    m_d3dContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
-    m_renderTargetView.Reset();
-    m_depthStencilView.Reset();
-    m_d3dContext->Flush();
+    _D3dContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
+    _RenderTargetView.Reset();
+    _DepthStencilView.Reset();
+    _D3dContext->Flush();
 
-    UINT backBufferWidth = static_cast<UINT>(m_outputWidth);
-    UINT backBufferHeight = static_cast<UINT>(m_outputHeight);
+    UINT backBufferWidth = static_cast<UINT>(_OutputWidth);
+    UINT backBufferHeight = static_cast<UINT>(_OutputHeight);
     DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
     DXGI_FORMAT depthBufferFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
     UINT backBufferCount = 2;
 
     // If the swap chain already exists, resize it, otherwise create one.
-    if (m_swapChain) {
-        HRESULT hr = m_swapChain->ResizeBuffers(backBufferCount, backBufferWidth, backBufferHeight, backBufferFormat, 0);
+    if (_SwapChain) {
+        HRESULT hr = _SwapChain->ResizeBuffers(backBufferCount, backBufferWidth, backBufferHeight, backBufferFormat, 0);
 
         if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
             // If the device was removed for any reason, a new device and swap chain will need to be created.
@@ -225,7 +271,7 @@ void PonyGame::CreateResources() {
     } else {
         // First, retrieve the underlying DXGI Device from the D3D Device.
         ComPtr<IDXGIDevice1> dxgiDevice;
-        DX::ThrowIfFailed(m_d3dDevice.As(&dxgiDevice));
+        DX::ThrowIfFailed(_D3dDevice.As(&dxgiDevice));
 
         // Identify the physical adapter (GPU or card) this device is running on.
         ComPtr<IDXGIAdapter> dxgiAdapter;
@@ -250,46 +296,50 @@ void PonyGame::CreateResources() {
 
         // Create a SwapChain from a Win32 window.
         DX::ThrowIfFailed(dxgiFactory->CreateSwapChainForHwnd(
-            m_d3dDevice.Get(),
-            m_window,
+            _D3dDevice.Get(),
+            _Window,
             &swapChainDesc,
             &fsSwapChainDesc,
             nullptr,
-            m_swapChain.ReleaseAndGetAddressOf()
+            _SwapChain.ReleaseAndGetAddressOf()
         ));
 
         // This template does not support exclusive fullscreen mode and prevents DXGI from responding to the ALT+ENTER shortcut.
-        DX::ThrowIfFailed(dxgiFactory->MakeWindowAssociation(m_window, DXGI_MWA_NO_ALT_ENTER));
+        DX::ThrowIfFailed(dxgiFactory->MakeWindowAssociation(_Window, DXGI_MWA_NO_ALT_ENTER));
     }
 
     // Obtain the backbuffer for this window which will be the final 3D rendertarget.
     ComPtr<ID3D11Texture2D> backBuffer;
-    DX::ThrowIfFailed(m_swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf())));
+    DX::ThrowIfFailed(_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf())));
 
     // Create a view interface on the rendertarget to use on bind.
-    DX::ThrowIfFailed(m_d3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, m_renderTargetView.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(_D3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, _RenderTargetView.ReleaseAndGetAddressOf()));
 
     // Allocate a 2-D surface as the depth/stencil buffer and
     // create a DepthStencil view on this surface to use on bind.
     CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL);
 
     ComPtr<ID3D11Texture2D> depthStencil;
-    DX::ThrowIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, depthStencil.GetAddressOf()));
+    DX::ThrowIfFailed(_D3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, depthStencil.GetAddressOf()));
 
     CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D);
-    DX::ThrowIfFailed(m_d3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, m_depthStencilView.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(_D3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, _DepthStencilView.ReleaseAndGetAddressOf()));
 
     // TODO: Initialize windows-size dependent objects here.
+    _ScreenPos.x = backBufferWidth / 2.f;
+    _ScreenPos.y = backBufferHeight / 2.f;
 }
 
 void PonyGame::OnDeviceLost() {
     // TODO: Add Direct3D resource cleanup here.
+    _Texture.Reset();
+    _SpriteBatch.reset();
 
-    m_depthStencilView.Reset();
-    m_renderTargetView.Reset();
-    m_swapChain.Reset();
-    m_d3dContext.Reset();
-    m_d3dDevice.Reset();
+    _DepthStencilView.Reset();
+    _RenderTargetView.Reset();
+    _SwapChain.Reset();
+    _D3dContext.Reset();
+    _D3dDevice.Reset();
 
     CreateDevice();
 

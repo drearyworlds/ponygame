@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{b1dadc04-5aa1-4bb7-b939-6b36684f80c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -26,11 +29,22 @@
     <ClInclude Include="PonyGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StepTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\horse_idle_cycle.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\horse_idle_smack_cycle.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\horse_run_cycle.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\sqrl_5frames.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>
