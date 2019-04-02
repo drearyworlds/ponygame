@@ -17,6 +17,7 @@
 
 #include "PonyGame.h"
 #include "Constants.h"
+#include <DDSTextureLoader.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -68,7 +69,14 @@ void PonyGame::Tick() {
         Update(_Timer);
     });
 
+    // Poll and save the current key/button states
+    HandleInput();
+
     Render();
+}
+
+void PonyGame::HandleInput() {
+
 }
 
 // Updates the world.
@@ -80,7 +88,7 @@ void PonyGame::Update(const DX::StepTimer& timer) {
     }
 
     uint8_t totalFramesForCurrentState = (_PonyState == SpriteMovementState::RUNNING ? PONY_RUNNING_FRAMES : PONY_IDLE_FRAMES);
-    float timePerFrameForCurrentStateSec =(_PonyState == SpriteMovementState::RUNNING ? _PonyRunTimePerFrameSec : _PonyIdleTimePerFrameSec);
+    float timePerFrameForCurrentStateSec = (_PonyState == SpriteMovementState::RUNNING ? _PonyRunTimePerFrameSec : _PonyIdleTimePerFrameSec);
 
     _TotalElapsedSec += elapsedSec;
 
@@ -103,22 +111,26 @@ void PonyGame::DrawPony() {
 
     RECT sourceRect = {};
     uint32_t frameWidth;
+    ID3D11ShaderResourceView* ponyTexture = nullptr;
     if (_PonyState == SpriteMovementState::IDLE) {
         frameWidth = _PonyIdleSpriteSheetWidth / PONY_IDLE_FRAMES;
         sourceRect.left = frameWidth * _PonyCurrentFrame;
         sourceRect.top = 0;
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyIdleSpriteSheetHeight;
+        ponyTexture = _PonyIdleTexture.Get();
     } else if (_PonyState == SpriteMovementState::RUNNING) {
         frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
         sourceRect.left = frameWidth * _PonyCurrentFrame;
         sourceRect.top = 0;
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyRunSpriteSheetHeight;
+        ponyTexture = _PonyRunningTexture.Get();
     }
 
-    _SpriteBatch->Draw(_Texture.Get(), _ScreenPosition, &sourceRect, Colors::White, 0, _PonyLocation);
+    DirectX::SpriteEffects ponyTransform = (_PonyFacing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
 
+    _SpriteBatch->Draw(ponyTexture, _ScreenPosition, &sourceRect, Colors::White, 0, _PonyLocation, (float)ponyTransform);
     _SpriteBatch->End();
 }
 
@@ -209,8 +221,7 @@ void PonyGame::CreateDevice() {
     //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-    static const D3D_FEATURE_LEVEL featureLevels[] =
-    {
+    static const D3D_FEATURE_LEVEL featureLevels[] {
         // TODO: Modify for supported Direct3D feature levels
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,
@@ -224,7 +235,8 @@ void PonyGame::CreateDevice() {
     // Create the DX11 API device object, and get a corresponding context.
     ComPtr<ID3D11Device> device;
     ComPtr<ID3D11DeviceContext> context;
-    DX::ThrowIfFailed(D3D11CreateDevice(
+
+    HRESULT hr = D3D11CreateDevice(
         nullptr,                            // specify nullptr to use the default adapter
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
@@ -235,7 +247,8 @@ void PonyGame::CreateDevice() {
         device.ReleaseAndGetAddressOf(),    // returns the Direct3D device created
         &_FeatureLevel,                    // returns feature level of device created
         context.ReleaseAndGetAddressOf()    // returns the device immediate context
-    ));
+    );
+    DX::ThrowIfFailed(hr);
 
 #ifndef NDEBUG
     ComPtr<ID3D11Debug> d3dDebug;
@@ -261,16 +274,19 @@ void PonyGame::CreateDevice() {
     DX::ThrowIfFailed(device.As(&_D3dDevice));
     DX::ThrowIfFailed(context.As(&_D3dContext));
 
-    // TODO: Initialize device dependent objects here (independent of window size).
+    // Initialize device dependent objects here (independent of window size).
     _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
 
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
-    DX::ThrowIfFailed(
-        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/pony_idle.png",
-            ponyIdleResource.GetAddressOf(),
-            _Texture.ReleaseAndGetAddressOf())
-    );
+    //hr = CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
+    //    ponyIdleResource.GetAddressOf(),
+    //    _PonyIdleTexture.ReleaseAndGetAddressOf());
+    //DX::ThrowIfFailed(hr);
+
+    hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
+        ponyIdleResource.GetAddressOf(), _PonyIdleTexture.ReleaseAndGetAddressOf());
+    DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyIdleTexture;
     DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
@@ -286,11 +302,15 @@ void PonyGame::CreateDevice() {
 
     // Pony Running Resources
     ComPtr<ID3D11Resource> ponyRunResource;
-    DX::ThrowIfFailed(
-        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/pony_run.png",
-            ponyRunResource.GetAddressOf(),
-            _Texture.ReleaseAndGetAddressOf())
-    );
+
+    //hr = CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
+    //    ponyRunResource.GetAddressOf(),
+    //    _PonyRunningTexture.ReleaseAndGetAddressOf());
+    //DX::ThrowIfFailed(hr);
+
+    hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
+        ponyRunResource.GetAddressOf(), _PonyRunningTexture.ReleaseAndGetAddressOf());
+    DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyRunTexture;
     DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
@@ -309,7 +329,7 @@ void PonyGame::CreateDevice() {
     _PonyLocation.x = static_cast<float>(SPRITE_SIZE_WIDTH);
     _PonyLocation.y = static_cast<float>(SPRITE_SIZE_HEIGHT);
     _PonyFacing = SpriteFacingEnum::RIGHT;
-    _PonyState = SpriteMovementState::RUNNING;
+    _PonyState = SpriteMovementState::IDLE;
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -404,7 +424,8 @@ void PonyGame::CreateResources() {
 
 void PonyGame::OnDeviceLost() {
     // TODO: Add Direct3D resource cleanup here.
-    _Texture.Reset();
+    _PonyIdleTexture.Reset();
+    _PonyRunningTexture.Reset();
     _SpriteBatch.reset();
     _States.reset();
 

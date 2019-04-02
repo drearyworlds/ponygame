@@ -68,7 +68,8 @@ namespace ParticleHomeEntertainment {
         // Rendering loop timer.
         DX::StepTimer _Timer;
 
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _Texture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTexture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTexture;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
         std::unique_ptr<DirectX::CommonStates> _States;
         DirectX::SimpleMath::Vector2 _ScreenPosition;
@@ -91,6 +92,7 @@ namespace ParticleHomeEntertainment {
         void DrawPony();
 
         void Update(DX::StepTimer const& timer);
+        void HandleInput();
         void Render();
 
         void Clear();
