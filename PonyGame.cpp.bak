@@ -38,9 +38,6 @@ PonyGame::PonyGame() noexcept :
     _PonyIdleSpriteSheetWidth(0),
     _PonyIdleSpriteSheetHeight(0),
     _PonyIdleTimePerFrameSec(0),
-    _PonyRunSpriteSheetWidth(0),
-    _PonyRunSpriteSheetHeight(0),
-    _PonyRunTimePerFrameSec(0),
     _Paused(false) {
 }
 
@@ -75,19 +72,17 @@ void PonyGame::Tick() {
 void PonyGame::Update(const DX::StepTimer& timer) {
     float elapsedSec = float(timer.GetElapsedSeconds());
 
+    // Add your game logic here.
     if (_Paused) {
         return;
     }
 
-    uint8_t totalFramesForCurrentState = (_PonyState == SpriteMovementState::RUNNING ? PONY_RUNNING_FRAMES : PONY_IDLE_FRAMES);
-    float timePerFrameForCurrentStateSec =(_PonyState == SpriteMovementState::RUNNING ? _PonyRunTimePerFrameSec : _PonyIdleTimePerFrameSec);
-
     _TotalElapsedSec += elapsedSec;
 
-    if (_TotalElapsedSec > timePerFrameForCurrentStateSec) {
+    if (_TotalElapsedSec > _PonyIdleTimePerFrameSec) {
         _PonyCurrentFrame++;
-        _PonyCurrentFrame = _PonyCurrentFrame % totalFramesForCurrentState;
-        _TotalElapsedSec -= timePerFrameForCurrentStateSec;
+        _PonyCurrentFrame = _PonyCurrentFrame % PONY_IDLE_TOTAL_FRAMES;
+        _TotalElapsedSec -= _PonyIdleTimePerFrameSec;
     }
 }
 
@@ -99,25 +94,16 @@ void PonyGame::DrawPony() {
     // Rendering code
     _States = std::make_unique<CommonStates>(_D3dDevice.Get());
 
-    _SpriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, _States->NonPremultiplied());
+    _SpriteBatch->Begin();
 
-    RECT sourceRect = {};
-    uint32_t frameWidth;
-    if (_PonyState == SpriteMovementState::IDLE) {
-        frameWidth = _PonyIdleSpriteSheetWidth / PONY_IDLE_FRAMES;
-        sourceRect.left = frameWidth * _PonyCurrentFrame;
-        sourceRect.top = 0;
-        sourceRect.right = sourceRect.left + frameWidth;
-        sourceRect.bottom = _PonyIdleSpriteSheetHeight;
-    } else if (_PonyState == SpriteMovementState::RUNNING) {
-        frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
-        sourceRect.left = frameWidth * _PonyCurrentFrame;
-        sourceRect.top = 0;
-        sourceRect.right = sourceRect.left + frameWidth;
-        sourceRect.bottom = _PonyRunSpriteSheetHeight;
-    }
+    const uint32_t FRAME_WIDTH = _PonyIdleSpriteSheetWidth / PONY_IDLE_TOTAL_FRAMES;
+    RECT sourceRect;
+    sourceRect.left = FRAME_WIDTH * _PonyCurrentFrame;
+    sourceRect.top = 0;
+    sourceRect.right = sourceRect.left + FRAME_WIDTH;
+    sourceRect.bottom = _PonyIdleSpriteSheetHeight;
 
-    _SpriteBatch->Draw(_Texture.Get(), _ScreenPosition, &sourceRect, Colors::White, 0, _PonyLocation);
+    _SpriteBatch->Draw(_Texture.Get(), _ScreenPos, &sourceRect, Colors::White, 0, _Origin;
 
     _SpriteBatch->End();
 }
@@ -264,7 +250,6 @@ void PonyGame::CreateDevice() {
     // TODO: Initialize device dependent objects here (independent of window size).
     _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
 
-    // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
     DX::ThrowIfFailed(
         CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/pony_idle.png",
@@ -282,34 +267,12 @@ void PonyGame::CreateDevice() {
     _PonyIdleSpriteSheetWidth = static_cast<int>(ponyIdleDesc.Width);
     _PonyIdleSpriteSheetHeight = static_cast<int>(ponyIdleDesc.Height);
 
-    _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_RUNNING_FRAMES_PER_SEC);
+    // Sprite sheet animation frames are laid out horizontally, so divide by number of frames
+    _Origin.x = static_cast<float>((_PonyIdleSpriteSheetWidth / 2) / PONY_IDLE_TOTAL_FRAMES);
+    _Origin.y = static_cast<float>(_PonyIdleSpriteSheetHeight / 2);
 
-    // Pony Running Resources
-    ComPtr<ID3D11Resource> ponyRunResource;
-    DX::ThrowIfFailed(
-        CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/pony_run.png",
-            ponyRunResource.GetAddressOf(),
-            _Texture.ReleaseAndGetAddressOf())
-    );
-
-    ComPtr<ID3D11Texture2D> ponyRunTexture;
-    DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
-
-    CD3D11_TEXTURE2D_DESC ponyRunDesc;
-    ponyRunTexture->GetDesc(&ponyRunDesc);
-
-    // Get total sprite sheet size
-    _PonyRunSpriteSheetWidth = static_cast<int>(ponyRunDesc.Width);
-    _PonyRunSpriteSheetHeight = static_cast<int>(ponyRunDesc.Height);
-
-    _PonyRunTimePerFrameSec = 1.f / static_cast<float>(PONY_RUNNING_FRAMES_PER_SEC);
+    _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_IDLE_FRAMES_PER_SEC);
     _TotalElapsedSec = 0.f;
-
-    // Pony location and orientation
-    _PonyLocation.x = static_cast<float>(SPRITE_SIZE_WIDTH);
-    _PonyLocation.y = static_cast<float>(SPRITE_SIZE_HEIGHT);
-    _PonyFacing = SpriteFacingEnum::RIGHT;
-    _PonyState = SpriteMovementState::RUNNING;
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -388,7 +351,8 @@ void PonyGame::CreateResources() {
     // Create a view interface on the rendertarget to use on bind.
     DX::ThrowIfFailed(_D3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, _RenderTargetView.ReleaseAndGetAddressOf()));
 
-    // Allocate a 2-D surface as the depth/stencil buffer and create a DepthStencil view on this surface to use on bind.
+    // Allocate a 2-D surface as the depth/stencil buffer and
+    // create a DepthStencil view on this surface to use on bind.
     CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL);
 
     ComPtr<ID3D11Texture2D> depthStencil;
@@ -398,8 +362,8 @@ void PonyGame::CreateResources() {
     DX::ThrowIfFailed(_D3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, _DepthStencilView.ReleaseAndGetAddressOf()));
 
     // TODO: Initialize windows-size dependent objects here.
-    _ScreenPosition.x = backBufferWidth / 2.f;
-    _ScreenPosition.y = backBufferHeight / 2.f;
+    _ScreenPos.x = backBufferWidth / 2.f;
+    _ScreenPos.y = backBufferHeight / 2.f;
 }
 
 void PonyGame::OnDeviceLost() {

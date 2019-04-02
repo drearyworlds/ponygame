@@ -8,6 +8,7 @@
 #include <DirectXColors.h>
 #include "StepTimer.h"
 #include <SpriteBatch.h>
+#include <CommonStates.h>
 #include <algorithm>
 #include <exception>
 #include <memory>
@@ -22,6 +23,14 @@ namespace DX {
 }
 
 namespace ParticleHomeEntertainment {
+    enum SpriteFacingEnum {
+        LEFT, RIGHT
+    };
+
+    enum SpriteMovementState {
+        IDLE, RUNNING
+    };
+
     class PonyGame {
     public:
         PonyGame() noexcept;
@@ -43,17 +52,39 @@ namespace ParticleHomeEntertainment {
         void GetDefaultSize(int& width, int& height) const;
 
     private:
+        // Device resources.
+        HWND _Window;
+        int _OutputWidth;
+        int _OutputHeight;
+
+        D3D_FEATURE_LEVEL _FeatureLevel;
+        Microsoft::WRL::ComPtr<ID3D11Device1> _D3dDevice;
+        Microsoft::WRL::ComPtr<ID3D11DeviceContext1> _D3dContext;
+
+        Microsoft::WRL::ComPtr<IDXGISwapChain1> _SwapChain;
+        Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _RenderTargetView;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthStencilView;
+
+        // Rendering loop timer.
+        DX::StepTimer _Timer;
+
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _Texture;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
-        DirectX::SimpleMath::Vector2 _ScreenPos;
-        DirectX::SimpleMath::Vector2 _Origin;
+        std::unique_ptr<DirectX::CommonStates> _States;
+        DirectX::SimpleMath::Vector2 _ScreenPosition;
+        DirectX::SimpleMath::Vector2 _PonyLocation;
+        SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
+        SpriteMovementState _PonyState = SpriteMovementState::IDLE;
         bool _Paused;
 
+        uint8_t _PonyCurrentFrame;
+        float _TotalElapsedSec;
         uint32_t _PonyIdleSpriteSheetWidth;
         uint32_t _PonyIdleSpriteSheetHeight;
-        uint8_t _PonyCurrentFrame;
+        uint32_t _PonyRunSpriteSheetWidth;
+        uint32_t _PonyRunSpriteSheetHeight;
         float _PonyIdleTimePerFrameSec;
-        float _TotalElapsedSec;
+        float _PonyRunTimePerFrameSec;
 
         void DrawBackground();
 
@@ -69,21 +100,5 @@ namespace ParticleHomeEntertainment {
         void CreateResources();
 
         void OnDeviceLost();
-
-        // Device resources.
-        HWND                                            _Window;
-        int                                             _OutputWidth;
-        int                                             _OutputHeight;
-
-        D3D_FEATURE_LEVEL                               _FeatureLevel;
-        Microsoft::WRL::ComPtr<ID3D11Device1>           _D3dDevice;
-        Microsoft::WRL::ComPtr<ID3D11DeviceContext1>    _D3dContext;
-
-        Microsoft::WRL::ComPtr<IDXGISwapChain1>         _SwapChain;
-        Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  _RenderTargetView;
-        Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  _DepthStencilView;
-
-        // Rendering loop timer.
-        DX::StepTimer                                   _Timer;
     };
 }
