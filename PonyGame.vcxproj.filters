@@ -50,4 +50,7 @@
       <Filter>assets</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
 </Project>

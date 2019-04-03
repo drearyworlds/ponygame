@@ -4,13 +4,10 @@
 using namespace ParticleHomeEntertainment;
 using namespace DirectX;
 
-std::unique_ptr<PonyGame> _Game;
-
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // Indicates to hybrid graphics systems to prefer the discrete part by default
-extern "C"
-{
+extern "C" {
     __declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
@@ -20,57 +17,66 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    if (!XMVerifyCPUSupport())
+    if (!XMVerifyCPUSupport()) {
         return 1;
+    }
 
     HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
-    if (FAILED(hr))
+    if (FAILED(hr)) {
         return 1;
+    }
 
-    _Game = std::make_unique<PonyGame>();
+    std::unique_ptr<PonyGame> _Game = std::make_unique<PonyGame>();
 
     // Register class and create window
-    {
-        // Register class
-        WNDCLASSEXW wcex = {};
-        wcex.cbSize = sizeof(WNDCLASSEXW);
-        wcex.style = CS_HREDRAW | CS_VREDRAW;
-        wcex.lpfnWndProc = WndProc;
-        wcex.hInstance = hInstance;
-        wcex.hIcon = LoadIconW(hInstance, L"IDI_ICON");
-        wcex.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-        wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-        wcex.lpszClassName = L"$safeprojectname$WindowClass";
-        wcex.hIconSm = LoadIconW(wcex.hInstance, L"IDI_ICON");
-        if (!RegisterClassExW(&wcex))
-            return 1;
 
-        // Create window
-        int w, h;
-        _Game->GetDefaultSize(w, h);
+    // Register class
+    WNDCLASSEXW wcex = {};
+    wcex.cbSize = sizeof(WNDCLASSEXW);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIconW(hInstance, L"IDI_ICON");
+    wcex.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszClassName = L"$safeprojectname$WindowClass";
+    wcex.hIconSm = LoadIconW(wcex.hInstance, L"IDI_ICON");
+    if (!RegisterClassExW(&wcex))
+        return 1;
 
-        RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
+    // Create window
+    int w, h;
+    _Game->GetDefaultSize(w, h);
 
-        AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+    RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
 
-        HWND hwnd = CreateWindowExW(0, L"$safeprojectname$WindowClass", L"$projectname$", WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-            nullptr);
-        // TODO: Change to CreateWindowExW(WS_EX_TOPMOST, L"$safeprojectname$WindowClass", L"$projectname$", WS_POPUP,
-        // to default to fullscreen.
+    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-        if (!hwnd)
-            return 1;
+    // Windowed
+    HWND hwnd = CreateWindowExW(0, L"$safeprojectname$WindowClass", WINDOW_TITLE, WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
+        nullptr);
 
-        ShowWindow(hwnd, nCmdShow);
-        // TODO: Change nCmdShow to SW_SHOWMAXIMIZED to default to fullscreen.
+    // Fullscreen
+    //HWND hwnd = CreateWindowExW(WS_EX_TOPMOST, L"$safeprojectname$WindowClass", L"$projectname$", WS_POPUP,
+    //    CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
+    //    nullptr);
 
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_Game.get()));
-
-        GetClientRect(hwnd, &rc);
-
-        _Game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+    if (!hwnd) {
+        return 1;
     }
+
+    // Windowed
+    ShowWindow(hwnd, nCmdShow);
+
+    // Fullscreen
+    //ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_Game.get()));
+
+    GetClientRect(hwnd, &rc);
+
+    _Game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
     // Main message loop
     MSG msg = {};
@@ -160,6 +166,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             } else {
                 game->OnDeactivated();
             }
+
+            Keyboard::ProcessMessage(message, wParam, lParam);
+            Mouse::ProcessMessage(message, wParam, lParam);
         }
         break;
 
@@ -194,8 +203,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
                 int width = SCREEN_WIDTH;
                 int height = SCREEN_HEIGHT;
-                if (game)
+                if (game) {
                     game->GetDefaultSize(width, height);
+                }
 
                 ShowWindow(hWnd, SW_SHOWNORMAL);
 
@@ -211,12 +221,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
             s_fullscreen = !s_fullscreen;
         }
-        break;
 
+        break;
     case WM_MENUCHAR:
         // A menu is active and the user presses a key that does not correspond
         // to any mnemonic or accelerator key. Ignore so we don't produce an error beep.
         return MAKELRESULT(0, MNC_CLOSE);
+
+    case WM_INPUT:
+    case WM_MOUSEMOVE:
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_RBUTTONDOWN:
+    case WM_RBUTTONUP:
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
+    case WM_MOUSEWHEEL:
+    case WM_XBUTTONDOWN:
+    case WM_XBUTTONUP:
+    case WM_MOUSEHOVER:
+        Mouse::ProcessMessage(message, wParam, lParam);
+        break;
+
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+    case WM_SYSKEYUP:
+        Keyboard::ProcessMessage(message, wParam, lParam);
+        break;
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);

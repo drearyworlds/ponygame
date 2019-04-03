@@ -1,17 +1,16 @@
 #pragma once
 
-#include <d3d11_1.h>
-#include "SimpleMath.h"
+#include "StepTimer.h"
+#include <CommonStates.h>
+#include <SimpleMath.h>
+#include <SpriteBatch.h>
 #include <WICTextureLoader.h>
+#include <Keyboard.h>
+#include <Mouse.h>
 #include <wrl/client.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
-#include "StepTimer.h"
-#include <SpriteBatch.h>
-#include <CommonStates.h>
 #include <algorithm>
-#include <exception>
-#include <memory>
 
 namespace DX {
     inline void ThrowIfFailed(HRESULT hr) {
@@ -23,16 +22,16 @@ namespace DX {
 }
 
 namespace ParticleHomeEntertainment {
-    enum SpriteFacingEnum {
-        LEFT, RIGHT
-    };
-
-    enum SpriteMovementState {
-        IDLE, RUNNING
-    };
-
     class PonyGame {
     public:
+        enum SpriteFacingEnum {
+            LEFT, RIGHT
+        };
+
+        enum SpriteMovementState {
+            IDLE, RUNNING
+        };
+
         PonyGame() noexcept;
 
         // Initialization and management
@@ -86,6 +85,9 @@ namespace ParticleHomeEntertainment {
         uint32_t _PonyRunSpriteSheetHeight;
         float _PonyIdleTimePerFrameSec;
         float _PonyRunTimePerFrameSec;
+
+        std::unique_ptr<DirectX::Keyboard> _Keyboard;
+        std::unique_ptr<DirectX::Mouse> _Mouse;
 
         void DrawBackground();
 

@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+constexpr wchar_t* WINDOW_TITLE = L"Pony Game";
 constexpr uint16_t SCREEN_WIDTH = 320;
 constexpr uint16_t SCREEN_HEIGHT = 180;
 constexpr uint16_t FRAMES_PER_SEC = 60;

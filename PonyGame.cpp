@@ -1,20 +1,6 @@
 // Use the C++ standard templated min/max
 #define NOMINMAX
 
-// DirectX apps don't need GDI
-//#define NODRAWTEXT
-//#define NOGDI
-//#define NOBITMAP
-
-// Include <mcx.h> if you need this
-//#define NOMCX
-
-// Include <winsvc.h> if you need this
-//#define NOSERVICE
-
-// WinHelp is deprecated
-//#define NOHELP
-
 #include "PonyGame.h"
 #include "Constants.h"
 #include <DDSTextureLoader.h>
@@ -55,6 +41,10 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 
     CreateResources();
 
+    _Keyboard = std::make_unique<Keyboard>();
+    _Mouse = std::make_unique<Mouse>();
+    _Mouse->SetWindow(window);
+
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
     /*
@@ -76,7 +66,26 @@ void PonyGame::Tick() {
 }
 
 void PonyGame::HandleInput() {
+    auto kb = _Keyboard->GetState();
+    if (kb.Escape) {
+        ExitGame();
+    }
 
+    auto mouse = _Mouse->GetState();
+
+    //Vector3 move = Vector3::Zero;
+
+    if (kb.Left || kb.A) {
+        _PonyFacing = SpriteFacingEnum::LEFT;
+        _PonyState = SpriteMovementState::RUNNING;
+        //move.x += 1.f;
+    } else if (kb.Right || kb.D) {
+        _PonyFacing = SpriteFacingEnum::RIGHT;
+        _PonyState = SpriteMovementState::RUNNING;
+        //move.x -= 1.f;
+    } else {
+        _PonyState = SpriteMovementState::IDLE;
+    }
 }
 
 // Updates the world.
@@ -128,26 +137,36 @@ void PonyGame::DrawPony() {
         ponyTexture = _PonyRunningTexture.Get();
     }
 
-    DirectX::SpriteEffects ponyTransform = (_PonyFacing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
-
-    _SpriteBatch->Draw(ponyTexture, _ScreenPosition, &sourceRect, Colors::White, 0, _PonyLocation, (float)ponyTransform);
+    if (ponyTexture != nullptr) {
+        const float ROTATION = 0.f;
+        const float SCALE = 1.f;
+        const DirectX::SpriteEffects PONY_TRANSFORM = (_PonyFacing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+        const float LAYER_DEPTH = 0.f;
+        _SpriteBatch->Draw(ponyTexture,
+            _ScreenPosition /*FXMVECTOR position*/,
+            &sourceRect /*RECT const* sourceRectangle*/,
+            Colors::White /*FXMVECTOR color*/,
+            ROTATION /*float rotation*/,
+            _PonyLocation /*FXMVECTOR origin*/,
+            SCALE /*float scale*/,
+            PONY_TRANSFORM /*SpriteEffects effects*/,
+            LAYER_DEPTH);
+    }
     _SpriteBatch->End();
 }
 
 // Draws the scene.
 void PonyGame::Render() {
     // Don't try to render anything before the first Update.
-    if (_Timer.GetFrameCount() == 0) {
-        return;
+    if (_Timer.GetFrameCount() > 0) {
+        Clear();
+
+        DrawBackground();
+
+        DrawPony();
+
+        Present();
     }
-
-    Clear();
-
-    DrawBackground();
-
-    DrawPony();
-
-    Present();
 }
 
 // Helper method to clear the back buffers.
