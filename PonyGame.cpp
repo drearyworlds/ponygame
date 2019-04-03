@@ -298,11 +298,6 @@ void PonyGame::CreateDevice() {
 
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
-    //hr = CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
-    //    ponyIdleResource.GetAddressOf(),
-    //    _PonyIdleTexture.ReleaseAndGetAddressOf());
-    //DX::ThrowIfFailed(hr);
-
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
         ponyIdleResource.GetAddressOf(), _PonyIdleTexture.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
@@ -317,16 +312,10 @@ void PonyGame::CreateDevice() {
     _PonyIdleSpriteSheetWidth = static_cast<int>(ponyIdleDesc.Width);
     _PonyIdleSpriteSheetHeight = static_cast<int>(ponyIdleDesc.Height);
 
-    _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_RUNNING_FRAMES_PER_SEC);
+    _PonyIdleTimePerFrameSec = 1.f / static_cast<float>(PONY_IDLE_FRAMES_PER_SEC);
 
     // Pony Running Resources
     ComPtr<ID3D11Resource> ponyRunResource;
-
-    //hr = CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
-    //    ponyRunResource.GetAddressOf(),
-    //    _PonyRunningTexture.ReleaseAndGetAddressOf());
-    //DX::ThrowIfFailed(hr);
-
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
         ponyRunResource.GetAddressOf(), _PonyRunningTexture.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);

@@ -26,8 +26,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 1;
     }
 
-    std::unique_ptr<PonyGame> _Game = std::make_unique<PonyGame>();
-
     // Register class and create window
 
     // Register class
@@ -39,44 +37,41 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     wcex.hIcon = LoadIconW(hInstance, L"IDI_ICON");
     wcex.hCursor = LoadCursorW(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszClassName = L"$safeprojectname$WindowClass";
+    wcex.lpszClassName = WINDOW_CLASS_NAME;
     wcex.hIconSm = LoadIconW(wcex.hInstance, L"IDI_ICON");
     if (!RegisterClassExW(&wcex))
         return 1;
 
     // Create window
     int w, h;
-    _Game->GetDefaultSize(w, h);
+
+    PonyGame ponyGame;
+    ponyGame.GetDefaultSize(w, h);
 
     RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
 
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-    // Windowed
-    HWND hwnd = CreateWindowExW(0, L"$safeprojectname$WindowClass", WINDOW_TITLE, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-        nullptr);
+    constexpr uint64_t WINDOW_STYLE = FULLSCREEN ? WS_POPUP : WS_OVERLAPPEDWINDOW;
 
-    // Fullscreen
-    //HWND hwnd = CreateWindowExW(WS_EX_TOPMOST, L"$safeprojectname$WindowClass", L"$projectname$", WS_POPUP,
-    //    CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-    //    nullptr);
+    HWND hwnd = CreateWindowExW(WS_EX_TOPMOST, WINDOW_CLASS_NAME, WINDOW_TITLE, WINDOW_STYLE, CW_USEDEFAULT,
+        CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
     if (!hwnd) {
         return 1;
     }
 
-    // Windowed
+    if (FULLSCREEN) {
+        nCmdShow = SW_SHOWMAXIMIZED;
+    }
+
     ShowWindow(hwnd, nCmdShow);
 
-    // Fullscreen
-    //ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(_Game.get()));
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&ponyGame));
 
     GetClientRect(hwnd, &rc);
 
-    _Game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+    ponyGame.Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
     // Main message loop
     MSG msg = {};
@@ -85,11 +80,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         } else {
-            _Game->Tick();
+            ponyGame.Tick();
         }
     }
-
-    _Game.reset();
 
     CoUninitialize();
 
