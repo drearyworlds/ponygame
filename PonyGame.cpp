@@ -28,8 +28,7 @@ PonyGame::PonyGame() noexcept :
     _PonyRunSpriteSheetWidth(0),
     _PonyRunSpriteSheetHeight(0),
     _PonyRunTimePerFrameSec(0),
-    _Paused(false) {
-}
+    _Paused(false) {}
 
 // Initialize the Direct3D resources required to run.
 void PonyGame::Initialize(HWND window, int width, int height) {
@@ -85,8 +84,7 @@ void PonyGame::HandleInput() {
         if (!directionChanged) {
             _PonyLocation.x -= PONY_SPEED;
         }
-    }
-    else if (kb.Right || kb.D) {
+    } else if (kb.Right || kb.D) {
         directionChanged = (_PonyFacing == SpriteFacingEnum::LEFT);
         _PonyFacing = SpriteFacingEnum::RIGHT;
         _PonyState = SpriteMovementState::RUNNING;
@@ -95,8 +93,7 @@ void PonyGame::HandleInput() {
             _PonyLocation.x += PONY_SPEED;
         }
 
-    }
-    else {
+    } else {
         _PonyState = SpriteMovementState::IDLE;
     }
 }
@@ -168,8 +165,7 @@ void PonyGame::DrawPony() {
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyIdleSpriteSheetHeight;
         ponyTexture = _PonyIdleTile.Get();
-    }
-    else if (_PonyState == SpriteMovementState::RUNNING) {
+    } else if (_PonyState == SpriteMovementState::RUNNING) {
         frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
         sourceRect.left = frameWidth * _PonyCurrentFrame;
         sourceRect.top = 0;
@@ -233,8 +229,7 @@ void PonyGame::Present() {
     // If the device was reset we must completely reinitialize the renderer.
     if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
         OnDeviceLost();
-    }
-    else {
+    } else {
         DX::ThrowIfFailed(hr);
     }
 }
@@ -413,12 +408,10 @@ void PonyGame::CreateResources() {
             // Everything is set up now. Do not continue execution of this method. OnDeviceLost will reenter this method 
             // and correctly set up the new device.
             return;
-        }
-        else {
+        } else {
             DX::ThrowIfFailed(hr);
         }
-    }
-    else {
+    } else {
         // First, retrieve the underlying DXGI Device from the D3D Device.
         ComPtr<IDXGIDevice1> dxgiDevice;
         DX::ThrowIfFailed(_D3dDevice.As(&dxgiDevice));
