@@ -70,17 +70,19 @@ namespace ParticleHomeEntertainment {
         // Background tiles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _GrassTile;
         std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
+        DirectX::SimpleMath::Vector2 _GrassLocation = {};
 
         // Sprite tiles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTile;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
-
-        std::unique_ptr<DirectX::CommonStates> _States;
         DirectX::SimpleMath::Vector2 _PonyLocation;
-        DirectX::SimpleMath::Vector2 _OriginLocation;
         SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
         SpriteMovementState _PonyState = SpriteMovementState::IDLE;
+
+        // Other
+        std::unique_ptr<DirectX::CommonStates> _States;
+        DirectX::SimpleMath::Vector2 _OriginLocation;
         bool _Paused;
 
         uint8_t _PonyCurrentFrame;

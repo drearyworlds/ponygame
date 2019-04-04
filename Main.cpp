@@ -148,8 +148,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     case WM_GETMINMAXINFO:
     {
         auto info = reinterpret_cast<MINMAXINFO*>(lParam);
-        info->ptMinTrackSize.x = SCREEN_WIDTH;
-        info->ptMinTrackSize.y = SCREEN_HEIGHT;
+        info->ptMinTrackSize.x = SCREEN_WIDTH_PX;
+        info->ptMinTrackSize.y = SCREEN_HEIGHT_PX;
     }
     break;
 
@@ -195,8 +195,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
                 SetWindowLongPtr(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
                 SetWindowLongPtr(hWnd, GWL_EXSTYLE, 0);
 
-                int width = SCREEN_WIDTH;
-                int height = SCREEN_HEIGHT;
+                int width = SCREEN_WIDTH_PX;
+                int height = SCREEN_HEIGHT_PX;
                 if (game) {
                     game->GetDefaultSize(width, height);
                 }

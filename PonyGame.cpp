@@ -17,8 +17,8 @@ extern void ExitGame();
 
 PonyGame::PonyGame() noexcept :
     _Window(nullptr),
-    _OutputWidth(SCREEN_WIDTH),
-    _OutputHeight(SCREEN_HEIGHT),
+    _OutputWidth(SCREEN_WIDTH_PX),
+    _OutputHeight(SCREEN_HEIGHT_PX),
     _FeatureLevel(D3D_FEATURE_LEVEL_11_1),
     _TotalElapsedSec(0),
     _PonyCurrentFrame(0),
@@ -57,7 +57,7 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 void PonyGame::Tick() {
     _Timer.Tick([&]() {
         Update(_Timer);
-    });
+        });
 
     // Poll and save the current key/button states
     HandleInput();
@@ -75,15 +75,28 @@ void PonyGame::HandleInput() {
 
     //Vector3 move = Vector3::Zero;
 
+    bool directionChanged = false;
+
     if (kb.Left || kb.A) {
+        directionChanged = (_PonyFacing == SpriteFacingEnum::RIGHT);
         _PonyFacing = SpriteFacingEnum::LEFT;
         _PonyState = SpriteMovementState::RUNNING;
-        //move.x += 1.f;
-    } else if (kb.Right || kb.D) {
+
+        if (!directionChanged) {
+            _PonyLocation.x -= PONY_SPEED;
+        }
+    }
+    else if (kb.Right || kb.D) {
+        directionChanged = (_PonyFacing == SpriteFacingEnum::LEFT);
         _PonyFacing = SpriteFacingEnum::RIGHT;
         _PonyState = SpriteMovementState::RUNNING;
-        //move.x -= 1.f;
-    } else {
+
+        if (!directionChanged) {
+            _PonyLocation.x += PONY_SPEED;
+        }
+
+    }
+    else {
         _PonyState = SpriteMovementState::IDLE;
     }
 }
@@ -109,19 +122,26 @@ void PonyGame::Update(const DX::StepTimer& timer) {
 }
 
 void PonyGame::DrawBackground() {
-    _BackgroundSpriteBatch->Begin();
+    _States = std::make_unique<CommonStates>(_D3dDevice.Get());
+
+    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, _States->LinearWrap());
 
     const float ROTATION = 0.f;
     const float SCALE = 1.f;
     const float LAYER_DEPTH = 0.f;
 
-    DirectX::SimpleMath::Vector2 _GrassLocation = {};
-    _GrassLocation.x = 0 * SPRITE_SIZE_WIDTH;
-    _GrassLocation.y = 8 * SPRITE_SIZE_HEIGHT;
+    _GrassLocation.x = 0;
+    _GrassLocation.y = (SCREEN_HEIGHT_TILES - 1) * SPRITE_SIZE_HEIGHT;
+
+    RECT tileRectangle{};
+    tileRectangle.left = 0;
+    tileRectangle.top = 0;
+    tileRectangle.right = SCREEN_WIDTH_TILES * SPRITE_SIZE_WIDTH;
+    tileRectangle.bottom = SPRITE_SIZE_HEIGHT;
 
     _BackgroundSpriteBatch->Draw(_GrassTile.Get(),
         _GrassLocation,
-        nullptr,
+        &tileRectangle,
         Colors::White,
         ROTATION,
         _OriginLocation,
@@ -148,7 +168,8 @@ void PonyGame::DrawPony() {
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyIdleSpriteSheetHeight;
         ponyTexture = _PonyIdleTile.Get();
-    } else if (_PonyState == SpriteMovementState::RUNNING) {
+    }
+    else if (_PonyState == SpriteMovementState::RUNNING) {
         frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
         sourceRect.left = frameWidth * _PonyCurrentFrame;
         sourceRect.top = 0;
@@ -212,7 +233,8 @@ void PonyGame::Present() {
     // If the device was reset we must completely reinitialize the renderer.
     if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
         OnDeviceLost();
-    } else {
+    }
+    else {
         DX::ThrowIfFailed(hr);
     }
 }
@@ -237,8 +259,8 @@ void PonyGame::OnResuming() {
 }
 
 void PonyGame::OnWindowSizeChanged(int width, int height) {
-    _OutputWidth = std::min(static_cast<int>(SCREEN_WIDTH), std::max(width, 1));
-    _OutputHeight = std::min(static_cast<int>(SCREEN_HEIGHT), std::max(height, 1));
+    _OutputWidth = std::min(static_cast<int>(SCREEN_WIDTH_PX), std::max(width, 1));
+    _OutputHeight = std::min(static_cast<int>(SCREEN_HEIGHT_PX), std::max(height, 1));
 
     CreateResources();
 
@@ -248,8 +270,8 @@ void PonyGame::OnWindowSizeChanged(int width, int height) {
 // Properties
 void PonyGame::GetDefaultSize(int& width, int& height) const {
     // Desired default window size (note minimum size is 320x200).
-    width = SCREEN_WIDTH;
-    height = SCREEN_HEIGHT;
+    width = SCREEN_WIDTH_PX;
+    height = SCREEN_HEIGHT_PX;
 }
 
 // These are the resources that depend on the device.
@@ -260,7 +282,7 @@ void PonyGame::CreateDevice() {
     //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-    static const D3D_FEATURE_LEVEL featureLevels[] {
+    static const D3D_FEATURE_LEVEL featureLevels[]{
         // TODO: Modify for supported Direct3D feature levels
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,
@@ -391,10 +413,12 @@ void PonyGame::CreateResources() {
             // Everything is set up now. Do not continue execution of this method. OnDeviceLost will reenter this method 
             // and correctly set up the new device.
             return;
-        } else {
+        }
+        else {
             DX::ThrowIfFailed(hr);
         }
-    } else {
+    }
+    else {
         // First, retrieve the underlying DXGI Device from the D3D Device.
         ComPtr<IDXGIDevice1> dxgiDevice;
         DX::ThrowIfFailed(_D3dDevice.As(&dxgiDevice));
