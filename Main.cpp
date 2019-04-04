@@ -39,8 +39,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszClassName = WINDOW_CLASS_NAME;
     wcex.hIconSm = LoadIconW(wcex.hInstance, L"IDI_ICON");
-    if (!RegisterClassExW(&wcex))
+    if (!RegisterClassExW(&wcex)) {
         return 1;
+    }
 
     // Create window
     int w, h;

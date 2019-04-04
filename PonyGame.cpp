@@ -109,7 +109,27 @@ void PonyGame::Update(const DX::StepTimer& timer) {
 }
 
 void PonyGame::DrawBackground() {
-    // Don't have a background to draw yet
+    _BackgroundSpriteBatch->Begin();
+
+    const float ROTATION = 0.f;
+    const float SCALE = 1.f;
+    const float LAYER_DEPTH = 0.f;
+
+    DirectX::SimpleMath::Vector2 _GrassLocation = {};
+    _GrassLocation.x = 0 * SPRITE_SIZE_WIDTH;
+    _GrassLocation.y = 8 * SPRITE_SIZE_HEIGHT;
+
+    _BackgroundSpriteBatch->Draw(_GrassTile.Get(),
+        _GrassLocation,
+        nullptr,
+        Colors::White,
+        ROTATION,
+        _OriginLocation,
+        SCALE,
+        DirectX::SpriteEffects_None,
+        LAYER_DEPTH);
+
+    _BackgroundSpriteBatch->End();
 }
 
 void PonyGame::DrawPony() {
@@ -127,14 +147,14 @@ void PonyGame::DrawPony() {
         sourceRect.top = 0;
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyIdleSpriteSheetHeight;
-        ponyTexture = _PonyIdleTexture.Get();
+        ponyTexture = _PonyIdleTile.Get();
     } else if (_PonyState == SpriteMovementState::RUNNING) {
         frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
         sourceRect.left = frameWidth * _PonyCurrentFrame;
         sourceRect.top = 0;
         sourceRect.right = sourceRect.left + frameWidth;
         sourceRect.bottom = _PonyRunSpriteSheetHeight;
-        ponyTexture = _PonyRunningTexture.Get();
+        ponyTexture = _PonyRunningTile.Get();
     }
 
     if (ponyTexture != nullptr) {
@@ -143,11 +163,11 @@ void PonyGame::DrawPony() {
         const DirectX::SpriteEffects PONY_TRANSFORM = (_PonyFacing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
         const float LAYER_DEPTH = 0.f;
         _SpriteBatch->Draw(ponyTexture,
-            _ScreenPosition /*FXMVECTOR position*/,
+            _PonyLocation /*FXMVECTOR position*/,
             &sourceRect /*RECT const* sourceRectangle*/,
             Colors::White /*FXMVECTOR color*/,
             ROTATION /*float rotation*/,
-            _PonyLocation /*FXMVECTOR origin*/,
+            _OriginLocation /*FXMVECTOR origin*/,
             SCALE /*float scale*/,
             PONY_TRANSFORM /*SpriteEffects effects*/,
             LAYER_DEPTH);
@@ -217,8 +237,8 @@ void PonyGame::OnResuming() {
 }
 
 void PonyGame::OnWindowSizeChanged(int width, int height) {
-    _OutputWidth = std::max(width, 1);
-    _OutputHeight = std::max(height, 1);
+    _OutputWidth = std::min(static_cast<int>(SCREEN_WIDTH), std::max(width, 1));
+    _OutputHeight = std::min(static_cast<int>(SCREEN_HEIGHT), std::max(height, 1));
 
     CreateResources();
 
@@ -295,11 +315,16 @@ void PonyGame::CreateDevice() {
 
     // Initialize device dependent objects here (independent of window size).
     _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
+    _BackgroundSpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
+
+    // Background Resources
+    DX::ThrowIfFailed(CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/grass_tile.png",
+        nullptr, _GrassTile.ReleaseAndGetAddressOf()));
 
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
-        ponyIdleResource.GetAddressOf(), _PonyIdleTexture.ReleaseAndGetAddressOf());
+        ponyIdleResource.GetAddressOf(), _PonyIdleTile.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyIdleTexture;
@@ -317,7 +342,7 @@ void PonyGame::CreateDevice() {
     // Pony Running Resources
     ComPtr<ID3D11Resource> ponyRunResource;
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
-        ponyRunResource.GetAddressOf(), _PonyRunningTexture.ReleaseAndGetAddressOf());
+        ponyRunResource.GetAddressOf(), _PonyRunningTile.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyRunTexture;
@@ -334,8 +359,8 @@ void PonyGame::CreateDevice() {
     _TotalElapsedSec = 0.f;
 
     // Pony location and orientation
-    _PonyLocation.x = static_cast<float>(SPRITE_SIZE_WIDTH);
-    _PonyLocation.y = static_cast<float>(SPRITE_SIZE_HEIGHT);
+    _OriginLocation.x = static_cast<float>(0);
+    _OriginLocation.y = static_cast<float>(0);
     _PonyFacing = SpriteFacingEnum::RIGHT;
     _PonyState = SpriteMovementState::IDLE;
 }
@@ -416,7 +441,7 @@ void PonyGame::CreateResources() {
     // Create a view interface on the rendertarget to use on bind.
     DX::ThrowIfFailed(_D3dDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, _RenderTargetView.ReleaseAndGetAddressOf()));
 
-    // Allocate a 2-D surface as the depth/stencil buffer and create a DepthStencil view on this surface to use on bind.
+    // Allocate a 2D surface as the depth/stencil buffer and create a DepthStencil view on this surface to use on bind.
     CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL);
 
     ComPtr<ID3D11Texture2D> depthStencil;
@@ -426,15 +451,16 @@ void PonyGame::CreateResources() {
     DX::ThrowIfFailed(_D3dDevice->CreateDepthStencilView(depthStencil.Get(), &depthStencilViewDesc, _DepthStencilView.ReleaseAndGetAddressOf()));
 
     // TODO: Initialize windows-size dependent objects here.
-    _ScreenPosition.x = backBufferWidth / 2.f;
-    _ScreenPosition.y = backBufferHeight / 2.f;
+    _PonyLocation.x = 0; // backBufferWidth / 2.f;
+    _PonyLocation.y = 7 * SPRITE_SIZE_HEIGHT; // backBufferHeight / 2.f;
 }
 
 void PonyGame::OnDeviceLost() {
-    // TODO: Add Direct3D resource cleanup here.
-    _PonyIdleTexture.Reset();
-    _PonyRunningTexture.Reset();
+    // Direct3D resource cleanup
+    _PonyIdleTile.Reset();
+    _PonyRunningTile.Reset();
     _SpriteBatch.reset();
+    _BackgroundSpriteBatch.reset();
     _States.reset();
 
     _DepthStencilView.Reset();

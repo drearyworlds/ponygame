@@ -67,12 +67,18 @@ namespace ParticleHomeEntertainment {
         // Rendering loop timer.
         DX::StepTimer _Timer;
 
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTexture;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTexture;
+        // Background tiles
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _GrassTile;
+        std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
+
+        // Sprite tiles
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTile;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTile;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
+
         std::unique_ptr<DirectX::CommonStates> _States;
-        DirectX::SimpleMath::Vector2 _ScreenPosition;
         DirectX::SimpleMath::Vector2 _PonyLocation;
+        DirectX::SimpleMath::Vector2 _OriginLocation;
         SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
         SpriteMovementState _PonyState = SpriteMovementState::IDLE;
         bool _Paused;
