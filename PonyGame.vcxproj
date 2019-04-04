@@ -137,7 +137,6 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="PonyGame.h" />
-    <ClInclude Include="ScrollingBackground.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
