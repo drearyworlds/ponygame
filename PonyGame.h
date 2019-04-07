@@ -1,5 +1,8 @@
 #pragma once
 
+// Use the C++ standard templated min/max
+#define NOMINMAX
+#include <d3d11_1.h>
 #include "StepTimer.h"
 #include <CommonStates.h>
 #include <SimpleMath.h>
@@ -24,12 +27,16 @@ namespace DX {
 namespace ParticleHomeEntertainment {
     class PonyGame {
     public:
+        enum GameStateEnum {
+            TITLE_SCREEN, IN_LEVEL, PAUSED, CREDITS
+        };
+
         enum SpriteFacingEnum {
             LEFT, RIGHT
         };
 
         enum SpriteMovementState {
-            IDLE, RUNNING
+            IDLE, RUNNING, JUMPING
         };
 
         PonyGame() noexcept;
@@ -75,15 +82,18 @@ namespace ParticleHomeEntertainment {
         // Sprite tiles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTile;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyJumpingTile;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
         DirectX::SimpleMath::Vector2 _PonyLocation;
         SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
         SpriteMovementState _PonyState = SpriteMovementState::IDLE;
 
+        GameStateEnum _GameState = TITLE_SCREEN;
+
+        uint32_t _CurrentLevel;
+
         // Other
-        std::unique_ptr<DirectX::CommonStates> _States;
         DirectX::SimpleMath::Vector2 _OriginLocation;
-        bool _Paused;
 
         uint8_t _PonyCurrentFrame;
         float _TotalElapsedSec;
@@ -91,21 +101,30 @@ namespace ParticleHomeEntertainment {
         uint32_t _PonyIdleSpriteSheetHeight;
         uint32_t _PonyRunSpriteSheetWidth;
         uint32_t _PonyRunSpriteSheetHeight;
-        float _PonyIdleTimePerFrameSec;
-        float _PonyRunTimePerFrameSec;
+        uint32_t _PonyJumpSpriteSheetWidth;
+        uint32_t _PonyJumpSpriteSheetHeight;
 
         std::unique_ptr<DirectX::Keyboard> _Keyboard;
         std::unique_ptr<DirectX::Mouse> _Mouse;
 
-        void DrawBackground();
+        void HandleInput();
 
+        void UpdateGameWorld(const DX::StepTimer& timer);
+
+        void RenderScene();
+
+        /// <summary>Helper method to clear the back buffers.</summary>
+        void Clear();
+
+        void DrawBackground();
+        
+        void DrawObstacles();
+        
+        void DrawEnemies();
+        
         void DrawPony();
 
-        void Update(DX::StepTimer const& timer);
-        void HandleInput();
-        void Render();
 
-        void Clear();
         void Present();
 
         void CreateDevice();

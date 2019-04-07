@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="LevelScreen.h" />
     <ClInclude Include="PonyGame.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
