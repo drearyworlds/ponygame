@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\comdef.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\comutil.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\dbghelp.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ppl.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ppltasks.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\rpc.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\setupapi.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\shlobj.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\sqlncli.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\windows.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ws2tcpip.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\7zTypes.h">
+      <Filter>nowarn\7zip</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\LzmaDec.h">
+      <Filter>nowarn\7zip</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\LzmaEnc.h">
+      <Filter>nowarn\7zip</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\Threads.h">
+      <Filter>nowarn\7zip</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\base_uri.h">
+      <Filter>nowarn\cpprest</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\http_client.h">
+      <Filter>nowarn\cpprest</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\http_listener.h">
+      <Filter>nowarn\cpprest</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\json.h">
+      <Filter>nowarn\cpprest</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\msclr\marshal_cppstd.h">
+      <Filter>nowarn\msclr</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\concurrent_vector.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\tchar.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\wtypes.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\fakeit\fakeit.hpp">
+      <Filter>nowarn\fakeit</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\atlbase.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\concurrent_unordered_map.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\msclr\marshal_windows.h">
+      <Filter>nowarn\msclr</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\shared_mutex">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\d3d11_1.h">
+      <Filter>nowarn</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="nowarn">
+      <UniqueIdentifier>{b024d65c-b40e-41e9-800d-0c117668997d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nowarn\7zip">
+      <UniqueIdentifier>{7f16ddb5-34a8-4651-bd3f-3019e0c4d5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nowarn\cpprest">
+      <UniqueIdentifier>{3132f63e-2c57-41ed-af8d-c9a8af5511a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nowarn\msclr">
+      <UniqueIdentifier>{f1110994-6394-4035-ba99-ca20c9032ecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="nowarn\fakeit">
+      <UniqueIdentifier>{bff110fb-6f50-452c-9456-921b4c6cf4b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\algorithm">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\atomic">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\chrono">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\codecvt">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\fstream">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\future">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\iomanip">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\locale">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\map">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\memory">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\mutex">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\regex">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\sstream">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\string">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\vector">
+      <Filter>nowarn</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\msxml6.h">
+      <Filter>nowarn</Filter>
+    </None>
+  </ItemGroup>
+</Project>

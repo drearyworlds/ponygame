@@ -1,0 +1,6 @@
+#pragma once
+
+#pragma warning (push)
+#pragma warning (disable: 4365 4619 5031 5032)
+#include <shared_mutex>
+#pragma warning (pop)

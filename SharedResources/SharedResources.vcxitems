@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="SharedProjectFile_SccProperties">
+    <SharedProjectFile_ProjectGuid>{238a8fa4-d8fb-4081-9b02-4cb2047a9d62}</SharedProjectFile_ProjectGuid>
+    <SharedProjectFile_SccProjectName>SAK</SharedProjectFile_SccProjectName>
+    <SharedProjectFile_SccAuxPath>SAK</SharedProjectFile_SccAuxPath>
+    <SharedProjectFile_SccLocalPath>SAK</SharedProjectFile_SccLocalPath>
+    <SharedProjectFile_SccProvider>SAK</SharedProjectFile_SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{3A0D016A-E674-4A3B-A65B-98EC26181DB2}</ItemsProjectGuid>
+    <ItemsSccProjectName>SAK</ItemsSccProjectName>
+    <ItemsSccAuxPath>SAK</ItemsSccAuxPath>
+    <ItemsSccLocalPath>SAK</ItemsSccLocalPath>
+    <ItemsSccProvider>SAK</ItemsSccProvider>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\atlbase.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\concurrent_unordered_map.h">
+      <FileType>CppHeader</FileType>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\concurrent_vector.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\d3d11_1.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\fakeit\fakeit.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\7zTypes.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\LzmaDec.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\LzmaEnc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\7zip\Threads.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\comdef.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\comutil.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\base_uri.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\http_client.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\http_listener.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\cpprest\json.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\dbghelp.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\msclr\marshal_cppstd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\msclr\marshal_windows.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ppl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ppltasks.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\rpc.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\setupapi.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\shared_mutex">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\shlobj.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\sqlncli.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\tchar.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\windows.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\ws2tcpip.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)nowarn\wtypes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\algorithm" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\atomic" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\chrono" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\codecvt" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\fstream" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\future" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\iomanip" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\locale" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\map" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\memory" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\msxml6.h">
+      <FileType>CppHeader</FileType>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)nowarn\mutex" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\regex" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\sstream" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\string" />
+    <None Include="$(MSBuildThisFileDirectory)nowarn\vector" />
+  </ItemGroup>
+</Project>

@@ -9,7 +9,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PonyGame", "PonyGame.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2017", "DirectXTK\DirectXTK_Desktop_2017.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedResources", "..\..\Users\jecraft\source\repos\PonyGame\SharedResources\SharedResources.vcxitems", "{3A0D016A-E674-4A3B-A65B-98EC26181DB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Third-Party", "Third-Party", "{B2B39071-82D9-4918-A47C-87A09B8DA8C1}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Users\jecraft\source\repos\PonyGame\SharedResources\SharedResources.vcxitems*{3a0d016a-e674-4a3b-a65b-98ec26181db2}*SharedItemsImports = 9
+		..\..\Users\jecraft\source\repos\PonyGame\SharedResources\SharedResources.vcxitems*{9dfda5ff-76ed-4705-b23a-ddbc96f22150}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -36,6 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {B2B39071-82D9-4918-A47C-87A09B8DA8C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF343284-7D40-4FEC-897F-4E9D1C59982F}

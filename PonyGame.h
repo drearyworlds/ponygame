@@ -1,34 +1,14 @@
 #pragma once
 
-#pragma warning (push)
-#pragma warning (disable: 4061 4365 4514 4548 4625 4626 4668 4820 4917 5029 5032 5038 5039)
-#include <d3d11_1.h>
-#pragma warning (pop)
-#pragma warning (push)
-#pragma warning (disable: 4365 4514 4548 4626 4668 5029)
-#include <SimpleMath.h>
-#pragma warning (pop)
-#pragma warning (push)
-#pragma warning (disable: 4514)
-#include <SpriteBatch.h>
-#pragma warning (pop)
-#pragma warning (push)
-#pragma warning (disable: 4514)
-#include <Keyboard.h>
-#pragma warning (pop)
-//#include <Mouse.h>
-#pragma warning (push)
-#pragma warning (disable: 4365 4514)
+#include <nowarn/d3d11_1.h>
+#include "Sprite.h"
 #include "StepTimer.h"
-#pragma warning (pop)
-#pragma warning (push)
-#pragma warning (disable: 4514 4626)
-#include <wrl/client.h>
-#pragma warning (pop)
-#pragma warning (push)
-#pragma warning (disable: 4514)
-#include <algorithm>
-#pragma warning (pop)
+#include <nowarn/SimpleMath.h>
+#include <nowarn/SpriteBatch.h>
+#include <nowarn/Keyboard.h>
+#include <nowarn/Mouse.h>
+#include <nowarn/wrl/client.h>
+#include <nowarn/algorithm>
 #include <memory>
 
 namespace ParticleHomeEntertainment {
@@ -106,14 +86,8 @@ namespace ParticleHomeEntertainment {
         // Other
         DirectX::SimpleMath::Vector2 _OriginLocation;
 
-        uint8_t _PonyCurrentFrame;
+        Sprite _Pony;
         float _TotalElapsedSec;
-        uint32_t _PonyIdleSpriteSheetWidth;
-        uint32_t _PonyIdleSpriteSheetHeight;
-        uint32_t _PonyRunSpriteSheetWidth;
-        uint32_t _PonyRunSpriteSheetHeight;
-        uint32_t _PonyJumpSpriteSheetWidth;
-        uint32_t _PonyJumpSpriteSheetHeight;
 
         std::unique_ptr<DirectX::Keyboard> _Keyboard;
         //std::unique_ptr<DirectX::Mouse> _Mouse;

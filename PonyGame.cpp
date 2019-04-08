@@ -32,14 +32,7 @@ PonyGame::PonyGame() noexcept :
     _OutputWidth(SCREEN_WIDTH_PX),
     _OutputHeight(SCREEN_HEIGHT_PX),
     _FeatureLevel(D3D_FEATURE_LEVEL_11_1),
-    _PonyCurrentFrame(0),
-    _TotalElapsedSec(0),
-    _PonyIdleSpriteSheetWidth(0),
-    _PonyIdleSpriteSheetHeight(0),
-    _PonyRunSpriteSheetWidth(0),
-    _PonyRunSpriteSheetHeight(0),
-    _PonyJumpSpriteSheetWidth(0),
-    _PonyJumpSpriteSheetHeight(0) {
+    _TotalElapsedSec(0) {
     // Initialize Game State
     _GameState = TITLE_SCREEN;
     _CurrentLevel = 1;
@@ -170,8 +163,8 @@ void PonyGame::UpdateGameWorld(const DX::StepTimer& timer) {
 
 
     if (_TotalElapsedSec > timePerFrameForCurrentStateSec) {
-        _PonyCurrentFrame++;
-        _PonyCurrentFrame = static_cast<uint8_t>(_PonyCurrentFrame % totalFramesForCurrentState);
+        _Pony._CurrentFrame++;
+        _Pony._CurrentFrame = static_cast<uint8_t>(_Pony._CurrentFrame % totalFramesForCurrentState);
         _TotalElapsedSec -= timePerFrameForCurrentStateSec;
     }
 }
@@ -251,25 +244,25 @@ void PonyGame::DrawPony() {
     ID3D11ShaderResourceView* ponyTexture = nullptr;
 
     if (_PonyState == SpriteMovementState::JUMPING) {
-        frameWidth = _PonyJumpSpriteSheetWidth / PONY_JUMPING_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _PonyCurrentFrame);
+        frameWidth = _Pony._JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
+        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
         sourceRect.top = 0;
         sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_PonyJumpSpriteSheetHeight);
+        sourceRect.bottom = static_cast<int32_t>(_Pony._JumpingSpriteSheetHeight);
         ponyTexture = _PonyJumpingTile.Get();
     } else if (_PonyState == SpriteMovementState::RUNNING) {
-        frameWidth = _PonyRunSpriteSheetWidth / PONY_RUNNING_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _PonyCurrentFrame);
+        frameWidth = _Pony._RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
+        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
         sourceRect.top = 0;
         sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_PonyRunSpriteSheetHeight);
+        sourceRect.bottom = static_cast<int32_t>(_Pony._RunningSpriteSheetHeight);
         ponyTexture = _PonyRunningTile.Get();
     } else {
-        frameWidth = _PonyIdleSpriteSheetWidth / PONY_IDLE_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _PonyCurrentFrame);
+        frameWidth = _Pony._IdleSpriteSheetWidth / PONY_IDLE_FRAMES;
+        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
         sourceRect.top = 0;
         sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_PonyIdleSpriteSheetHeight);
+        sourceRect.bottom = static_cast<int32_t>(_Pony._IdleSpriteSheetHeight);
         ponyTexture = _PonyIdleTile.Get();
     }
 
@@ -423,8 +416,8 @@ void PonyGame::CreateDevice() {
     ponyIdleTexture->GetDesc(&ponyIdleDesc);
 
     // Get total sprite sheet size
-    _PonyIdleSpriteSheetWidth = ponyIdleDesc.Width;
-    _PonyIdleSpriteSheetHeight = ponyIdleDesc.Height;
+    _Pony._IdleSpriteSheetWidth = ponyIdleDesc.Width;
+    _Pony._IdleSpriteSheetHeight = ponyIdleDesc.Height;
 
     // Pony Running Resources
     ComPtr<ID3D11Resource> ponyRunResource;
@@ -439,8 +432,8 @@ void PonyGame::CreateDevice() {
     ponyRunTexture->GetDesc(&ponyRunDesc);
 
     // Get total sprite sheet size
-    _PonyRunSpriteSheetWidth = ponyRunDesc.Width;
-    _PonyRunSpriteSheetHeight = ponyRunDesc.Height;
+    _Pony._RunningSpriteSheetWidth = ponyRunDesc.Width;
+    _Pony._RunningSpriteSheetHeight = ponyRunDesc.Height;
 
     // Pony Jumping Resources
     ComPtr<ID3D11Resource> ponyJumpResource;
@@ -455,8 +448,8 @@ void PonyGame::CreateDevice() {
     ponyJumpTexture->GetDesc(&ponyJumpDesc);
 
     // Get total sprite sheet size
-    _PonyJumpSpriteSheetWidth = ponyJumpDesc.Width;
-    _PonyJumpSpriteSheetHeight = ponyJumpDesc.Height;
+    _Pony._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
+    _Pony._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
 
     _TotalElapsedSec = 0.f;
 
