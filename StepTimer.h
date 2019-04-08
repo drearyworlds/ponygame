@@ -1,7 +1,10 @@
 #pragma once
 
+#pragma warning (push)
+#pragma warning (disable: 4061 4365 4514 4548 4625 4626 4668 4820 4917 5029 5032 5038 5039)
 #include <stdint.h>
 #include <exception>
+#pragma warning (pop)
 
 namespace DX {
     // Helper class for animation and simulation timing.

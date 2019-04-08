@@ -1,28 +1,35 @@
 #pragma once
 
-// Use the C++ standard templated min/max
-#define NOMINMAX
+#pragma warning (push)
+#pragma warning (disable: 4061 4365 4514 4548 4625 4626 4668 4820 4917 5029 5032 5038 5039)
 #include <d3d11_1.h>
-#include "StepTimer.h"
-#include <CommonStates.h>
+#pragma warning (pop)
+#pragma warning (push)
+#pragma warning (disable: 4365 4514 4548 4626 4668 5029)
 #include <SimpleMath.h>
+#pragma warning (pop)
+#pragma warning (push)
+#pragma warning (disable: 4514)
 #include <SpriteBatch.h>
-#include <WICTextureLoader.h>
+#pragma warning (pop)
+#pragma warning (push)
+#pragma warning (disable: 4514)
 #include <Keyboard.h>
-#include <Mouse.h>
+#pragma warning (pop)
+//#include <Mouse.h>
+#pragma warning (push)
+#pragma warning (disable: 4365 4514)
+#include "StepTimer.h"
+#pragma warning (pop)
+#pragma warning (push)
+#pragma warning (disable: 4514 4626)
 #include <wrl/client.h>
-#include <DirectXMath.h>
-#include <DirectXColors.h>
+#pragma warning (pop)
+#pragma warning (push)
+#pragma warning (disable: 4514)
 #include <algorithm>
-
-namespace DX {
-    inline void ThrowIfFailed(HRESULT hr) {
-        if (FAILED(hr)) {
-            // Set a breakpoint on this line to catch DirectX API errors
-            throw std::exception();
-        }
-    }
-}
+#pragma warning (pop)
+#include <memory>
 
 namespace ParticleHomeEntertainment {
     class PonyGame {
@@ -40,6 +47,9 @@ namespace ParticleHomeEntertainment {
         };
 
         PonyGame() noexcept;
+
+        PonyGame(PonyGame& copy) = delete;
+        PonyGame& operator=(PonyGame& copy) = delete;
 
         // Initialization and management
         void Initialize(HWND window, int width, int height);
@@ -85,6 +95,7 @@ namespace ParticleHomeEntertainment {
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyJumpingTile;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
         DirectX::SimpleMath::Vector2 _PonyLocation;
+        DirectX::SimpleMath::Vector2 _PonyVelocity;
         SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
         SpriteMovementState _PonyState = SpriteMovementState::IDLE;
 
@@ -105,7 +116,7 @@ namespace ParticleHomeEntertainment {
         uint32_t _PonyJumpSpriteSheetHeight;
 
         std::unique_ptr<DirectX::Keyboard> _Keyboard;
-        std::unique_ptr<DirectX::Mouse> _Mouse;
+        //std::unique_ptr<DirectX::Mouse> _Mouse;
 
         void HandleInput();
 
@@ -117,11 +128,11 @@ namespace ParticleHomeEntertainment {
         void Clear();
 
         void DrawBackground();
-        
+
         void DrawObstacles();
-        
+
         void DrawEnemies();
-        
+
         void DrawPony();
 
 
