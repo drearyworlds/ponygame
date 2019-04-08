@@ -54,9 +54,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared">
-    <Import Project="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\SharedResources.vcxitems" Label="Shared" />
-  </ImportGroup>
+  <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -78,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)SharedResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4820;5045</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -93,7 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)SharedResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4820;5045</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -110,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)SharedResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4820;5045</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -129,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)SharedResources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTK\Inc;$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4820;5045</DisableSpecificWarnings>
       <PreprocessorDefinitions>_UNICODE;UNICODE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -142,8 +140,56 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PonyGame.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="StepTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\7zip\7zTypes.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\7zip\LzmaDec.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\7zip\LzmaEnc.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\7zip\Threads.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\atlbase.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\comdef.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\CommonStates.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\comutil.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\concurrent_unordered_map.h">
+      <FileType>CppHeader</FileType>
+    </ClInclude>
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\concurrent_vector.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\cpprest\base_uri.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\cpprest\http_client.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\cpprest\http_listener.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\cpprest\json.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\d3d11_1.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\dbghelp.h" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\exception" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\functional" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\msxml6.h">
+      <FileType>CppHeader</FileType>
+    </None>
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\DDSTextureLoader.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\DirectXColors.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\DirectXMath.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\fakeit\fakeit.hpp" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\Keyboard.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\Mouse.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\msclr\marshal_cppstd.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\msclr\marshal_windows.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\ppl.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\ppltasks.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\rpc.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\setupapi.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\shlobj.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\SimpleMath.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\SpriteBatch.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\sqlncli.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\stdint.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\tchar.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\WICTextureLoader.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\windows.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wrl\client.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\ws2tcpip.h" />
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wtypes.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="LevelScreen.h" />
     <ClInclude Include="PonyGame.h" />
@@ -162,6 +208,24 @@
     <Image Include="assets\sqrl_5frames.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\shared_mutex">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\algorithm" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\atomic" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\chrono" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\codecvt" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\fstream" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\future" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\iomanip" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\locale" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\map" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\memory" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\mutex" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\regex" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\sstream" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\string" />
+    <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\vector" />
     <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

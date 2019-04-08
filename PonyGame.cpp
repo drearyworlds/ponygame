@@ -1,13 +1,11 @@
 #include "PonyGame.h"
+#include "Sprite.h"
 #include "Constants.h"
-#pragma warning (push)
-#pragma warning (disable: 4061 4365 4548 4626 4668 4917 5029 5039)
-#include <CommonStates.h>
-#include <DirectXMath.h>
-#include <DirectXColors.h>
-#include <DDSTextureLoader.h>
-#include <WICTextureLoader.h>
-#pragma warning (pop)
+#include <nowarn/CommonStates.h>
+#include <nowarn/DirectXMath.h>
+#include <nowarn/DirectXColors.h>
+#include <nowarn/DDSTextureLoader.h>
+#include <nowarn/WICTextureLoader.h>
 
 using namespace DirectX;
 using namespace ParticleHomeEntertainment;
@@ -38,11 +36,11 @@ PonyGame::PonyGame() noexcept :
     _CurrentLevel = 1;
 
     // Initialize Pony Location
-    _PonyLocation.x = 0;
-    _PonyLocation.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+    _Pony._Location.x = 0;
+    _Pony._Location.y = 7 * SPRITE_SIZE_HEIGHT_PX;
 
-    _PonyVelocity.x = 0;
-    _PonyVelocity.y = 0;
+    _Pony._Velocity.x = 0;
+    _Pony._Velocity.y = 0;
 }
 
 // Initialize the Direct3D resources required to run.
@@ -62,7 +60,7 @@ void PonyGame::Initialize(HWND window, int width, int height) {
     // Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
     _Timer.SetFixedTimeStep(true);
-    _Timer.SetTargetElapsedSeconds(1.0 / 60);
+    _Timer.SetTargetElapsedSeconds(1.0 / SECONDS_PER_MINUTE);
 }
 
 // Executes the basic game loop.
@@ -71,7 +69,7 @@ void PonyGame::Tick() {
     HandleInput();
 
     // Update the game world
-    _Timer.Tick([&]() {
+    _Timer.Tick([=]() {
         UpdateGameWorld(_Timer);
     });
 
@@ -91,51 +89,51 @@ void PonyGame::HandleInput() {
 
     // Handle Animation State
     if (kb.Space) {
-        if (_PonyState != SpriteMovementState::JUMPING) {
+        if (_Pony._State != SpriteMovementState::JUMPING) {
             // Give pony some velocity
-            _PonyVelocity.y = PONY_JUMP_Y_VELOCITY;
+            _Pony._Velocity.y = PONY_JUMP_Y_VELOCITY;
         }
 
-        _PonyState = SpriteMovementState::JUMPING;
+        _Pony._State = SpriteMovementState::JUMPING;
     } else if (kb.Left || kb.Right) {
-        _PonyState = SpriteMovementState::RUNNING;
+        _Pony._State = SpriteMovementState::RUNNING;
     } else {
-        _PonyState = SpriteMovementState::IDLE;
+        _Pony._State = SpriteMovementState::IDLE;
     }
 
     // Handle X-Axis movement
     if (kb.Left) {
-        facingChanged = (_PonyFacing == SpriteFacingEnum::RIGHT);
-        _PonyFacing = SpriteFacingEnum::LEFT;
+        facingChanged = (_Pony._Facing == SpriteFacingEnum::RIGHT);
+        _Pony._Facing = SpriteFacingEnum::LEFT;
 
         if (!facingChanged) {
-            _PonyLocation.x -= PONY_X_SPEED;
+            _Pony._Location.x -= PONY_X_SPEED;
         }
     } else if (kb.Right) {
-        facingChanged = (_PonyFacing == SpriteFacingEnum::LEFT);
-        _PonyFacing = SpriteFacingEnum::RIGHT;
+        facingChanged = (_Pony._Facing == SpriteFacingEnum::LEFT);
+        _Pony._Facing = SpriteFacingEnum::RIGHT;
 
         if (!facingChanged) {
-            _PonyLocation.x += PONY_X_SPEED;
+            _Pony._Location.x += PONY_X_SPEED;
         }
     }
 
     // Adjust pony Y-velocity for gravity
-    _PonyVelocity.y += GRAVITY;
+    _Pony._Velocity.y += GRAVITY;
 
     // Apply velocity 
-    _PonyLocation.x += _PonyVelocity.x;
-    _PonyLocation.y += _PonyVelocity.y;
+    _Pony._Location.x += _Pony._Velocity.x;
+    _Pony._Location.y += _Pony._Velocity.y;
 
     // But don't let her go below the grass
-    if (_PonyLocation.y > (7 * SPRITE_SIZE_HEIGHT_PX)) {
-        _PonyLocation.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+    if (_Pony._Location.y > (7 * SPRITE_SIZE_HEIGHT_PX)) {
+        _Pony._Location.y = 7 * SPRITE_SIZE_HEIGHT_PX;
     }
 
-    if (_PonyLocation.x < 0) {
-        _PonyLocation.x = 0;
-    } else if (_PonyLocation.x > SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX) {
-        _PonyLocation.x = SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX;
+    if (_Pony._Location.x < 0) {
+        _Pony._Location.x = 0;
+    } else if (_Pony._Location.x > SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX) {
+        _Pony._Location.x = SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX;
     }
 }
 
@@ -149,10 +147,10 @@ void PonyGame::UpdateGameWorld(const DX::StepTimer& timer) {
     uint8_t totalFramesForCurrentState = 0;
     float timePerFrameForCurrentStateSec = 0;
 
-    if (_PonyState == SpriteMovementState::JUMPING) {
+    if (_Pony._State == SpriteMovementState::JUMPING) {
         totalFramesForCurrentState = PONY_JUMPING_FRAMES;
         timePerFrameForCurrentStateSec = PONY_JUMPING_TIME_PER_FRAME_SEC;
-    } else if (_PonyState == SpriteMovementState::RUNNING) {
+    } else if (_Pony._State == SpriteMovementState::RUNNING) {
         totalFramesForCurrentState = PONY_RUNNING_FRAMES;
         timePerFrameForCurrentStateSec = PONY_RUNNING_TIME_PER_FRAME_SEC;
     } else {
@@ -243,14 +241,14 @@ void PonyGame::DrawPony() {
     uint32_t frameWidth;
     ID3D11ShaderResourceView* ponyTexture = nullptr;
 
-    if (_PonyState == SpriteMovementState::JUMPING) {
+    if (_Pony._State == SpriteMovementState::JUMPING) {
         frameWidth = _Pony._JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
         sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
         sourceRect.top = 0;
         sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
         sourceRect.bottom = static_cast<int32_t>(_Pony._JumpingSpriteSheetHeight);
         ponyTexture = _PonyJumpingTile.Get();
-    } else if (_PonyState == SpriteMovementState::RUNNING) {
+    } else if (_Pony._State == SpriteMovementState::RUNNING) {
         frameWidth = _Pony._RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
         sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
         sourceRect.top = 0;
@@ -269,10 +267,10 @@ void PonyGame::DrawPony() {
     if (ponyTexture != nullptr) {
         const float ROTATION = 0.f;
         const float SCALE = 1.f;
-        const DirectX::SpriteEffects PONY_TRANSFORM = (_PonyFacing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+        const DirectX::SpriteEffects PONY_TRANSFORM = (_Pony._Facing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
         const float LAYER_DEPTH = 0.f;
         _SpriteBatch->Draw(ponyTexture,
-            _PonyLocation,
+            _Pony._Location,
             &sourceRect,
             Colors::White,
             ROTATION,
@@ -456,8 +454,8 @@ void PonyGame::CreateDevice() {
     // Pony location and orientation
     _OriginLocation.x = static_cast<float>(0);
     _OriginLocation.y = static_cast<float>(0);
-    _PonyFacing = SpriteFacingEnum::RIGHT;
-    _PonyState = SpriteMovementState::IDLE;
+    _Pony._Facing = SpriteFacingEnum::RIGHT;
+    _Pony._State = SpriteMovementState::IDLE;
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

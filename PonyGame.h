@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nowarn/d3d11_1.h>
 #include "Sprite.h"
 #include "StepTimer.h"
 #include <nowarn/SimpleMath.h>
@@ -16,14 +15,6 @@ namespace ParticleHomeEntertainment {
     public:
         enum GameStateEnum {
             TITLE_SCREEN, IN_LEVEL, PAUSED, CREDITS
-        };
-
-        enum SpriteFacingEnum {
-            LEFT, RIGHT
-        };
-
-        enum SpriteMovementState {
-            IDLE, RUNNING, JUMPING
         };
 
         PonyGame() noexcept;
@@ -74,11 +65,6 @@ namespace ParticleHomeEntertainment {
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyJumpingTile;
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
-        DirectX::SimpleMath::Vector2 _PonyLocation;
-        DirectX::SimpleMath::Vector2 _PonyVelocity;
-        SpriteFacingEnum _PonyFacing = SpriteFacingEnum::RIGHT;
-        SpriteMovementState _PonyState = SpriteMovementState::IDLE;
-
         GameStateEnum _GameState = TITLE_SCREEN;
 
         uint32_t _CurrentLevel;

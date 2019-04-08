@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <nowarn/stdint.h>
 
 constexpr wchar_t* WINDOW_TITLE = L"Pony Game";
 constexpr wchar_t* WINDOW_CLASS_NAME = L"$PonyGame$WindowClass";
@@ -27,3 +27,6 @@ constexpr wchar_t* FILE_PATH_SPRITE_PONY_IDLE = L"assets/pony_idle.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_PONY_RUNNING = L"assets/pony_running.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_PONY_JUMPING = L"assets/pony_jumping.dds";
 constexpr bool FULLSCREEN = false;
+// Integer format represents time using 10,000,000 ticks per second.
+constexpr uint64_t TICKS_PER_SECOND = 10000000;
+constexpr uint8_t SECONDS_PER_MINUTE = 60;
