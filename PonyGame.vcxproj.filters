@@ -48,6 +48,9 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Pony.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PonyGame.h">
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wrl\client.h">
       <Filter>Header Files\nowarn\wrl</Filter>
+    </ClInclude>
+    <ClInclude Include="Pony.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

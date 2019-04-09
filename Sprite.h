@@ -1,19 +1,25 @@
 #pragma once
 
 #include <nowarn/SimpleMath.h>
+#include <nowarn/Keyboard.h>
 #include <nowarn/stdint.h>
+#include <nowarn/wrl/client.h>
 
 namespace ParticleHomeEntertainment {
-    enum SpriteFacingEnum {
+    enum SpriteFacingStateEnum {
         LEFT, RIGHT
     };
 
-    enum SpriteMovementState {
+    enum SpriteMovementStateEnum {
         IDLE, RUNNING, JUMPING
     };
 
     class Sprite {
     public:
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _IdleTile;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _RunningTile;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _JumpingTile;
+
         uint8_t _CurrentFrame;
         uint32_t _IdleSpriteSheetWidth;
         uint32_t _IdleSpriteSheetHeight;
@@ -21,14 +27,19 @@ namespace ParticleHomeEntertainment {
         uint32_t _RunningSpriteSheetHeight;
         uint32_t _JumpingSpriteSheetWidth;
         uint32_t _JumpingSpriteSheetHeight;
+        double _TotalElapsedSec;
 
         DirectX::SimpleMath::Vector2 _Location;
         DirectX::SimpleMath::Vector2 _Velocity;
-        SpriteFacingEnum _Facing;
-        SpriteMovementState _State;
+        SpriteFacingStateEnum _Facing;
+        SpriteMovementStateEnum _State;
 
-        Sprite();
+        explicit Sprite();
 
-        ~Sprite() = default;
+        ~Sprite();
+
+        void Animate(const double& elapsedSeconds);
+
+        void ResetTiles();
     };
 }

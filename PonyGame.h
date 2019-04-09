@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Sprite.h"
+#include "Pony.h"
 #include "StepTimer.h"
 #include <nowarn/SimpleMath.h>
 #include <nowarn/SpriteBatch.h>
@@ -47,7 +47,6 @@ namespace ParticleHomeEntertainment {
         D3D_FEATURE_LEVEL _FeatureLevel;
         Microsoft::WRL::ComPtr<ID3D11Device1> _D3dDevice;
         Microsoft::WRL::ComPtr<ID3D11DeviceContext1> _D3dContext;
-
         Microsoft::WRL::ComPtr<IDXGISwapChain1> _SwapChain;
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> _RenderTargetView;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilView> _DepthStencilView;
@@ -60,25 +59,20 @@ namespace ParticleHomeEntertainment {
         std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
         DirectX::SimpleMath::Vector2 _GrassLocation = {};
 
-        // Sprite tiles
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyIdleTile;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyRunningTile;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _PonyJumpingTile;
+        // Sprites
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
-        GameStateEnum _GameState = TITLE_SCREEN;
 
+        GameStateEnum _GameState = TITLE_SCREEN;
         uint32_t _CurrentLevel;
 
         // Other
         DirectX::SimpleMath::Vector2 _OriginLocation;
 
-        Sprite _Pony;
-        float _TotalElapsedSec;
+        Pony _Pony;
+        Sprite _ZombiePony;
 
         std::unique_ptr<DirectX::Keyboard> _Keyboard;
         //std::unique_ptr<DirectX::Mouse> _Mouse;
-
-        void HandleInput();
 
         void UpdateGameWorld(const DX::StepTimer& timer);
 
@@ -94,7 +88,6 @@ namespace ParticleHomeEntertainment {
         void DrawEnemies();
 
         void DrawPony();
-
 
         void Present();
 

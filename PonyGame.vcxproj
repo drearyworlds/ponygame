@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Pony.cpp" />
     <ClCompile Include="PonyGame.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StepTimer.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wtypes.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="LevelScreen.h" />
+    <ClInclude Include="Pony.h" />
     <ClInclude Include="PonyGame.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StepTimer.h" />
