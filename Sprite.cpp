@@ -14,6 +14,7 @@ Sprite::Sprite() {
     _TotalElapsedSec = 0.f;
     _Facing = SpriteFacingStateEnum::RIGHT;
     _AnimationState = SpriteAnimationStateEnum::IDLE;
+    _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
 
     // Initialize sprite location
     _Location.x = 0;

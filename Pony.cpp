@@ -7,14 +7,14 @@ Pony::Pony() {}
 
 Pony::~Pony() {}
 
-void Pony::UpdateState(const DirectX::Keyboard::State keyboardState) {
+void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) {
     bool facingChanged = false;
     auto projectedLocation = _Location;
     auto projectedVelocity = _Velocity;
 
     // If she is on the ground
     if (_SpecialState == SpriteSpecialStateEnum::ON_GROUND) {
-        if (keyboardState.Space) {
+        if (keyboardStateTracker.IsKeyPressed(DirectX::Keyboard::Keys::Space)) {
             // Give pony a burst of velocity
             projectedVelocity.y = PONY_JUMP_Y_VELOCITY;
 

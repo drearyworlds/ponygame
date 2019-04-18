@@ -71,7 +71,8 @@ namespace ParticleHomeEntertainment {
         Pony _Pony;
         Sprite _ZombiePony;
 
-        std::unique_ptr<DirectX::Keyboard> _Keyboard;
+        DirectX::Keyboard _Keyboard;
+        DirectX::Keyboard::KeyboardStateTracker _KeyboardTracker;
         //std::unique_ptr<DirectX::Mouse> _Mouse;
 
         void UpdateGameWorld(const DX::StepTimer& timer);

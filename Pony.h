@@ -9,6 +9,6 @@ namespace ParticleHomeEntertainment {
 
         ~Pony();
 
-        void UpdateState(const DirectX::Keyboard::State keyboardState);
+        void UpdateStates(const DirectX::Keyboard::State& keyboardState, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker);
     };
 }

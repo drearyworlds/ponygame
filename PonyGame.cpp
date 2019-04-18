@@ -46,9 +46,7 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 
     CreateResources();
 
-    _Keyboard = std::make_unique<Keyboard>();
-    //_Mouse = std::make_unique<Mouse>();
-    //_Mouse->SetWindow(window);
+    //_Mouse.SetWindow(window);
 
     // Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
@@ -59,14 +57,15 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 // Executes the basic game loop.
 void PonyGame::Tick() {
     // Poll and save the current key/button states
-    auto kb = _Keyboard->GetState();
+    _KeyboardTracker.Update(_Keyboard.GetState());
     //auto mouse = _Mouse->GetState();
 
-    if (kb.Escape) {
+
+    if (_KeyboardTracker.IsKeyPressed(Keyboard::Keys::Escape)) {
         ExitGame();
     }
 
-    _Pony.UpdateState(kb);
+    _Pony.UpdateStates(_Keyboard.GetState(), _KeyboardTracker);
 
     // Update the game world
     _Timer.Tick([=]() {
