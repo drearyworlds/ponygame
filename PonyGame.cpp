@@ -60,7 +60,6 @@ void PonyGame::Tick() {
     _KeyboardTracker.Update(_Keyboard.GetState());
     //auto mouse = _Mouse->GetState();
 
-
     if (_KeyboardTracker.IsKeyPressed(Keyboard::Keys::Escape)) {
         ExitGame();
     }
