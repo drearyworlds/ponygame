@@ -24,6 +24,7 @@ constexpr float PONY_JUMP_X_VELOCITY = 3.f;
 constexpr float PONY_JUMP_Y_VELOCITY = -12.f;
 constexpr uint16_t PONY_X_SPEED_PX = 3;
 constexpr float GRAVITY = 1.f;
+constexpr wchar_t* FILE_PATH_SPRITE_GRASS = L"assets/grass_tile.png";
 constexpr wchar_t* FILE_PATH_SPRITE_PONY_IDLE = L"assets/pony_idle.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_PONY_RUNNING = L"assets/pony_running.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_PONY_JUMPING = L"assets/pony_jumping.dds";

@@ -4,14 +4,19 @@
 #include <nowarn/Keyboard.h>
 #include <nowarn/stdint.h>
 #include <nowarn/wrl/client.h>
+#include <nowarn/SpriteBatch.h>
 
 namespace ParticleHomeEntertainment {
     enum SpriteFacingStateEnum {
         LEFT, RIGHT
     };
 
-    enum SpriteMovementStateEnum {
+    enum SpriteAnimationStateEnum {
         IDLE, RUNNING, JUMPING
+    };
+
+    enum SpriteSpecialStateEnum {
+        ON_GROUND, IN_AIR
     };
 
     class Sprite {
@@ -32,13 +37,16 @@ namespace ParticleHomeEntertainment {
         DirectX::SimpleMath::Vector2 _Location;
         DirectX::SimpleMath::Vector2 _Velocity;
         SpriteFacingStateEnum _Facing;
-        SpriteMovementStateEnum _State;
+        SpriteAnimationStateEnum _AnimationState;
+        SpriteSpecialStateEnum _SpecialState;
 
         explicit Sprite();
 
         ~Sprite();
 
         void Animate(const double& elapsedSeconds);
+
+        void GetTexture(ID3D11ShaderResourceView* ponyTexture, RECT& sourceRectangle, DirectX::SpriteEffects& transform);
 
         void ResetTiles();
     };

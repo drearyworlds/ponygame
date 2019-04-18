@@ -3,27 +3,31 @@
 
 using namespace ParticleHomeEntertainment;
 
-Pony::Pony() {
-}
+Pony::Pony() {}
 
-Pony::~Pony() {
-}
+Pony::~Pony() {}
 
 void Pony::UpdateState(const DirectX::Keyboard::State keyboardState) {
     bool facingChanged = false;
+    auto projectedLocation = _Location;
+    auto projectedVelocity = _Velocity;
 
-    // Handle Animation State
-    if (keyboardState.Space) {
-        if (_State != SpriteMovementStateEnum::JUMPING) {
-            // Give sprite some velocity
-            _Velocity.y = PONY_JUMP_Y_VELOCITY;
+    // If she is on the ground
+    if (_SpecialState == SpriteSpecialStateEnum::ON_GROUND) {
+        if (keyboardState.Space) {
+            // Give pony a burst of velocity
+            projectedVelocity.y = PONY_JUMP_Y_VELOCITY;
+
+            // Set her states
+            _AnimationState = SpriteAnimationStateEnum::JUMPING;
+            _SpecialState = SpriteSpecialStateEnum::IN_AIR;
+        } else if (keyboardState.Left || keyboardState.Right) {
+            _AnimationState = SpriteAnimationStateEnum::RUNNING;
+        } else {
+            _AnimationState = SpriteAnimationStateEnum::IDLE;
         }
-
-        _State = SpriteMovementStateEnum::JUMPING;
-    } else if (keyboardState.Left || keyboardState.Right) {
-        _State = SpriteMovementStateEnum::RUNNING;
     } else {
-        _State = SpriteMovementStateEnum::IDLE;
+        // Keep existing state while in the air
     }
 
     // Handle X-Axis movement
@@ -32,32 +36,38 @@ void Pony::UpdateState(const DirectX::Keyboard::State keyboardState) {
         _Facing = SpriteFacingStateEnum::LEFT;
 
         if (!facingChanged) {
-            _Location.x -= PONY_X_SPEED_PX;
+            projectedLocation.x -= PONY_X_SPEED_PX;
         }
     } else if (keyboardState.Right) {
         facingChanged = (_Facing == SpriteFacingStateEnum::LEFT);
         _Facing = SpriteFacingStateEnum::RIGHT;
 
         if (!facingChanged) {
-            _Location.x += PONY_X_SPEED_PX;
+            projectedLocation.x += PONY_X_SPEED_PX;
         }
     }
 
     // Adjust sprite Y-velocity for gravity
-    _Velocity.y += GRAVITY;
+    projectedVelocity.y += GRAVITY;
 
     // Apply velocity 
-    _Location.x += _Velocity.x;
-    _Location.y += _Velocity.y;
+    projectedLocation.x += projectedVelocity.x;
+    projectedLocation.y += projectedVelocity.y;
 
     // But don't let her go below the grass
-    if (_Location.y > (7 * SPRITE_SIZE_HEIGHT_PX)) {
-        _Location.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+    if (projectedLocation.y > (7 * SPRITE_SIZE_HEIGHT_PX)) {
+        projectedLocation.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+        projectedVelocity.y = 0;
+        _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
     }
 
-    if (_Location.x < 0) {
-        _Location.x = 0;
-    } else if (_Location.x > SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX) {
-        _Location.x = SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX;
+    if (projectedLocation.x < 0) {
+        projectedLocation.x = 0;
+    } else if (projectedLocation.x > SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX) {
+        projectedLocation.x = SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX;
+        projectedVelocity.x = 0;
     }
+
+    _Location = projectedLocation;
+    _Velocity = projectedVelocity;
 }

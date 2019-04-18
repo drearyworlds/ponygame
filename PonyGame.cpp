@@ -155,48 +155,52 @@ void PonyGame::DrawPony() {
 
     _SpriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, states.NonPremultiplied());
 
-    RECT sourceRect = {};
     uint32_t frameWidth;
     ID3D11ShaderResourceView* ponyTexture = nullptr;
+    RECT sourceRectangle;
+    DirectX::SpriteEffects ponyTransform;
 
-    if (_Pony._State == SpriteMovementStateEnum::JUMPING) {
+    _Pony.GetTexture(ponyTexture, sourceRectangle, ponyTransform);
+    if (_Pony._AnimationState == SpriteAnimationStateEnum::JUMPING) {
         frameWidth = _Pony._JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRect.top = 0;
-        sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_Pony._JumpingSpriteSheetHeight);
+        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
+        sourceRectangle.top = 0;
+        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
+        sourceRectangle.bottom = static_cast<int32_t>(_Pony._JumpingSpriteSheetHeight);
         ponyTexture = _Pony._JumpingTile.Get();
-    } else if (_Pony._State == SpriteMovementStateEnum::RUNNING) {
+    } else if (_Pony._AnimationState == SpriteAnimationStateEnum::RUNNING) {
         frameWidth = _Pony._RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRect.top = 0;
-        sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_Pony._RunningSpriteSheetHeight);
+        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
+        sourceRectangle.top = 0;
+        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
+        sourceRectangle.bottom = static_cast<int32_t>(_Pony._RunningSpriteSheetHeight);
         ponyTexture = _Pony._RunningTile.Get();
     } else {
         frameWidth = _Pony._IdleSpriteSheetWidth / PONY_IDLE_FRAMES;
-        sourceRect.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRect.top = 0;
-        sourceRect.right = static_cast<int32_t>(sourceRect.left + frameWidth);
-        sourceRect.bottom = static_cast<int32_t>(_Pony._IdleSpriteSheetHeight);
+        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
+        sourceRectangle.top = 0;
+        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
+        sourceRectangle.bottom = static_cast<int32_t>(_Pony._IdleSpriteSheetHeight);
         ponyTexture = _Pony._IdleTile.Get();
     }
 
     if (ponyTexture != nullptr) {
         const float ROTATION = 0.f;
         const float SCALE = 1.f;
-        const DirectX::SpriteEffects PONY_TRANSFORM = (_Pony._Facing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
         const float LAYER_DEPTH = 0.f;
         _SpriteBatch->Draw(ponyTexture,
             _Pony._Location,
-            &sourceRect,
+            &sourceRectangle,
             Colors::White,
             ROTATION,
             _OriginLocation,
             SCALE,
-            PONY_TRANSFORM,
+            ponyTransform,
             LAYER_DEPTH);
+    } else {
+        // ponyTexture is nullptr
     }
+
     _SpriteBatch->End();
 }
 
@@ -320,7 +324,7 @@ void PonyGame::CreateDevice() {
     _BackgroundSpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
 
     // Background Resources
-    DX::ThrowIfFailed(CreateWICTextureFromFile(_D3dDevice.Get(), L"assets/grass_tile.png",
+    DX::ThrowIfFailed(CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
         nullptr, _GrassTile.ReleaseAndGetAddressOf()));
 
     // Pony Idle Resources
