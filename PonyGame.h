@@ -2,6 +2,7 @@
 
 #include "Pony.h"
 #include "StepTimer.h"
+#include "LevelScreen.h"
 #include <nowarn/SimpleMath.h>
 #include <nowarn/SpriteBatch.h>
 #include <nowarn/Keyboard.h>
@@ -64,6 +65,7 @@ namespace ParticleHomeEntertainment {
 
         GameStateEnum _GameState = TITLE_SCREEN;
         uint32_t _CurrentLevel;
+        LevelScreen _CurrentLevelScreen;
 
         // Other
         DirectX::SimpleMath::Vector2 _OriginLocation;

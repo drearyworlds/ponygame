@@ -206,6 +206,7 @@
     <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wrl\client.h" />
     <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\ws2tcpip.h" />
     <ClInclude Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\wtypes.h" />
+    <ClInclude Include="BackgroundTile.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="LevelScreen.h" />
     <ClInclude Include="Pony.h" />
