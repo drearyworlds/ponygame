@@ -59,6 +59,8 @@ namespace ParticleHomeEntertainment {
 
         // Background tiles
         BackgroundTile _GrassTile;
+        BackgroundTile _SkyTileNw, _SkyTileNe, _SkyTileSw, _SkyTileSe;
+        BackgroundTile _MoonTileNw, _MoonTileNe, _MoonTileSw, _MoonTileSe;
         std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
         LevelScreen _CurrentScreen;
 
@@ -70,7 +72,7 @@ namespace ParticleHomeEntertainment {
         LevelScreen _CurrentLevelScreen;
 
         // Other
-        DirectX::SimpleMath::Vector2 _OriginLocation;
+        DirectX::SimpleMath::Vector2 _OriginLocationPx;
 
         Pony _Pony;
         Sprite _ZombiePony;

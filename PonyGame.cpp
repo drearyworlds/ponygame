@@ -57,14 +57,14 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 void PonyGame::LoadLevel(uint32_t level) {
     if (level == 1) {
         _CurrentScreen._Tiles = {
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _SkyTileNw, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe,
+        _SkyTileSw, _SkyTileSe, _SkyTileSw, _MoonTileSw, _MoonTileSe, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe,
+        _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe,
+        _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe,
+        _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe,
+        _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe,
+        _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe,
+        _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe,
         _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile
         };
     }
@@ -81,6 +81,8 @@ void PonyGame::Tick() {
     }
 
     _Pony.UpdateStates(_Keyboard.GetState(), _KeyboardTracker);
+
+    // TODO: Handle collisions
 
     // Update the game world
     _Timer.Tick([=]() {
@@ -144,44 +146,23 @@ void PonyGame::DrawBackground() {
     const float SCALE = 1.f;
     const float LAYER_DEPTH = 0.f;
 
-    // TODO: Iterate over 2D CurrentScreen array, drawing each tile
-    for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
-        for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+    for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+        for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
             tileLocation.x = SPRITE_WIDTH_PX * static_cast<float>(x);
             tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
-
-            _BackgroundSpriteBatch->Draw(_CurrentScreen._Tiles.at(static_cast<uint64_t>(x) * static_cast<uint64_t>(y))._Tile.Get(),
+            _BackgroundSpriteBatch->Draw(_CurrentScreen._Tiles.at(
+                SCREEN_WIDTH_TILES * static_cast<uint64_t>(y) + static_cast<uint64_t>(x)
+            )._Tile.Get(),
                 tileLocation,
                 &tileRectangle,
                 Colors::White,
                 ROTATION,
-                _OriginLocation,
+                _OriginLocationPx,
                 SCALE,
                 DirectX::SpriteEffects_None,
                 LAYER_DEPTH);
         }
     }
-    /*
-    // TODO: Remove after current level tile map is finished
-    tileLocation.x = 0;
-    tileLocation.y = (SCREEN_HEIGHT_TILES - 1) * SPRITE_HEIGHT_PX;
-
-    // TODO: Remove after current level tile map is finished
-    tileRectangle.left = 0;
-    tileRectangle.top = 0;
-    tileRectangle.right = SCREEN_WIDTH_TILES * SPRITE_WIDTH_PX;
-    tileRectangle.bottom = SPRITE_HEIGHT_PX;
-
-    _BackgroundSpriteBatch->Draw(currentTile.Get(),
-        tileLocation,
-        &tileRectangle,
-        Colors::White,
-        ROTATION,
-        _OriginLocation,
-        SCALE,
-        DirectX::SpriteEffects_None,
-        LAYER_DEPTH);
-    */
 
     _BackgroundSpriteBatch->End();
 }
@@ -238,7 +219,7 @@ void PonyGame::DrawPony() {
             &sourceRectangle,
             Colors::White,
             ROTATION,
-            _OriginLocation,
+            _OriginLocationPx,
             SCALE,
             ponyTransform,
             LAYER_DEPTH);
@@ -371,8 +352,48 @@ void PonyGame::CreateDevice() {
     // Background Tiles
     _GrassTile._Interactive = BackgroundTile::InteractiveEnum::Solid;
     _GrassTile._TileStyle = BackgroundTile::TileStyleEnum::Grass;
-    DX::ThrowIfFailed(CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
         nullptr, _GrassTile._Tile.ReleaseAndGetAddressOf()));
+
+    _SkyTileNw._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _SkyTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNW,
+        nullptr, _SkyTileNw._Tile.ReleaseAndGetAddressOf()));
+
+    _SkyTileNe._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _SkyTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNE,
+        nullptr, _SkyTileNe._Tile.ReleaseAndGetAddressOf()));
+
+    _SkyTileSw._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _SkyTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSW,
+        nullptr, _SkyTileSw._Tile.ReleaseAndGetAddressOf()));
+
+    _SkyTileSe._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _SkyTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSE,
+        nullptr, _SkyTileSe._Tile.ReleaseAndGetAddressOf()));
+
+    _MoonTileNw._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _MoonTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNW,
+        nullptr, _MoonTileNw._Tile.ReleaseAndGetAddressOf()));
+
+    _MoonTileNe._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _MoonTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNE,
+        nullptr, _MoonTileNe._Tile.ReleaseAndGetAddressOf()));
+
+    _MoonTileSw._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _MoonTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSW,
+        nullptr, _MoonTileSw._Tile.ReleaseAndGetAddressOf()));
+
+    _MoonTileSe._Interactive = BackgroundTile::InteractiveEnum::Empty;
+    _MoonTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSE,
+        nullptr, _MoonTileSe._Tile.ReleaseAndGetAddressOf()));
 
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
@@ -424,8 +445,8 @@ void PonyGame::CreateDevice() {
 
     LoadLevel(_CurrentLevel);
 
-    _OriginLocation.x = static_cast<float>(0);
-    _OriginLocation.y = static_cast<float>(0);
+    _OriginLocationPx.x = static_cast<float>(0);
+    _OriginLocationPx.y = static_cast<float>(0);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
