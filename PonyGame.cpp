@@ -55,6 +55,9 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 }
 
 void PonyGame::LoadLevel(uint32_t level) {
+
+    //TODO: Move this into a text file
+    //TODO: Draw maps in layers. e.g. empty sky files, then star tiles, then foreground interactive layer
     if (level == 1) {
         _CurrentScreen._Tiles = {
         _SkyTileNw, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe,
