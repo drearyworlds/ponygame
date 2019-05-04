@@ -54,17 +54,19 @@ void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const Dir
     projectedLocation.x += projectedVelocity.x;
     projectedLocation.y += projectedVelocity.y;
 
+    // TODO: Below is temporary until background tile collision detection is implemented...
+    
     // But don't let her go below the grass
-    if (projectedLocation.y > (7 * SPRITE_SIZE_HEIGHT_PX)) {
-        projectedLocation.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+    if (projectedLocation.y > (7 * SPRITE_HEIGHT_PX)) {
+        projectedLocation.y = 7 * SPRITE_HEIGHT_PX;
         projectedVelocity.y = 0;
         _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
     }
 
     if (projectedLocation.x < 0) {
         projectedLocation.x = 0;
-    } else if (projectedLocation.x > SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX) {
-        projectedLocation.x = SCREEN_WIDTH_PX - SPRITE_SIZE_WIDTH_PX;
+    } else if (projectedLocation.x > SCREEN_WIDTH_PX - SPRITE_WIDTH_PX) {
+        projectedLocation.x = SCREEN_WIDTH_PX - SPRITE_WIDTH_PX;
         projectedVelocity.x = 0;
     }
 

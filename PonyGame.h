@@ -26,6 +26,8 @@ namespace ParticleHomeEntertainment {
         // Initialization and management
         void Initialize(HWND window, int width, int height);
 
+        void LoadLevel(uint32_t level);
+
         // Basic game loop
         void Tick();
 
@@ -56,9 +58,9 @@ namespace ParticleHomeEntertainment {
         DX::StepTimer _Timer;
 
         // Background tiles
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _GrassTile;
+        BackgroundTile _GrassTile;
         std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
-        DirectX::SimpleMath::Vector2 _GrassLocation = {};
+        LevelScreen _CurrentScreen;
 
         // Sprites
         std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;

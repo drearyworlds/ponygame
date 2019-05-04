@@ -1,11 +1,12 @@
 #pragma once
 
 #include "BackgroundTile.h"
+#include "Constants.h"
 #include <vector>
 
 namespace ParticleHomeEntertainment {
     class LevelScreen {
-    private:
-        std::vector<std::vector<BackgroundTile>> _Tiles;
+    public:
+        std::vector<BackgroundTile> _Tiles;
     };
 }

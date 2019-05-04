@@ -54,6 +54,22 @@ void PonyGame::Initialize(HWND window, int width, int height) {
     _Timer.SetTargetElapsedSeconds(1.0 / SECONDS_PER_MINUTE);
 }
 
+void PonyGame::LoadLevel(uint32_t level) {
+    if (level == 1) {
+        _CurrentScreen._Tiles = {
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile
+        };
+    }
+}
+
 // Executes the basic game loop.
 void PonyGame::Tick() {
     // Poll and save the current key/button states
@@ -90,6 +106,10 @@ void PonyGame::RenderScene() {
 
         DrawBackground();
 
+        DrawObstacles();
+
+        DrawEnemies();
+
         DrawPony();
 
         Present();
@@ -113,21 +133,47 @@ void PonyGame::DrawBackground() {
 
     _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, states.LinearWrap());
 
+    DirectX::SimpleMath::Vector2 tileLocation = {};
+    RECT tileRectangle {};
+    tileRectangle.left = 0;
+    tileRectangle.top = 0;
+    tileRectangle.right = SPRITE_WIDTH_PX;
+    tileRectangle.bottom = SPRITE_HEIGHT_PX;
+
     const float ROTATION = 0.f;
     const float SCALE = 1.f;
     const float LAYER_DEPTH = 0.f;
 
-    _GrassLocation.x = 0;
-    _GrassLocation.y = (SCREEN_HEIGHT_TILES - 1) * SPRITE_SIZE_HEIGHT_PX;
+    // TODO: Iterate over 2D CurrentScreen array, drawing each tile
+    for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
+        for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+            tileLocation.x = SPRITE_WIDTH_PX * static_cast<float>(x);
+            tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
 
-    RECT tileRectangle{};
+            _BackgroundSpriteBatch->Draw(_CurrentScreen._Tiles.at(static_cast<uint64_t>(x) * static_cast<uint64_t>(y))._Tile.Get(),
+                tileLocation,
+                &tileRectangle,
+                Colors::White,
+                ROTATION,
+                _OriginLocation,
+                SCALE,
+                DirectX::SpriteEffects_None,
+                LAYER_DEPTH);
+        }
+    }
+    /*
+    // TODO: Remove after current level tile map is finished
+    tileLocation.x = 0;
+    tileLocation.y = (SCREEN_HEIGHT_TILES - 1) * SPRITE_HEIGHT_PX;
+
+    // TODO: Remove after current level tile map is finished
     tileRectangle.left = 0;
     tileRectangle.top = 0;
-    tileRectangle.right = SCREEN_WIDTH_TILES * SPRITE_SIZE_WIDTH_PX;
-    tileRectangle.bottom = SPRITE_SIZE_HEIGHT_PX;
+    tileRectangle.right = SCREEN_WIDTH_TILES * SPRITE_WIDTH_PX;
+    tileRectangle.bottom = SPRITE_HEIGHT_PX;
 
-    _BackgroundSpriteBatch->Draw(_GrassTile.Get(),
-        _GrassLocation,
+    _BackgroundSpriteBatch->Draw(currentTile.Get(),
+        tileLocation,
         &tileRectangle,
         Colors::White,
         ROTATION,
@@ -135,6 +181,7 @@ void PonyGame::DrawBackground() {
         SCALE,
         DirectX::SpriteEffects_None,
         LAYER_DEPTH);
+    */
 
     _BackgroundSpriteBatch->End();
 }
@@ -260,7 +307,7 @@ void PonyGame::CreateDevice() {
     //creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-    static const D3D_FEATURE_LEVEL featureLevels[]{
+    static const D3D_FEATURE_LEVEL featureLevels[] {
         // TODO: Modify for supported Direct3D feature levels
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,
@@ -321,9 +368,11 @@ void PonyGame::CreateDevice() {
     _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
     _BackgroundSpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
 
-    // Background Resources
+    // Background Tiles
+    _GrassTile._Interactive = BackgroundTile::InteractiveEnum::Solid;
+    _GrassTile._TileStyle = BackgroundTile::TileStyleEnum::Grass;
     DX::ThrowIfFailed(CreateWICTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
-        nullptr, _GrassTile.ReleaseAndGetAddressOf()));
+        nullptr, _GrassTile._Tile.ReleaseAndGetAddressOf()));
 
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
@@ -372,6 +421,8 @@ void PonyGame::CreateDevice() {
     // Get total sprite sheet size
     _Pony._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
     _Pony._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
+
+    LoadLevel(_CurrentLevel);
 
     _OriginLocation.x = static_cast<float>(0);
     _OriginLocation.y = static_cast<float>(0);

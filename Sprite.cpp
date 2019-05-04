@@ -18,7 +18,7 @@ Sprite::Sprite() {
 
     // Initialize sprite location
     _Location.x = 0;
-    _Location.y = 7 * SPRITE_SIZE_HEIGHT_PX;
+    _Location.y = 7 * SPRITE_HEIGHT_PX;
 
     // Initialize sprite velocity
     _Velocity.x = 0;
