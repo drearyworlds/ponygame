@@ -153,7 +153,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BackgroundTile.cpp" />
     <ClCompile Include="LevelScreen.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pony.cpp" />
