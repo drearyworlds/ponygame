@@ -5,10 +5,12 @@
 #include <nowarn/stdint.h>
 #include <nowarn/wrl/client.h>
 #include <nowarn/SpriteBatch.h>
+#include <nowarn/vector>
+#include "LevelScreen.h"
 
 namespace ParticleHomeEntertainment {
     enum SpriteFacingStateEnum {
-        LEFT, RIGHT
+        FACING_LEFT, FACING_RIGHT
     };
 
     enum SpriteAnimationStateEnum {
@@ -17,6 +19,10 @@ namespace ParticleHomeEntertainment {
 
     enum SpriteSpecialStateEnum {
         ON_GROUND, IN_AIR
+    };
+
+    enum SpriteCollisionResultEnum {
+        COLLISION_NONE, COLLISION_TOP, COLLISION_BOTTOM, COLLISION_LEFT, COLLISION_RIGHT
     };
 
     class Sprite {
@@ -49,5 +55,9 @@ namespace ParticleHomeEntertainment {
         void GetTexture(ID3D11ShaderResourceView* ponyTexture, RECT& sourceRectangle, DirectX::SpriteEffects& transform);
 
         void ResetTiles();
+
+        bool DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResultEnum& collisionResult);
+
+        SpriteCollisionResultEnum GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen);
     };
 }

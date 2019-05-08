@@ -12,12 +12,12 @@
 #include <memory>
 
 namespace ParticleHomeEntertainment {
+    enum GameStateEnum {
+        TITLE_SCREEN, IN_LEVEL, PAUSED, CREDITS
+    };
+
     class PonyGame {
     public:
-        enum GameStateEnum {
-            TITLE_SCREEN, IN_LEVEL, PAUSED, CREDITS
-        };
-
         PonyGame() noexcept;
 
         PonyGame(PonyGame& copy) = delete;

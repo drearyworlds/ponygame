@@ -1,5 +1,6 @@
 #include "Sprite.h"
 #include "Constants.h"
+#include "BackgroundTile.h"
 
 using namespace ParticleHomeEntertainment;
 
@@ -12,13 +13,13 @@ Sprite::Sprite() {
     _JumpingSpriteSheetWidth = 0;
     _JumpingSpriteSheetHeight = 0;
     _TotalElapsedSec = 0.f;
-    _Facing = SpriteFacingStateEnum::RIGHT;
+    _Facing = SpriteFacingStateEnum::FACING_RIGHT;
     _AnimationState = SpriteAnimationStateEnum::IDLE;
     _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
 
     // Initialize sprite location
-    _Location.x = 0;
-    _Location.y = 7 * SPRITE_HEIGHT_PX;
+    _Location.x = 2 * SPRITE_WIDTH_PX;
+    _Location.y = 6 * SPRITE_HEIGHT_PX;
 
     // Initialize sprite velocity
     _Velocity.x = 0;
@@ -81,7 +82,52 @@ void Sprite::GetTexture(ID3D11ShaderResourceView* texture, RECT& sourceRectangle
         texture = _IdleTile.Get();
     }
 
-    transform = (_Facing == RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+    transform = (_Facing == SpriteFacingStateEnum::FACING_RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+}
+
+bool Sprite::DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResultEnum& collisionResult) {
+    collisionResult = SpriteCollisionResultEnum::COLLISION_NONE;
+
+    RECT dest;
+    if (IntersectRect(&dest, &subjectRect, &objectRect)) {
+        const float topCollision = static_cast<float>(objectRect.bottom - subjectRect.top);
+        const float bottomCollision = static_cast<float>(subjectRect.bottom - objectRect.top);
+        const float leftCollision = static_cast<float>(objectRect.right - subjectRect.left);
+        const float rightCollision = static_cast<float>(subjectRect.right - objectRect.left);
+
+        if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+            collisionResult = COLLISION_TOP;
+        } else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+            collisionResult = COLLISION_BOTTOM;
+        } else if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
+            collisionResult = COLLISION_LEFT;
+        } else if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
+            collisionResult = COLLISION_RIGHT;
+        }
+    }
+
+    return (collisionResult != COLLISION_NONE);
+}
+
+SpriteCollisionResultEnum Sprite::GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen) {
+    SpriteCollisionResultEnum collisionResult = SpriteCollisionResultEnum::COLLISION_NONE;
+
+    RECT subjectRect;
+    subjectRect.top = static_cast<long>(subjectLocation.y);
+    subjectRect.bottom = static_cast<long>(subjectLocation.y + SPRITE_HEIGHT_PX);
+    subjectRect.left = static_cast<long>(subjectLocation.x);
+    subjectRect.right = static_cast<long>(subjectLocation.x + SPRITE_WIDTH_PX);
+
+    for (size_t index = 0; index < screen._Tiles.size(); index++) {
+        BackgroundTile tile = screen._Tiles.at(index);
+        if (tile._Interactive == BackgroundTile::TileInteractiveEnum::Solid) {
+            if (DetectCollision(subjectRect, screen.GetTileRect(index), collisionResult)) {
+                break;
+            }
+        }
+    }
+
+    return collisionResult;
 }
 
 void Sprite::ResetTiles() {

@@ -1,16 +1,21 @@
 #pragma once
 
-class BackgroundTile {
-public:
-    enum TileStyleEnum {
-        Grass, Sky, Bush, TreeTrunk, TreeLeaves, Cloud
-    };
+#include <nowarn/wrl/client.h>
+#include <nowarn/d3d11_1.h>
 
-    enum InteractiveEnum {
-        Solid, Empty
-    };
+namespace ParticleHomeEntertainment {
+    class BackgroundTile {
+    public:
+        enum TileStyleEnum {
+            Grass, Sky, Bush, TreeTrunk, TreeLeaves, Cloud
+        };
 
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _Tile;
-    TileStyleEnum _TileStyle = Grass;
-    InteractiveEnum _Interactive = Solid;
-};
+        enum TileInteractiveEnum {
+            Solid, Empty
+        };
+
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _Tile;
+        TileStyleEnum _TileStyle = Grass;
+        TileInteractiveEnum _Interactive = Solid;
+    };
+}

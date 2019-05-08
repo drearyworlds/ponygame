@@ -1,13 +1,14 @@
 #include "Pony.h"
 #include "Constants.h"
+#include "PonyGame.h"
 
 using namespace ParticleHomeEntertainment;
 
-Pony::Pony() {}
+Pony::Pony() { }
 
-Pony::~Pony() {}
+Pony::~Pony() { }
 
-void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) {
+void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker, const LevelScreen& screen) {
     bool facingChanged = false;
     auto projectedLocation = _Location;
     auto projectedVelocity = _Velocity;
@@ -32,15 +33,15 @@ void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const Dir
 
     // Handle X-Axis movement
     if (keyboardState.Left) {
-        facingChanged = (_Facing == SpriteFacingStateEnum::RIGHT);
-        _Facing = SpriteFacingStateEnum::LEFT;
+        facingChanged = (_Facing == SpriteFacingStateEnum::FACING_RIGHT);
+        _Facing = SpriteFacingStateEnum::FACING_LEFT;
 
         if (!facingChanged) {
             projectedLocation.x -= PONY_X_SPEED_PX;
         }
     } else if (keyboardState.Right) {
-        facingChanged = (_Facing == SpriteFacingStateEnum::LEFT);
-        _Facing = SpriteFacingStateEnum::RIGHT;
+        facingChanged = (_Facing == SpriteFacingStateEnum::FACING_LEFT);
+        _Facing = SpriteFacingStateEnum::FACING_RIGHT;
 
         if (!facingChanged) {
             projectedLocation.x += PONY_X_SPEED_PX;
@@ -54,19 +55,23 @@ void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const Dir
     projectedLocation.x += projectedVelocity.x;
     projectedLocation.y += projectedVelocity.y;
 
-    // TODO: Below is temporary until background tile collision detection is implemented...
-    
+    SpriteCollisionResultEnum collisionResult = GetCollisions(projectedLocation, screen);
+
     // But don't let her go below the grass
-    if (projectedLocation.y > (7 * SPRITE_HEIGHT_PX)) {
-        projectedLocation.y = 7 * SPRITE_HEIGHT_PX;
+    if (collisionResult == COLLISION_BOTTOM) {
+        projectedLocation.y = _Location.y;
         projectedVelocity.y = 0;
         _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
+    } else if (collisionResult == COLLISION_TOP) {
+        projectedLocation.y = _Location.y;
+        projectedVelocity.y = 0;
     }
 
-    if (projectedLocation.x < 0) {
+    if (collisionResult == COLLISION_LEFT) {
+        projectedLocation.x = _Location.x;
         projectedLocation.x = 0;
-    } else if (projectedLocation.x > SCREEN_WIDTH_PX - SPRITE_WIDTH_PX) {
-        projectedLocation.x = SCREEN_WIDTH_PX - SPRITE_WIDTH_PX;
+    } else if (collisionResult == COLLISION_RIGHT) {
+         projectedLocation.x = _Location.x;
         projectedVelocity.x = 0;
     }
 
