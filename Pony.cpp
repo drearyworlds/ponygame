@@ -55,23 +55,27 @@ void Pony::UpdateStates(const DirectX::Keyboard::State& keyboardState, const Dir
     projectedLocation.x += projectedVelocity.x;
     projectedLocation.y += projectedVelocity.y;
 
-    SpriteCollisionResultEnum collisionResult = GetCollisions(projectedLocation, screen);
+    SpriteCollisionResult collisionResult = GetCollisions(projectedLocation, screen);
 
     // But don't let her go below the grass
-    if (collisionResult == COLLISION_BOTTOM) {
+    if (collisionResult._Bottom) {
         projectedLocation.y = _Location.y;
         projectedVelocity.y = 0;
         _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
-    } else if (collisionResult == COLLISION_TOP) {
+    }
+    
+    if (collisionResult._Top) {
         projectedLocation.y = _Location.y;
         projectedVelocity.y = 0;
     }
 
-    if (collisionResult == COLLISION_LEFT) {
+    if (collisionResult._Left) {
         projectedLocation.x = _Location.x;
-        projectedLocation.x = 0;
-    } else if (collisionResult == COLLISION_RIGHT) {
-         projectedLocation.x = _Location.x;
+        projectedVelocity.x = 0;
+    }
+    
+    if (collisionResult._Right) {
+        projectedLocation.x = _Location.x;
         projectedVelocity.x = 0;
     }
 

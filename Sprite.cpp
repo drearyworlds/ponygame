@@ -85,32 +85,38 @@ void Sprite::GetTexture(ID3D11ShaderResourceView* texture, RECT& sourceRectangle
     transform = (_Facing == SpriteFacingStateEnum::FACING_RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
 }
 
-bool Sprite::DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResultEnum& collisionResult) {
-    collisionResult = SpriteCollisionResultEnum::COLLISION_NONE;
-
+bool Sprite::DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResult& collisionResult) {
     RECT dest;
-    if (IntersectRect(&dest, &subjectRect, &objectRect)) {
+    bool collisionDetected = IntersectRect(&dest, &subjectRect, &objectRect);
+
+    if (collisionDetected) {
         const float topCollision = static_cast<float>(objectRect.bottom - subjectRect.top);
         const float bottomCollision = static_cast<float>(subjectRect.bottom - objectRect.top);
         const float leftCollision = static_cast<float>(objectRect.right - subjectRect.left);
         const float rightCollision = static_cast<float>(subjectRect.right - objectRect.left);
 
         if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
-            collisionResult = COLLISION_TOP;
-        } else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
-            collisionResult = COLLISION_BOTTOM;
-        } else if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
-            collisionResult = COLLISION_LEFT;
-        } else if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
-            collisionResult = COLLISION_RIGHT;
+            collisionResult._Top = true;
+        }
+
+        if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+            collisionResult._Bottom = true;
+        }
+
+        if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
+            collisionResult._Left = true;
+        }
+
+        if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
+            collisionResult._Right = true;
         }
     }
 
-    return (collisionResult != COLLISION_NONE);
+    return collisionDetected;
 }
 
-SpriteCollisionResultEnum Sprite::GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen) {
-    SpriteCollisionResultEnum collisionResult = SpriteCollisionResultEnum::COLLISION_NONE;
+SpriteCollisionResult Sprite::GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen) {
+    SpriteCollisionResult collisionResult;
 
     RECT subjectRect;
     subjectRect.top = static_cast<long>(subjectLocation.y);
@@ -121,8 +127,10 @@ SpriteCollisionResultEnum Sprite::GetCollisions(const DirectX::SimpleMath::Vecto
     for (size_t index = 0; index < screen._Tiles.size(); index++) {
         BackgroundTile tile = screen._Tiles.at(index);
         if (tile._Interactive == BackgroundTile::TileInteractiveEnum::Solid) {
-            if (DetectCollision(subjectRect, screen.GetTileRect(index), collisionResult)) {
-                break;
+            // Only detect collisions if we haven't already detected all four directions
+            if (!(collisionResult._Top && collisionResult._Bottom
+                && collisionResult._Left && collisionResult._Right)) {
+                DetectCollision(subjectRect, screen.GetTileRect(index), collisionResult);
             }
         }
     }

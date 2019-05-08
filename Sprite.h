@@ -21,8 +21,11 @@ namespace ParticleHomeEntertainment {
         ON_GROUND, IN_AIR
     };
 
-    enum SpriteCollisionResultEnum {
-        COLLISION_NONE, COLLISION_TOP, COLLISION_BOTTOM, COLLISION_LEFT, COLLISION_RIGHT
+    struct SpriteCollisionResult {
+        bool _Top = false;
+        bool _Bottom = false;
+        bool _Left = false;
+        bool _Right = false;
     };
 
     class Sprite {
@@ -54,10 +57,10 @@ namespace ParticleHomeEntertainment {
 
         void GetTexture(ID3D11ShaderResourceView* ponyTexture, RECT& sourceRectangle, DirectX::SpriteEffects& transform);
 
+        bool DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResult& collisionResult);
+
+        SpriteCollisionResult GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen);
+
         void ResetTiles();
-
-        bool DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResultEnum& collisionResult);
-
-        SpriteCollisionResultEnum GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen);
     };
 }
