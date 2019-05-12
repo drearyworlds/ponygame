@@ -2,16 +2,21 @@
 
 using namespace ParticleHomeEntertainment;
 
-BackgroundTile LevelScreen::GetTile(const float x, const float y) const {
-    auto tileIndex = SCREEN_WIDTH_TILES * static_cast<uint64_t>(y) + static_cast<uint64_t>(x);
+size_t LevelScreen::GetTileIndex(const float x, const float y) const {
+    size_t tileIndex = static_cast<size_t>(SCREEN_WIDTH_TILES * static_cast<size_t>(y) + static_cast<size_t>(x));
     if (tileIndex > _Tiles.size()) {
         tileIndex = _Tiles.size() - 1;
     }
-    return _Tiles.at(tileIndex);
+
+    return tileIndex;
 }
 
-RECT LevelScreen::GetTileRect(const long& index) const {
-    auto div = std::div(index, SCREEN_WIDTH_TILES);
+BackgroundTile LevelScreen::GetTile(const float x, const float y) const {
+    return _Tiles.at(GetTileIndex(x, y));
+}
+
+RECT LevelScreen::GetTileRect(const size_t index) const {
+    auto div = std::div(static_cast<long>(index), SCREEN_WIDTH_TILES);
     int64_t x = div.rem;
     int64_t y = div.quot;
 

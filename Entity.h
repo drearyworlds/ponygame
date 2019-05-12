@@ -5,12 +5,8 @@
 
 namespace ParticleHomeEntertainment {
     class Entity : public Sprite {
-    public:
-        explicit Entity(const float startingLocationX, const float startingLocationY);
-
-        virtual ~Entity();
-
-        DirectX::SimpleMath::Vector2 GetLocation() const;
+    private:
+        std::vector<DirectX::SimpleMath::Vector2> _CollisionTileCoordinatesList;
 
     protected:
         DirectX::SimpleMath::Vector2 _Location;
@@ -25,5 +21,14 @@ namespace ParticleHomeEntertainment {
         virtual void UpdateStates() = 0;
 
         bool CollisionWithTile(float x, float y);
+
+    public:
+        explicit Entity(const float startingLocationX, const float startingLocationY);
+
+        virtual ~Entity();
+
+        DirectX::SimpleMath::Vector2 GetLocation() const;
+
+        std::vector<DirectX::SimpleMath::Vector2>& GetCollisionTileCoordinates();
     };
 }

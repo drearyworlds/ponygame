@@ -68,6 +68,8 @@ namespace ParticleHomeEntertainment {
 
         void DrawBackground();
 
+        void DrawHighlightedTiles();
+
         void DrawObstacles();
 
         void DrawEnemies();

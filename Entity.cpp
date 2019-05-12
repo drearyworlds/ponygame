@@ -72,14 +72,23 @@ void Entity::MoveX(int velocity) {
         // Moving right
         float projectedTileX = (_Location.x + velocity + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX;
 
+        DirectX::SimpleMath::Vector2 upperRightCornerCollisionCoordinates(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
+        DirectX::SimpleMath::Vector2 lowerRightCornerCollisionCoordinates(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
+
         // Upper right corner
-        const bool upperRightCornerCollision = CollisionWithTile(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
+        const bool upperRightCornerCollision = CollisionWithTile(upperRightCornerCollisionCoordinates.x, upperRightCornerCollisionCoordinates.y);
         // Lower left corner
-        const bool lowerRightCornerCollision = CollisionWithTile(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
+        const bool lowerRightCornerCollision = CollisionWithTile(lowerRightCornerCollisionCoordinates.x, lowerRightCornerCollisionCoordinates.y);
 
         // Upper right and lower right corners
         if (upperRightCornerCollision || lowerRightCornerCollision) {
             std::wcout<<L"Collision";
+
+            if (upperRightCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(upperRightCornerCollisionCoordinates);
+            }  if (lowerRightCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(lowerRightCornerCollisionCoordinates);
+            }
         } else {
             _Location.x += velocity;
         }
@@ -87,13 +96,22 @@ void Entity::MoveX(int velocity) {
         // Moving left
         float projectedTileX = (_Location.x + velocity) / SPRITE_WIDTH_PX;
 
+        DirectX::SimpleMath::Vector2 upperLeftCornerCollisionCoordinates(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
+        DirectX::SimpleMath::Vector2 lowerLeftCornerCollisionCoordinates(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
+
         // Upper left corner
-        const bool upperLeftCornerCollision = CollisionWithTile(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
+        const bool upperLeftCornerCollision = CollisionWithTile(upperLeftCornerCollisionCoordinates.x, upperLeftCornerCollisionCoordinates.y);
         // Lower left corner
-        const bool lowerLeftCornerCollision = CollisionWithTile(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
+        const bool lowerLeftCornerCollision = CollisionWithTile(lowerLeftCornerCollisionCoordinates.x, lowerLeftCornerCollisionCoordinates.y);
 
         if (upperLeftCornerCollision || lowerLeftCornerCollision) {
             std::wcout<<L"Collision";
+
+            if (upperLeftCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(upperLeftCornerCollisionCoordinates);
+            }  if (lowerLeftCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(lowerLeftCornerCollisionCoordinates);
+            }
         } else {
             _Location.x += velocity;
         }
@@ -105,13 +123,22 @@ void Entity::MoveY(int velocity) {
         // Moving up
         float projectedTileY = (_Location.y + velocity) / SPRITE_HEIGHT_PX;
 
-        // Lower left corner
-        const bool upperLeftCornerCollision = CollisionWithTile(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
-        // Lower right corner
-        const bool upperRightCornerCollision = CollisionWithTile((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
+        DirectX::SimpleMath::Vector2 upperLeftCornerCollisionCoordinates(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
+        DirectX::SimpleMath::Vector2 upperRightCornerCollisionCoordinates((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
+
+        // Upper left corner
+        const bool upperLeftCornerCollision = CollisionWithTile(upperLeftCornerCollisionCoordinates.x, upperLeftCornerCollisionCoordinates.y);
+        // Upper right corner
+        const bool upperRightCornerCollision = CollisionWithTile(upperRightCornerCollisionCoordinates.x, upperRightCornerCollisionCoordinates.y);
 
         if (upperLeftCornerCollision || upperRightCornerCollision) {
             std::wcout<<L"Collision";
+
+            if (upperLeftCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(upperLeftCornerCollisionCoordinates);
+            }  if (upperRightCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(upperRightCornerCollisionCoordinates);
+            }
         } else {
             _Location.y += velocity;
         }
@@ -119,13 +146,22 @@ void Entity::MoveY(int velocity) {
         // Moving down
         float projectedTileY = (_Location.y + velocity + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX;
 
+        DirectX::SimpleMath::Vector2 lowerLeftCornerCollisionCoordinates(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
+        DirectX::SimpleMath::Vector2 lowerRightCornerCollisionCoordinates((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
+
         // Lower left corner
-        const bool lowerLeftCornerCollision = CollisionWithTile(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
+        const bool lowerLeftCornerCollision = CollisionWithTile(lowerLeftCornerCollisionCoordinates.x, lowerLeftCornerCollisionCoordinates.y);
         // Lower right corner
-        const bool lowerRightCornerCollision = CollisionWithTile((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
+        const bool lowerRightCornerCollision = CollisionWithTile(lowerRightCornerCollisionCoordinates.x, lowerRightCornerCollisionCoordinates.y);
 
         if (lowerLeftCornerCollision || lowerRightCornerCollision) {
             std::wcout<<L"Collision";
+
+            if (lowerLeftCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(lowerLeftCornerCollisionCoordinates);
+            }  if (lowerRightCornerCollision) {
+                _CollisionTileCoordinatesList.push_back(lowerRightCornerCollisionCoordinates);
+            }
 
             // Change state to on ground and zero out the velocity
             _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
@@ -136,6 +172,10 @@ void Entity::MoveY(int velocity) {
     }
 }
 
-bool ParticleHomeEntertainment::Entity::CollisionWithTile(float x, float y) {
+bool Entity::CollisionWithTile(float x, float y) {
     return PonyGame::Instance().GetScreen().GetTile(x, y)._TileStyle == BackgroundTile::TileInteractiveEnum::Solid;
+}
+
+std::vector<DirectX::SimpleMath::Vector2>& Entity::GetCollisionTileCoordinates() {
+    return _CollisionTileCoordinatesList;
 }

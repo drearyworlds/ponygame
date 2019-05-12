@@ -91,8 +91,6 @@ void PonyGame::Tick() {
 
     _Pony.UpdateStates();
 
-    // TODO: Handle collisions
-
     // Update the game world
     _Timer.Tick([=]() {
         UpdateGameWorld(_Timer);
@@ -117,6 +115,8 @@ void PonyGame::RenderScene() {
 
         DrawBackground();
 
+        DrawHighlightedTiles();
+
         DrawObstacles();
 
         DrawEnemies();
@@ -140,9 +140,7 @@ void PonyGame::Clear() {
 }
 
 void PonyGame::DrawBackground() {
-    DirectX::CommonStates states(_D3dDevice.Get());
-
-    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, states.LinearWrap());
+    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr);
 
     DirectX::SimpleMath::Vector2 tileLocation = {};
     RECT tileRectangle {};
@@ -172,6 +170,42 @@ void PonyGame::DrawBackground() {
     }
 
     _BackgroundSpriteBatch->End();
+}
+
+void PonyGame::DrawHighlightedTiles() {
+    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr);
+
+    RECT tileRectangle {};
+    tileRectangle.left = 0;
+    tileRectangle.top = 0;
+    tileRectangle.right = SPRITE_WIDTH_PX;
+    tileRectangle.bottom = SPRITE_HEIGHT_PX;
+
+    const float ROTATION = 0.f;
+    const float SCALE = 1.f;
+    const float LAYER_DEPTH = 0.f;
+
+    while (!_Pony.GetCollisionTileCoordinates().empty()) {
+        DirectX::SimpleMath::Vector2 coords = _Pony.GetCollisionTileCoordinates().back();
+
+        auto rect = _CurrentScreen.GetTileRect(_CurrentScreen.GetTileIndex(coords.x, coords.y));
+        DirectX::SimpleMath::Vector2 tileLocation = { static_cast<float>(rect.left),  static_cast<float>(rect.top) };
+
+        _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(coords.x, coords.y)._Tile.Get(),
+            tileLocation,
+            &tileRectangle,
+            Colors::Black,
+            ROTATION,
+            _OriginLocationPx,
+            SCALE,
+            DirectX::SpriteEffects_None,
+            LAYER_DEPTH);
+
+        _Pony.GetCollisionTileCoordinates().pop_back();
+    }
+
+    _BackgroundSpriteBatch->End();
+
 }
 
 void PonyGame::DrawObstacles() {
