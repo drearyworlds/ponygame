@@ -17,31 +17,9 @@ namespace ParticleHomeEntertainment {
     };
 
     class PonyGame {
-    public:
+    private:
         PonyGame() noexcept;
 
-        PonyGame(PonyGame& copy) = delete;
-        PonyGame& operator=(PonyGame& copy) = delete;
-
-        // Initialization and management
-        void Initialize(HWND window, int width, int height);
-
-        void LoadLevel(uint32_t level);
-
-        // Basic game loop
-        void Tick();
-
-        // Messages
-        void OnActivated();
-        void OnDeactivated();
-        void OnSuspending();
-        void OnResuming();
-        void OnWindowSizeChanged(int width, int height);
-
-        // Properties
-        void GetDefaultSize(int& width, int& height) const;
-
-    private:
         // Device resources.
         HWND _Window;
         int _OutputWidth;
@@ -78,7 +56,7 @@ namespace ParticleHomeEntertainment {
         Sprite _ZombiePony;
 
         DirectX::Keyboard _Keyboard;
-        DirectX::Keyboard::KeyboardStateTracker _KeyboardTracker;
+        DirectX::Keyboard::KeyboardStateTracker _KeyboardStateTracker;
         //std::unique_ptr<DirectX::Mouse> _Mouse;
 
         void UpdateGameWorld(const DX::StepTimer& timer);
@@ -102,5 +80,35 @@ namespace ParticleHomeEntertainment {
         void CreateResources();
 
         void OnDeviceLost();
+
+    public:
+        PonyGame(PonyGame& copy) = delete;
+        PonyGame& operator=(PonyGame& copy) = delete;
+
+        static PonyGame& Instance();
+
+        // Initialization and management
+        void Initialize(HWND window, int width, int height);
+
+        void LoadLevel(uint32_t level);
+
+        // Basic game loop
+        void Tick();
+
+        // Messages
+        void OnActivated();
+        void OnDeactivated();
+        void OnSuspending();
+        void OnResuming();
+        void OnWindowSizeChanged(int width, int height);
+
+        // Properties
+        void GetDefaultSize(int& width, int& height) const;
+
+        const LevelScreen& GetScreen() const;
+
+        const DirectX::Keyboard& GetKeyboard() const;
+
+        const DirectX::Keyboard::KeyboardStateTracker& GetKeyboardStateTracker() const;
     };
 }

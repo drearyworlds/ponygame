@@ -54,6 +54,9 @@
     <ClCompile Include="LevelScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PonyGame.h">
@@ -197,6 +200,9 @@
     <ClInclude Include="BackgroundTile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\horse_idle_cycle.png">
@@ -266,6 +272,9 @@
       <Filter>Header Files\nowarn</Filter>
     </None>
     <None Include="..\..\Users\jecraft\source\repos\PonyGame\SharedResources\nowarn\functional">
+      <Filter>Header Files\nowarn</Filter>
+    </None>
+    <None Include="include\nowarn\iostream">
       <Filter>Header Files\nowarn</Filter>
     </None>
   </ItemGroup>

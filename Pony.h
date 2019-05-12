@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Sprite.h"
+#include "Entity.h"
 
 namespace ParticleHomeEntertainment {
-    class Pony : public Sprite {
+    class Pony : public Entity {
     public:
-        explicit Pony();
+        explicit Pony(const float x, const float y);
 
         ~Pony();
 
-        void UpdateStates(const DirectX::Keyboard::State& keyboardState, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker, const LevelScreen& screen);
+        void UpdateStates() override;
     };
 }

@@ -43,8 +43,6 @@ namespace ParticleHomeEntertainment {
         uint32_t _JumpingSpriteSheetHeight;
         double _TotalElapsedSec;
 
-        DirectX::SimpleMath::Vector2 _Location;
-        DirectX::SimpleMath::Vector2 _Velocity;
         SpriteFacingStateEnum _Facing;
         SpriteAnimationStateEnum _AnimationState;
         SpriteSpecialStateEnum _SpecialState;
@@ -56,10 +54,6 @@ namespace ParticleHomeEntertainment {
         void Animate(const double& elapsedSeconds);
 
         void GetTexture(ID3D11ShaderResourceView* ponyTexture, RECT& sourceRectangle, DirectX::SpriteEffects& transform);
-
-        bool DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResult& collisionResult);
-
-        SpriteCollisionResult GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen);
 
         void ResetTiles();
     };

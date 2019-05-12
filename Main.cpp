@@ -46,8 +46,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Create window
     int w, h;
 
-    PonyGame ponyGame;
-    ponyGame.GetDefaultSize(w, h);
+    PonyGame::Instance().GetDefaultSize(w, h);
 
     RECT rc = { 0, 0, static_cast<LONG>(w), static_cast<LONG>(h) };
 
@@ -68,11 +67,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     ShowWindow(hwnd, nCmdShow);
 
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&ponyGame));
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&PonyGame::Instance()));
 
     GetClientRect(hwnd, &rc);
 
-    ponyGame.Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+    PonyGame::Instance().Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
     // Main message loop
     MSG msg = {};
@@ -81,7 +80,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         } else {
-            ponyGame.Tick();
+            PonyGame::Instance().Tick();
         }
     }
 

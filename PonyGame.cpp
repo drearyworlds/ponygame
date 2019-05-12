@@ -24,7 +24,9 @@ namespace DX {
 
 extern void ExitGame();
 
-PonyGame::PonyGame() noexcept {
+PonyGame::PonyGame() noexcept :
+    // Initialize pony location
+    _Pony(static_cast<float>(2 * SPRITE_WIDTH_PX), static_cast<float>(6 * SPRITE_HEIGHT_PX)) {
     _Window = nullptr;
     _OutputWidth = SCREEN_WIDTH_PX;
     _OutputHeight = SCREEN_HEIGHT_PX;
@@ -33,6 +35,11 @@ PonyGame::PonyGame() noexcept {
     // Initialize Game State
     _GameState = TITLE_SCREEN;
     _CurrentLevel = 1;
+}
+
+PonyGame& PonyGame::Instance() {
+    static PonyGame instance;
+    return instance;
 }
 
 // Initialize the Direct3D resources required to run.
@@ -75,14 +82,14 @@ void PonyGame::LoadLevel(uint32_t level) {
 // Executes the basic game loop.
 void PonyGame::Tick() {
     // Poll and save the current key/button states
-    _KeyboardTracker.Update(_Keyboard.GetState());
+    _KeyboardStateTracker.Update(_Keyboard.GetState());
     //auto mouse = _Mouse->GetState();
 
-    if (_KeyboardTracker.IsKeyPressed(Keyboard::Keys::Escape)) {
+    if (_KeyboardStateTracker.IsKeyPressed(Keyboard::Keys::Escape)) {
         ExitGame();
     }
 
-    _Pony.UpdateStates(_Keyboard.GetState(), _KeyboardTracker, _CurrentScreen);
+    _Pony.UpdateStates();
 
     // TODO: Handle collisions
 
@@ -148,10 +155,10 @@ void PonyGame::DrawBackground() {
     const float SCALE = 1.f;
     const float LAYER_DEPTH = 0.f;
 
-    for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
-        for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
-            tileLocation.x = SPRITE_WIDTH_PX * static_cast<float>(x);
-            tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
+    for (float y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+        for (float x = 0; x < SCREEN_WIDTH_TILES; x++) {
+            tileLocation.x = SPRITE_WIDTH_PX * x;
+            tileLocation.y = SPRITE_HEIGHT_PX * y;
             _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(x, y)._Tile.Get(),
                 tileLocation,
                 &tileRectangle,
@@ -215,7 +222,7 @@ void PonyGame::DrawPony() {
         const float SCALE = 1.f;
         const float LAYER_DEPTH = 0.f;
         _SpriteBatch->Draw(ponyTexture,
-            _Pony._Location,
+            _Pony.GetLocation(),
             &sourceRectangle,
             Colors::White,
             ROTATION,
@@ -228,6 +235,18 @@ void PonyGame::DrawPony() {
     }
 
     _SpriteBatch->End();
+}
+
+const LevelScreen& PonyGame::GetScreen() const {
+    return _CurrentScreen;
+}
+
+const DirectX::Keyboard& PonyGame::GetKeyboard() const {
+    return _Keyboard;
+}
+
+const DirectX::Keyboard::KeyboardStateTracker& PonyGame::GetKeyboardStateTracker() const {
+    return _KeyboardStateTracker;
 }
 
 // Presents the back buffer contents to the screen.
@@ -338,8 +357,8 @@ void PonyGame::CreateDevice() {
             filter.DenyList.NumIDs = _countof(hide);
             filter.DenyList.pIDList = hide;
             d3dInfoQueue->AddStorageFilterEntries(&filter);
+        }
     }
-}
 #endif
 
     DX::ThrowIfFailed(device.As(&_D3dDevice));

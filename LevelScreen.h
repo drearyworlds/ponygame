@@ -9,8 +9,8 @@ namespace ParticleHomeEntertainment {
     public:
         std::vector<BackgroundTile> _Tiles;
 
-        BackgroundTile GetTile(const size_t& x, const size_t& y) const;
+        BackgroundTile GetTile(const float x, const float y) const;
 
-        RECT GetTileRect(const size_t& index) const;
+        RECT GetTileRect(const long& index) const;
     };
 }

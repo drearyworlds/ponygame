@@ -22,6 +22,7 @@ constexpr uint16_t PONY_JUMPING_FRAMES_PER_SEC = 5;
 constexpr float PONY_JUMPING_TIME_PER_FRAME_SEC = 1.f / static_cast<float>(PONY_JUMPING_FRAMES_PER_SEC);
 constexpr float PONY_JUMP_X_VELOCITY = 3.f;
 constexpr float PONY_JUMP_Y_VELOCITY = -9.f;
+constexpr float FALLING_TERMINAL_VELOCITY = 25.f;
 constexpr uint16_t PONY_X_SPEED_PX = 3;
 constexpr float GRAVITY = 0.5f;
 constexpr wchar_t* FILE_PATH_SPRITE_GRASS = L"assets/grass_tile.dds";

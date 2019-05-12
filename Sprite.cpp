@@ -16,14 +16,6 @@ Sprite::Sprite() {
     _Facing = SpriteFacingStateEnum::FACING_RIGHT;
     _AnimationState = SpriteAnimationStateEnum::IDLE;
     _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
-
-    // Initialize sprite location
-    _Location.x = 2 * SPRITE_WIDTH_PX;
-    _Location.y = 6 * SPRITE_HEIGHT_PX;
-
-    // Initialize sprite velocity
-    _Velocity.x = 0;
-    _Velocity.y = 0;
 }
 
 Sprite::~Sprite() {
@@ -83,59 +75,6 @@ void Sprite::GetTexture(ID3D11ShaderResourceView* texture, RECT& sourceRectangle
     }
 
     transform = (_Facing == SpriteFacingStateEnum::FACING_RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
-}
-
-bool Sprite::DetectCollision(const RECT& subjectRect, const RECT& objectRect, SpriteCollisionResult& collisionResult) {
-    RECT dest;
-    bool collisionDetected = IntersectRect(&dest, &subjectRect, &objectRect);
-
-    if (collisionDetected) {
-        const float topCollision = static_cast<float>(objectRect.bottom - subjectRect.top);
-        const float bottomCollision = static_cast<float>(subjectRect.bottom - objectRect.top);
-        const float leftCollision = static_cast<float>(objectRect.right - subjectRect.left);
-        const float rightCollision = static_cast<float>(subjectRect.right - objectRect.left);
-
-        if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
-            collisionResult._Top = true;
-        }
-
-        if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
-            collisionResult._Bottom = true;
-        }
-
-        if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
-            collisionResult._Left = true;
-        }
-
-        if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
-            collisionResult._Right = true;
-        }
-    }
-
-    return collisionDetected;
-}
-
-SpriteCollisionResult Sprite::GetCollisions(const DirectX::SimpleMath::Vector2& subjectLocation, const LevelScreen& screen) {
-    SpriteCollisionResult collisionResult;
-
-    RECT subjectRect;
-    subjectRect.top = static_cast<long>(subjectLocation.y);
-    subjectRect.bottom = static_cast<long>(subjectLocation.y + SPRITE_HEIGHT_PX);
-    subjectRect.left = static_cast<long>(subjectLocation.x);
-    subjectRect.right = static_cast<long>(subjectLocation.x + SPRITE_WIDTH_PX);
-
-    for (size_t index = 0; index < screen._Tiles.size(); index++) {
-        BackgroundTile tile = screen._Tiles.at(index);
-        if (tile._Interactive == BackgroundTile::TileInteractiveEnum::Solid) {
-            // Only detect collisions if we haven't already detected all four directions
-            if (!(collisionResult._Top && collisionResult._Bottom
-                && collisionResult._Left && collisionResult._Right)) {
-                DetectCollision(subjectRect, screen.GetTileRect(index), collisionResult);
-            }
-        }
-    }
-
-    return collisionResult;
 }
 
 void Sprite::ResetTiles() {
