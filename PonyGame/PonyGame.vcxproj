@@ -179,6 +179,22 @@
       <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\grass_tile.DDS" />
+    <Image Include="assets\grass_tile1.DDS" />
+    <Image Include="assets\grass_tile_orig.DDS" />
+    <Image Include="assets\moon_ne.DDS" />
+    <Image Include="assets\moon_nw.DDS" />
+    <Image Include="assets\moon_se.DDS" />
+    <Image Include="assets\moon_sw.DDS" />
+    <Image Include="assets\pony_idle.DDS" />
+    <Image Include="assets\pony_jumping.DDS" />
+    <Image Include="assets\pony_running.DDS" />
+    <Image Include="assets\sky_ne.DDS" />
+    <Image Include="assets\sky_nw.DDS" />
+    <Image Include="assets\sky_se.DDS" />
+    <Image Include="assets\sky_sw.DDS" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

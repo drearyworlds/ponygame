@@ -67,24 +67,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wrl", "wrl", "{24CF45E0-77C
 		include\nowarn\wrl\client.h = include\nowarn\wrl\client.h
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E9BA9B93-2629-4862-82F1-53D51A045EA6}"
-	ProjectSection(SolutionItems) = preProject
-		assets\grass_tile.DDS = assets\grass_tile.DDS
-		assets\grass_tile1.DDS = assets\grass_tile1.DDS
-		assets\grass_tile_orig.DDS = assets\grass_tile_orig.DDS
-		assets\moon_ne.DDS = assets\moon_ne.DDS
-		assets\moon_nw.DDS = assets\moon_nw.DDS
-		assets\moon_se.DDS = assets\moon_se.DDS
-		assets\moon_sw.DDS = assets\moon_sw.DDS
-		assets\pony_idle.DDS = assets\pony_idle.DDS
-		assets\pony_jumping.DDS = assets\pony_jumping.DDS
-		assets\pony_running.DDS = assets\pony_running.DDS
-		assets\sky_ne.DDS = assets\sky_ne.DDS
-		assets\sky_nw.DDS = assets\sky_nw.DDS
-		assets\sky_se.DDS = assets\sky_se.DDS
-		assets\sky_sw.DDS = assets\sky_sw.DDS
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -117,7 +99,6 @@ Global
 		{58DAFE89-4110-4566-AFD9-B5EFFD04EF62} = {CE3BA928-ABC0-42B3-8018-0FE3D9C66596}
 		{A1C75B78-67B8-45F3-A034-FF7C39DE1097} = {58DAFE89-4110-4566-AFD9-B5EFFD04EF62}
 		{24CF45E0-77C0-4CFF-BFB3-2D48ECB95AFB} = {A1C75B78-67B8-45F3-A034-FF7C39DE1097}
-		{E9BA9B93-2629-4862-82F1-53D51A045EA6} = {CE3BA928-ABC0-42B3-8018-0FE3D9C66596}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF343284-7D40-4FEC-897F-4E9D1C59982F}

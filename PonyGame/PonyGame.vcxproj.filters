@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\assets">
+      <UniqueIdentifier>{822eaace-c9b0-41cc-86b9-fd23b81047d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -65,5 +68,49 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\grass_tile.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\grass_tile_orig.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\grass_tile1.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\moon_ne.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\moon_nw.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\moon_se.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\moon_sw.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\pony_idle.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\pony_jumping.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\pony_running.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\sky_ne.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\sky_nw.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\sky_se.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\sky_sw.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>
