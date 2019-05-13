@@ -79,17 +79,13 @@ void PonyGame::LoadLevel(uint32_t level) {
     }
 }
 
+InputState& PonyGame::GetInputState() {
+    return _InputState;
+}
+
 // Executes the basic game loop.
 void PonyGame::Tick() {
-    // Poll and save the current key/button states
-    _KeyboardStateTracker.Update(_Keyboard.GetState());
-    //auto mouse = _Mouse->GetState();
-
-    if (_KeyboardStateTracker.IsKeyPressed(Keyboard::Keys::Escape)) {
-        ExitGame();
-    }
-
-    _Pony.UpdateStates();
+    _InputState.UpdateKeyStates();
 
     // Update the game world
     _Timer.Tick([=]() {
@@ -101,6 +97,12 @@ void PonyGame::Tick() {
 }
 
 void PonyGame::UpdateGameWorld(const DX::StepTimer& timer) {
+    if (_InputState.IsKeyDown(Keyboard::Keys::Escape)) {
+        ExitGame();
+    }
+
+    _Pony.UpdateStates();
+
     if (_GameState == PAUSED) {
         return;
     }
@@ -275,14 +277,6 @@ void PonyGame::DrawPony() {
 
 const LevelScreen& PonyGame::GetScreen() const {
     return _CurrentScreen;
-}
-
-const DirectX::Keyboard& PonyGame::GetKeyboard() const {
-    return _Keyboard;
-}
-
-const DirectX::Keyboard::KeyboardStateTracker& PonyGame::GetKeyboardStateTracker() const {
-    return _KeyboardStateTracker;
 }
 
 // Presents the back buffer contents to the screen.

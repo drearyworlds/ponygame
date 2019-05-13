@@ -23,14 +23,14 @@ DirectX::SimpleMath::Vector2 ParticleHomeEntertainment::Entity::GetLocation() co
 void Entity::Move(int xSpeed, int ySpeed) {
     bool facingChanged = false;
     // Handle X-Axis movement
-    if (PonyGame::Instance().GetKeyboard().GetState().Left) {
+    if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)) {
         facingChanged = (_Facing == SpriteFacingStateEnum::FACING_RIGHT);
         _Facing = SpriteFacingStateEnum::FACING_LEFT;
 
         if (!facingChanged) {
             MoveX(-xSpeed);
         }
-    } else if (PonyGame::Instance().GetKeyboard().GetState().Right) {
+    } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
         facingChanged = (_Facing == SpriteFacingStateEnum::FACING_LEFT);
         _Facing = SpriteFacingStateEnum::FACING_RIGHT;
 
@@ -41,17 +41,19 @@ void Entity::Move(int xSpeed, int ySpeed) {
 
     _Velocity.y += ySpeed;
 
+    const bool SPACE_IS_DOWN = PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Space);
+
     // If she is on the ground
     if (_SpecialState == SpriteSpecialStateEnum::ON_GROUND) {
-        if (PonyGame::Instance().GetKeyboardStateTracker().IsKeyPressed(DirectX::Keyboard::Keys::Space)) {
+        if (SPACE_IS_DOWN) {
             // Give entity a burst of velocity
             _Velocity.y = PONY_JUMP_Y_VELOCITY;
 
             // Set its states
             _AnimationState = SpriteAnimationStateEnum::JUMPING;
             _SpecialState = SpriteSpecialStateEnum::IN_AIR;
-        } else if (PonyGame::Instance().GetKeyboard().GetState().Left
-            || PonyGame::Instance().GetKeyboard().GetState().Right) {
+        } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)
+            || PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
             _AnimationState = SpriteAnimationStateEnum::RUNNING;
         } else {
             _AnimationState = SpriteAnimationStateEnum::IDLE;
@@ -61,6 +63,11 @@ void Entity::Move(int xSpeed, int ySpeed) {
     }
 
     _Velocity.y += GRAVITY;
+
+    if (_Velocity.y < 0 && !SPACE_IS_DOWN) {
+        _Velocity.y = 0;
+    }
+
     _Velocity.y = std::min(FALLING_TERMINAL_VELOCITY, _Velocity.y);
     MoveY(static_cast<int>(_Velocity.y));
 }
@@ -78,7 +85,7 @@ void Entity::MoveX(int velocity) {
             if (CollisionWithTile(projectedRightTileX, upperRightYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedRightTileX, upperRightYTile });
             }
-            
+
             if (CollisionWithTile(projectedRightTileX, lowerRightYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedRightTileX, lowerRightYTile });
             }

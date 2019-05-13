@@ -3,9 +3,9 @@
 #include "Pony.h"
 #include "StepTimer.h"
 #include "LevelScreen.h"
+#include "InputState.h"
 #include <nowarn/SimpleMath.h>
 #include <nowarn/SpriteBatch.h>
-#include <nowarn/Keyboard.h>
 #include <nowarn/Mouse.h>
 #include <nowarn/wrl/client.h>
 #include <nowarn/algorithm>
@@ -55,10 +55,8 @@ namespace ParticleHomeEntertainment {
         Pony _Pony;
         Sprite _ZombiePony;
 
-        DirectX::Keyboard _Keyboard;
-        DirectX::Keyboard::KeyboardStateTracker _KeyboardStateTracker;
-        //std::unique_ptr<DirectX::Mouse> _Mouse;
-
+        // InputState
+        InputState _InputState;
         void UpdateGameWorld(const DX::StepTimer& timer);
 
         void RenderScene();
@@ -109,8 +107,6 @@ namespace ParticleHomeEntertainment {
 
         const LevelScreen& GetScreen() const;
 
-        const DirectX::Keyboard& GetKeyboard() const;
-
-        const DirectX::Keyboard::KeyboardStateTracker& GetKeyboardStateTracker() const;
+        InputState& GetInputState();
     };
 }
