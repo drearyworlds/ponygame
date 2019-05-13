@@ -1,0 +1,119 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28721.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE3BA928-ABC0-42B3-8018-0FE3D9C66596}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PonyGame", "PonyGame\PonyGame.vcxproj", "{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK", "DirectXTK\DirectXTK_Desktop_2017.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{58DAFE89-4110-4566-AFD9-B5EFFD04EF62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nowarn", "nowarn", "{A1C75B78-67B8-45F3-A034-FF7C39DE1097}"
+	ProjectSection(SolutionItems) = preProject
+		include\nowarn\algorithm = include\nowarn\algorithm
+		include\nowarn\atlbase.h = include\nowarn\atlbase.h
+		include\nowarn\atomic = include\nowarn\atomic
+		include\nowarn\chrono = include\nowarn\chrono
+		include\nowarn\codecvt = include\nowarn\codecvt
+		include\nowarn\comdef.h = include\nowarn\comdef.h
+		include\nowarn\CommonStates.h = include\nowarn\CommonStates.h
+		include\nowarn\comutil.h = include\nowarn\comutil.h
+		include\nowarn\concurrent_unordered_map.h = include\nowarn\concurrent_unordered_map.h
+		include\nowarn\concurrent_vector.h = include\nowarn\concurrent_vector.h
+		include\nowarn\d3d11_1.h = include\nowarn\d3d11_1.h
+		include\nowarn\dbghelp.h = include\nowarn\dbghelp.h
+		include\nowarn\DDSTextureLoader.h = include\nowarn\DDSTextureLoader.h
+		include\nowarn\DirectXColors.h = include\nowarn\DirectXColors.h
+		include\nowarn\DirectXMath.h = include\nowarn\DirectXMath.h
+		include\nowarn\exception = include\nowarn\exception
+		include\nowarn\fstream = include\nowarn\fstream
+		include\nowarn\functional = include\nowarn\functional
+		include\nowarn\future = include\nowarn\future
+		include\nowarn\iomanip = include\nowarn\iomanip
+		include\nowarn\iostream = include\nowarn\iostream
+		include\nowarn\Keyboard.h = include\nowarn\Keyboard.h
+		include\nowarn\locale = include\nowarn\locale
+		include\nowarn\map = include\nowarn\map
+		include\nowarn\memory = include\nowarn\memory
+		include\nowarn\Mouse.h = include\nowarn\Mouse.h
+		include\nowarn\msxml6.h = include\nowarn\msxml6.h
+		include\nowarn\mutex = include\nowarn\mutex
+		include\nowarn\ppl.h = include\nowarn\ppl.h
+		include\nowarn\ppltasks.h = include\nowarn\ppltasks.h
+		include\nowarn\regex = include\nowarn\regex
+		include\nowarn\rpc.h = include\nowarn\rpc.h
+		include\nowarn\setupapi.h = include\nowarn\setupapi.h
+		include\nowarn\shared_mutex = include\nowarn\shared_mutex
+		include\nowarn\shlobj.h = include\nowarn\shlobj.h
+		include\nowarn\SimpleMath.h = include\nowarn\SimpleMath.h
+		include\nowarn\SpriteBatch.h = include\nowarn\SpriteBatch.h
+		include\nowarn\sqlncli.h = include\nowarn\sqlncli.h
+		include\nowarn\sstream = include\nowarn\sstream
+		include\nowarn\stdint.h = include\nowarn\stdint.h
+		include\nowarn\string = include\nowarn\string
+		include\nowarn\tchar.h = include\nowarn\tchar.h
+		include\nowarn\vector = include\nowarn\vector
+		include\nowarn\WICTextureLoader.h = include\nowarn\WICTextureLoader.h
+		include\nowarn\windows.h = include\nowarn\windows.h
+		include\nowarn\ws2tcpip.h = include\nowarn\ws2tcpip.h
+		include\nowarn\wtypes.h = include\nowarn\wtypes.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wrl", "wrl", "{24CF45E0-77C0-4CFF-BFB3-2D48ECB95AFB}"
+	ProjectSection(SolutionItems) = preProject
+		include\nowarn\wrl\client.h = include\nowarn\wrl\client.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{E9BA9B93-2629-4862-82F1-53D51A045EA6}"
+	ProjectSection(SolutionItems) = preProject
+		assets\grass_tile.DDS = assets\grass_tile.DDS
+		assets\grass_tile1.DDS = assets\grass_tile1.DDS
+		assets\grass_tile_orig.DDS = assets\grass_tile_orig.DDS
+		assets\moon_ne.DDS = assets\moon_ne.DDS
+		assets\moon_nw.DDS = assets\moon_nw.DDS
+		assets\moon_se.DDS = assets\moon_se.DDS
+		assets\moon_sw.DDS = assets\moon_sw.DDS
+		assets\pony_idle.DDS = assets\pony_idle.DDS
+		assets\pony_jumping.DDS = assets\pony_jumping.DDS
+		assets\pony_running.DDS = assets\pony_running.DDS
+		assets\sky_ne.DDS = assets\sky_ne.DDS
+		assets\sky_nw.DDS = assets\sky_nw.DDS
+		assets\sky_se.DDS = assets\sky_se.DDS
+		assets\sky_sw.DDS = assets\sky_sw.DDS
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Debug|x64.ActiveCfg = Debug|x64
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Debug|x64.Build.0 = Debug|x64
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Debug|x86.ActiveCfg = Debug|Win32
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Debug|x86.Build.0 = Debug|Win32
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Release|x64.ActiveCfg = Release|x64
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Release|x64.Build.0 = Release|x64
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Release|x86.ActiveCfg = Release|Win32
+		{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}.Release|x86.Build.0 = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.ActiveCfg = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.Build.0 = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x86.ActiveCfg = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x86.Build.0 = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.ActiveCfg = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BF343284-7D40-4FEC-897F-4E9D1C59982F}
+	EndGlobalSection
+EndGlobal

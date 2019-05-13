@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28721.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE3BA928-ABC0-42B3-8018-0FE3D9C66596}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PonyGame", "PonyGame.vcxproj", "{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PonyGame", "PonyGame\PonyGame.vcxproj", "{9DFDA5FF-76ED-4705-B23A-DDBC96F22150}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK", "DirectXTK\DirectXTK_Desktop_2017.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
 EndProject
