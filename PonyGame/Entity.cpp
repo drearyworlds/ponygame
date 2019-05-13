@@ -1,6 +1,4 @@
 #include "Entity.h"
-#include "Pony.h"
-#include "Constants.h"
 #include "PonyGame.h"
 #include <nowarn/iostream>
 
@@ -46,10 +44,10 @@ void Entity::Move(int xSpeed, int ySpeed) {
     // If she is on the ground
     if (_SpecialState == SpriteSpecialStateEnum::ON_GROUND) {
         if (PonyGame::Instance().GetKeyboardStateTracker().IsKeyPressed(DirectX::Keyboard::Keys::Space)) {
-            // Give pony a burst of velocity
+            // Give entity a burst of velocity
             _Velocity.y = PONY_JUMP_Y_VELOCITY;
 
-            // Set her states
+            // Set its states
             _AnimationState = SpriteAnimationStateEnum::JUMPING;
             _SpecialState = SpriteSpecialStateEnum::IN_AIR;
         } else if (PonyGame::Instance().GetKeyboard().GetState().Left
@@ -70,49 +68,43 @@ void Entity::Move(int xSpeed, int ySpeed) {
 void Entity::MoveX(int velocity) {
     if (velocity > 0) {
         // Moving right
-        float projectedTileX = (_Location.x + velocity + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX;
+        float projectedRightTileX = (_Location.x + velocity + SPRITE_RIGHT_OFFSET_X) / SPRITE_WIDTH_PX;
+        float upperRightYTile = _Location.y / SPRITE_HEIGHT_PX;
+        float lowerRightYTile = (_Location.y + SPRITE_BOTTOM_OFFSET_Y) / SPRITE_HEIGHT_PX;
 
-        DirectX::SimpleMath::Vector2 upperRightCornerCollisionCoordinates(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
-        DirectX::SimpleMath::Vector2 lowerRightCornerCollisionCoordinates(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
-
-        // Upper right corner
-        const bool upperRightCornerCollision = CollisionWithTile(upperRightCornerCollisionCoordinates.x, upperRightCornerCollisionCoordinates.y);
-        // Lower left corner
-        const bool lowerRightCornerCollision = CollisionWithTile(lowerRightCornerCollisionCoordinates.x, lowerRightCornerCollisionCoordinates.y);
-
-        // Upper right and lower right corners
-        if (upperRightCornerCollision || lowerRightCornerCollision) {
-            std::wcout<<L"Collision";
-
-            if (upperRightCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(upperRightCornerCollisionCoordinates);
-            }  if (lowerRightCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(lowerRightCornerCollisionCoordinates);
+        // Upper right corner or lower right corner
+        if (CollisionWithTile(projectedRightTileX, upperRightYTile) || CollisionWithTile(projectedRightTileX, lowerRightYTile)) {
+#ifdef _DEBUG
+            if (CollisionWithTile(projectedRightTileX, upperRightYTile)) {
+                _CollisionTileCoordinatesList.push_back({ projectedRightTileX, upperRightYTile });
             }
+            
+            if (CollisionWithTile(projectedRightTileX, lowerRightYTile)) {
+                _CollisionTileCoordinatesList.push_back({ projectedRightTileX, lowerRightYTile });
+            }
+#endif
         } else {
+            // NO COLLUSION!!
             _Location.x += velocity;
         }
     } else if (velocity < 0) {
         // Moving left
-        float projectedTileX = (_Location.x + velocity) / SPRITE_WIDTH_PX;
+        float projectedLeftTileX = (_Location.x + velocity) / SPRITE_WIDTH_PX;
+        float upperLeftYTile = _Location.y / SPRITE_HEIGHT_PX;
+        float lowerLeftYTile = (_Location.y + SPRITE_BOTTOM_OFFSET_Y) / SPRITE_HEIGHT_PX;
 
-        DirectX::SimpleMath::Vector2 upperLeftCornerCollisionCoordinates(projectedTileX, _Location.y / SPRITE_HEIGHT_PX);
-        DirectX::SimpleMath::Vector2 lowerLeftCornerCollisionCoordinates(projectedTileX, (_Location.y + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX);
-
-        // Upper left corner
-        const bool upperLeftCornerCollision = CollisionWithTile(upperLeftCornerCollisionCoordinates.x, upperLeftCornerCollisionCoordinates.y);
-        // Lower left corner
-        const bool lowerLeftCornerCollision = CollisionWithTile(lowerLeftCornerCollisionCoordinates.x, lowerLeftCornerCollisionCoordinates.y);
-
-        if (upperLeftCornerCollision || lowerLeftCornerCollision) {
-            std::wcout<<L"Collision";
-
-            if (upperLeftCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(upperLeftCornerCollisionCoordinates);
-            }  if (lowerLeftCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(lowerLeftCornerCollisionCoordinates);
+        if (CollisionWithTile(projectedLeftTileX, upperLeftYTile) || CollisionWithTile(projectedLeftTileX, lowerLeftYTile)) {
+#ifdef _DEBUG
+            if (CollisionWithTile(projectedLeftTileX, upperLeftYTile)) {
+                _CollisionTileCoordinatesList.push_back({ projectedLeftTileX, upperLeftYTile });
             }
+
+            if (CollisionWithTile(projectedLeftTileX, lowerLeftYTile)) {
+                _CollisionTileCoordinatesList.push_back({ projectedLeftTileX, lowerLeftYTile });
+            }
+#endif
         } else {
+            // NO COLLUSION!!
             _Location.x += velocity;
         }
     }
@@ -121,52 +113,45 @@ void Entity::MoveX(int velocity) {
 void Entity::MoveY(int velocity) {
     if (velocity < 0) {
         // Moving up
-        float projectedTileY = (_Location.y + velocity) / SPRITE_HEIGHT_PX;
+        float upperLeftXTile = _Location.x / SPRITE_WIDTH_PX;
+        float upperRightXTile = (_Location.x + SPRITE_RIGHT_OFFSET_X) / SPRITE_WIDTH_PX;
+        float projectedUpperYTile = (_Location.y + velocity) / SPRITE_HEIGHT_PX;
 
-        DirectX::SimpleMath::Vector2 upperLeftCornerCollisionCoordinates(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
-        DirectX::SimpleMath::Vector2 upperRightCornerCollisionCoordinates((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
-
-        // Upper left corner
-        const bool upperLeftCornerCollision = CollisionWithTile(upperLeftCornerCollisionCoordinates.x, upperLeftCornerCollisionCoordinates.y);
-        // Upper right corner
-        const bool upperRightCornerCollision = CollisionWithTile(upperRightCornerCollisionCoordinates.x, upperRightCornerCollisionCoordinates.y);
-
-        if (upperLeftCornerCollision || upperRightCornerCollision) {
-            std::wcout<<L"Collision";
-
-            if (upperLeftCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(upperLeftCornerCollisionCoordinates);
-            }  if (upperRightCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(upperRightCornerCollisionCoordinates);
+        if (CollisionWithTile(upperLeftXTile, projectedUpperYTile) || CollisionWithTile(upperRightXTile, projectedUpperYTile)) {
+#ifdef _DEBUG
+            if (CollisionWithTile(upperLeftXTile, projectedUpperYTile)) {
+                _CollisionTileCoordinatesList.push_back({ upperLeftXTile, projectedUpperYTile });
             }
+
+            if (CollisionWithTile(upperRightXTile, projectedUpperYTile)) {
+                _CollisionTileCoordinatesList.push_back({ upperRightXTile, projectedUpperYTile });
+            }
+#endif
         } else {
+            // NO COLLUSION!!
             _Location.y += velocity;
         }
     } else if (velocity > 0) {
         // Moving down
-        float projectedTileY = (_Location.y + velocity + SPRITE_HEIGHT_PX) / SPRITE_HEIGHT_PX;
+        float lowerLeftXTile = _Location.x / SPRITE_WIDTH_PX;
+        float lowerRightXTile = (_Location.x + SPRITE_RIGHT_OFFSET_X) / SPRITE_WIDTH_PX;
+        float projectedLowerYTile = (_Location.y + velocity + SPRITE_BOTTOM_OFFSET_Y) / SPRITE_HEIGHT_PX;
 
-        DirectX::SimpleMath::Vector2 lowerLeftCornerCollisionCoordinates(_Location.x / SPRITE_WIDTH_PX, projectedTileY);
-        DirectX::SimpleMath::Vector2 lowerRightCornerCollisionCoordinates((_Location.x + SPRITE_WIDTH_PX) / SPRITE_WIDTH_PX, projectedTileY);
-
-        // Lower left corner
-        const bool lowerLeftCornerCollision = CollisionWithTile(lowerLeftCornerCollisionCoordinates.x, lowerLeftCornerCollisionCoordinates.y);
-        // Lower right corner
-        const bool lowerRightCornerCollision = CollisionWithTile(lowerRightCornerCollisionCoordinates.x, lowerRightCornerCollisionCoordinates.y);
-
-        if (lowerLeftCornerCollision || lowerRightCornerCollision) {
-            std::wcout<<L"Collision";
-
-            if (lowerLeftCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(lowerLeftCornerCollisionCoordinates);
-            }  if (lowerRightCornerCollision) {
-                _CollisionTileCoordinatesList.push_back(lowerRightCornerCollisionCoordinates);
+        if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile) || CollisionWithTile(lowerRightXTile, projectedLowerYTile)) {
+#ifdef _DEBUG
+            if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile)) {
+                _CollisionTileCoordinatesList.push_back({ lowerLeftXTile, projectedLowerYTile });
             }
 
+            if (CollisionWithTile(lowerRightXTile, projectedLowerYTile)) {
+                _CollisionTileCoordinatesList.push_back({ lowerRightXTile, projectedLowerYTile });
+            }
+#endif
             // Change state to on ground and zero out the velocity
             _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
             _Velocity.y = 0;
         } else {
+            // NO COLLUSION!!
             _Location.y += velocity;
         }
     }
