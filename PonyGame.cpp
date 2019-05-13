@@ -115,7 +115,9 @@ void PonyGame::RenderScene() {
 
         DrawBackground();
 
-        DrawHighlightedTiles();
+#ifdef _DEBUG
+        HighlightCollisionTiles();
+#endif
 
         DrawObstacles();
 
@@ -129,7 +131,7 @@ void PonyGame::RenderScene() {
 
 void PonyGame::Clear() {
     // Clear the views.
-    _D3dContext->ClearRenderTargetView(_RenderTargetView.Get(), Colors::CornflowerBlue);
+    _D3dContext->ClearRenderTargetView(_RenderTargetView.Get(), Colors::White);
     _D3dContext->ClearDepthStencilView(_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     _D3dContext->OMSetRenderTargets(1, _RenderTargetView.GetAddressOf(), _DepthStencilView.Get());
@@ -172,7 +174,7 @@ void PonyGame::DrawBackground() {
     _BackgroundSpriteBatch->End();
 }
 
-void PonyGame::DrawHighlightedTiles() {
+void PonyGame::HighlightCollisionTiles() {
     _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr);
 
     RECT tileRectangle {};

@@ -68,7 +68,7 @@ namespace ParticleHomeEntertainment {
 
         void DrawBackground();
 
-        void DrawHighlightedTiles();
+        void HighlightCollisionTiles();
 
         void DrawObstacles();
 
