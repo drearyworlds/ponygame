@@ -212,11 +212,6 @@
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DirectXTK\DirectXTK_Desktop_2017.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="assets\horse_idle_cycle.png" />
     <Image Include="assets\horse_idle_smack_cycle.png" />
     <Image Include="assets\horse_run_cycle.png" />
@@ -243,6 +238,11 @@
     <None Include="include\nowarn\sstream" />
     <None Include="include\nowarn\string" />
     <None Include="include\nowarn\vector" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DirectXTK\DirectXTK_Desktop_2017.vcxproj">
+      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
