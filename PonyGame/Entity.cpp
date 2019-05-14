@@ -82,6 +82,8 @@ void Entity::MoveX(int velocity) {
 
         // Upper right corner or lower right corner
         if (CollisionWithTile(projectedRightTileX, upperRightYTile) || CollisionWithTile(projectedRightTileX, lowerRightYTile)) {
+            MoveX(velocity - 1);
+
 #ifdef _DEBUG
             if (CollisionWithTile(projectedRightTileX, upperRightYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedRightTileX, upperRightYTile });
@@ -102,6 +104,8 @@ void Entity::MoveX(int velocity) {
         float lowerLeftYTile = (_Location.y + SPRITE_BOTTOM_OFFSET_Y) / SPRITE_HEIGHT_PX;
 
         if (CollisionWithTile(projectedLeftTileX, upperLeftYTile) || CollisionWithTile(projectedLeftTileX, lowerLeftYTile)) {
+            MoveX(velocity + 1);
+
 #ifdef _DEBUG
             if (CollisionWithTile(projectedLeftTileX, upperLeftYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedLeftTileX, upperLeftYTile });
@@ -126,6 +130,8 @@ void Entity::MoveY(int velocity) {
         float projectedUpperYTile = (_Location.y + velocity) / SPRITE_HEIGHT_PX;
 
         if (CollisionWithTile(upperLeftXTile, projectedUpperYTile) || CollisionWithTile(upperRightXTile, projectedUpperYTile)) {
+            MoveY(velocity + 1);
+
 #ifdef _DEBUG
             if (CollisionWithTile(upperLeftXTile, projectedUpperYTile)) {
                 _CollisionTileCoordinatesList.push_back({ upperLeftXTile, projectedUpperYTile });
@@ -146,6 +152,8 @@ void Entity::MoveY(int velocity) {
         float projectedLowerYTile = (_Location.y + velocity + SPRITE_BOTTOM_OFFSET_Y) / SPRITE_HEIGHT_PX;
 
         if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile) || CollisionWithTile(lowerRightXTile, projectedLowerYTile)) {
+            MoveY(velocity - 1);
+
 #ifdef _DEBUG
             if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile)) {
                 _CollisionTileCoordinatesList.push_back({ lowerLeftXTile, projectedLowerYTile });
