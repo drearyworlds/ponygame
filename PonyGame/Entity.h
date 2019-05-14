@@ -9,7 +9,18 @@ namespace ParticleHomeEntertainment {
         std::vector<DirectX::SimpleMath::Vector2> _CollisionTileCoordinatesList;
 
     protected:
+        struct Rectangle {
+            long x;
+            long y;
+            long width;
+            long height;
+        };
+
         DirectX::SimpleMath::Vector2 _Location;
+        Rectangle _AaBbOffsetLeftFacing;
+        Rectangle _AaBbOffsetRightFacing;
+        RECT _BoundingBoxLocation;
+
         DirectX::SimpleMath::Vector2 _Velocity;
 
         void Move(int xVelocity, int yVelocity);
@@ -28,6 +39,10 @@ namespace ParticleHomeEntertainment {
         virtual ~Entity();
 
         DirectX::SimpleMath::Vector2 GetLocation() const;
+
+        void SetLocation(const float x, const float y);
+
+        RECT GetBoundingBoxLocation();
 
         std::vector<DirectX::SimpleMath::Vector2>& GetCollisionTileCoordinates();
     };

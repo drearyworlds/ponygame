@@ -127,6 +127,10 @@ void PonyGame::RenderScene() {
 
         DrawPony();
 
+#ifdef _DEBUG
+        DrawPonyBoundingBox();
+#endif
+
         Present();
     }
 }
@@ -273,6 +277,10 @@ void PonyGame::DrawPony() {
     }
 
     _SpriteBatch->End();
+}
+
+void PonyGame::DrawPonyBoundingBox() {
+    
 }
 
 const LevelScreen& PonyGame::GetScreen() const {

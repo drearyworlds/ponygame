@@ -74,6 +74,8 @@ namespace ParticleHomeEntertainment {
 
         void DrawPony();
 
+        void DrawPonyBoundingBox();
+
         void Present();
 
         void CreateDevice();
