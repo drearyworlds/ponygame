@@ -65,7 +65,7 @@ void Entity::Move(int xSpeed, int ySpeed) {
 
     _Velocity.y += GRAVITY;
 
-    if (_Velocity.y < 0 && !SPACE_IS_DOWN && !SPACE_IS_PRESSED) {
+    if (_Velocity.y < 0 && !SPACE_IS_DOWN) {
         _Velocity.y = 0;
     }
 

@@ -6,9 +6,8 @@
 
 namespace ParticleHomeEntertainment {
     class InputState {
-        DirectX::Keyboard _Keyboard;
         DirectX::Keyboard::KeyboardStateTracker _KeyboardStateTracker;
-        DirectX::Keyboard::State _PreviousState;
+        std::unique_ptr<DirectX::Keyboard> _Keyboard;
         DirectX::Mouse _Mouse;
 
     public:
