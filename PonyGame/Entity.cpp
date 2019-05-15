@@ -211,6 +211,7 @@ void Entity::MoveY(int velocity) {
             _Velocity.y = 0;
         } else {
             // NO COLLUSION!!
+            _SpecialState = SpriteSpecialStateEnum::IN_AIR;
             _Location.y += velocity;
         }
     }
