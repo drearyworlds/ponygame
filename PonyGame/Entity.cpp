@@ -29,6 +29,8 @@ Entity::Entity(const float startingLocationX, const float startingLocationY) {
 
     // Sets location and bounding box coordinates based on offsets above
     SetLocation(startingLocationX, startingLocationY);
+
+    _SpecialState = EntitySpecialStateEnum::IN_AIR;
 }
 
 Entity::~Entity() {
@@ -46,7 +48,7 @@ void Entity::SetLocation(const float x, const float y) {
 RECT Entity::GetBoundingBoxLocation() {
     RECT boundingBoxLocation;
 
-    if (_Facing == SpriteFacingStateEnum::FACING_LEFT) {
+    if (_Sprite._Facing == SpriteFacingStateEnum::FACING_LEFT) {
         boundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x);
         boundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x + _AaBbOffsetLeftFacing.width);
         boundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y);
@@ -65,15 +67,15 @@ void Entity::Move(int xSpeed, int ySpeed) {
     bool facingChanged = false;
     // Handle X-Axis movement
     if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)) {
-        facingChanged = (_Facing == SpriteFacingStateEnum::FACING_RIGHT);
-        _Facing = SpriteFacingStateEnum::FACING_LEFT;
+        facingChanged = (_Sprite._Facing == SpriteFacingStateEnum::FACING_RIGHT);
+        _Sprite._Facing = SpriteFacingStateEnum::FACING_LEFT;
 
         if (!facingChanged) {
             MoveX(-xSpeed);
         }
     } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
-        facingChanged = (_Facing == SpriteFacingStateEnum::FACING_LEFT);
-        _Facing = SpriteFacingStateEnum::FACING_RIGHT;
+        facingChanged = (_Sprite._Facing == SpriteFacingStateEnum::FACING_LEFT);
+        _Sprite._Facing = SpriteFacingStateEnum::FACING_RIGHT;
 
         if (!facingChanged) {
             MoveX(xSpeed);
@@ -86,19 +88,19 @@ void Entity::Move(int xSpeed, int ySpeed) {
     const bool SPACE_IS_PRESSED = PonyGame::Instance().GetInputState().WasKeyPressed(DirectX::Keyboard::Keys::Space);
 
     // If she is on the ground
-    if (_SpecialState == SpriteSpecialStateEnum::ON_GROUND) {
+    if (_SpecialState == EntitySpecialStateEnum::ON_GROUND) {
         if (SPACE_IS_PRESSED) {
             // Give entity a burst of velocity
             _Velocity.y = PONY_JUMP_Y_VELOCITY;
 
             // Set its states
-            _AnimationState = SpriteAnimationStateEnum::JUMPING;
-            _SpecialState = SpriteSpecialStateEnum::IN_AIR;
+            _Sprite._AnimationState = SpriteAnimationStateEnum::JUMPING;
+            _SpecialState = EntitySpecialStateEnum::IN_AIR;
         } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)
             || PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
-            _AnimationState = SpriteAnimationStateEnum::RUNNING;
+            _Sprite._AnimationState = SpriteAnimationStateEnum::RUNNING;
         } else {
-            _AnimationState = SpriteAnimationStateEnum::IDLE;
+            _Sprite._AnimationState = SpriteAnimationStateEnum::IDLE;
         }
     } else {
         // Keep existing special state while in the air
@@ -207,11 +209,11 @@ void Entity::MoveY(int velocity) {
             }
 #endif
             // Change state to on ground and zero out the velocity
-            _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
+            _SpecialState = EntitySpecialStateEnum::ON_GROUND;
             _Velocity.y = 0;
         } else {
             // NO COLLUSION!!
-            _SpecialState = SpriteSpecialStateEnum::IN_AIR;
+            _SpecialState = EntitySpecialStateEnum::IN_AIR;
             _Location.y += velocity;
         }
     }

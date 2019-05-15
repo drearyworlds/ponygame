@@ -87,52 +87,46 @@ InputState& PonyGame::GetInputState() {
 void PonyGame::Tick() {
     _InputState.UpdateKeyStates();
 
-    // Update the game world
-    _Timer.Tick([=]() {
-        UpdateGameWorld(_Timer);
-    });
-
-    // Draw the frame
-    RenderScene();
-}
-
-void PonyGame::UpdateGameWorld(const DX::StepTimer& timer) {
     if (_InputState.IsKeyDown(Keyboard::Keys::Escape)) {
         ExitGame();
     }
-
-    _Pony.UpdateStates();
 
     if (_GameState == PAUSED) {
         return;
     }
 
-    _Pony.Animate(timer.GetElapsedSeconds());
+    // Update the game world
+    _Timer.Tick([=](const double& elapsedSecs) {
+        _Pony.Tick(elapsedSecs);
+    });
+
+    // Don't try to render anything before the first Update.
+    if (_Timer.GetFrameCount() > 0) {
+        // Draw the frame
+        RenderScene();
+    }
 }
 
 void PonyGame::RenderScene() {
-    // Don't try to render anything before the first Update.
-    if (_Timer.GetFrameCount() > 0) {
-        Clear();
+    Clear();
 
-        DrawBackground();
+    DrawBackground();
 
 #ifdef _DEBUG
-        HighlightCollisionTiles();
+    HighlightCollisionTiles();
 #endif
 
-        DrawObstacles();
+    DrawObstacles();
 
-        DrawEnemies();
+    DrawEnemies();
 
-        DrawPony();
+    DrawPony();
 
 #ifdef _DEBUG
-        DrawPonyBoundingBox();
+    DrawPonyBoundingBox();
 #endif
 
-        Present();
-    }
+    Present();
 }
 
 void PonyGame::Clear() {
@@ -225,62 +219,11 @@ void PonyGame::DrawEnemies() {
 }
 
 void PonyGame::DrawPony() {
-    // Rendering code
-    DirectX::CommonStates states(_D3dDevice.Get());
-
-    _SpriteBatch->Begin(SpriteSortMode::SpriteSortMode_Deferred, states.NonPremultiplied());
-
-    uint32_t frameWidth;
-    ID3D11ShaderResourceView* ponyTexture = nullptr;
-    RECT sourceRectangle;
-    DirectX::SpriteEffects ponyTransform;
-
-    _Pony.GetTexture(ponyTexture, sourceRectangle, ponyTransform);
-    if (_Pony._AnimationState == SpriteAnimationStateEnum::JUMPING) {
-        frameWidth = _Pony._JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_Pony._JumpingSpriteSheetHeight);
-        ponyTexture = _Pony._JumpingTile.Get();
-    } else if (_Pony._AnimationState == SpriteAnimationStateEnum::RUNNING) {
-        frameWidth = _Pony._RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_Pony._RunningSpriteSheetHeight);
-        ponyTexture = _Pony._RunningTile.Get();
-    } else {
-        frameWidth = _Pony._IdleSpriteSheetWidth / PONY_IDLE_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _Pony._CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_Pony._IdleSpriteSheetHeight);
-        ponyTexture = _Pony._IdleTile.Get();
-    }
-
-    if (ponyTexture != nullptr) {
-        const float ROTATION = 0.f;
-        const float SCALE = 1.f;
-        const float LAYER_DEPTH = 0.f;
-        _SpriteBatch->Draw(ponyTexture,
-            _Pony.GetLocation(),
-            &sourceRectangle,
-            Colors::White,
-            ROTATION,
-            _OriginLocationPx,
-            SCALE,
-            ponyTransform,
-            LAYER_DEPTH);
-    } else {
-        // ponyTexture is nullptr
-    }
-
-    _SpriteBatch->End();
+    _Pony.Draw(_D3dDevice, _SpriteBatch ,_OriginLocationPx);
 }
 
 void PonyGame::DrawPonyBoundingBox() {
-    
+
 }
 
 const LevelScreen& PonyGame::GetScreen() const {
@@ -455,7 +398,7 @@ void PonyGame::CreateDevice() {
     // Pony Idle Resources
     ComPtr<ID3D11Resource> ponyIdleResource;
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
-        ponyIdleResource.GetAddressOf(), _Pony._IdleTile.ReleaseAndGetAddressOf());
+        ponyIdleResource.GetAddressOf(), _Pony._Sprite._IdleTile.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyIdleTexture;
@@ -465,13 +408,13 @@ void PonyGame::CreateDevice() {
     ponyIdleTexture->GetDesc(&ponyIdleDesc);
 
     // Get total sprite sheet size
-    _Pony._IdleSpriteSheetWidth = ponyIdleDesc.Width;
-    _Pony._IdleSpriteSheetHeight = ponyIdleDesc.Height;
+    _Pony._Sprite._IdleSpriteSheetWidth = ponyIdleDesc.Width;
+    _Pony._Sprite._IdleSpriteSheetHeight = ponyIdleDesc.Height;
 
     // Pony Running Resources
     ComPtr<ID3D11Resource> ponyRunResource;
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
-        ponyRunResource.GetAddressOf(), _Pony._RunningTile.ReleaseAndGetAddressOf());
+        ponyRunResource.GetAddressOf(), _Pony._Sprite._RunningTile.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyRunTexture;
@@ -481,13 +424,13 @@ void PonyGame::CreateDevice() {
     ponyRunTexture->GetDesc(&ponyRunDesc);
 
     // Get total sprite sheet size
-    _Pony._RunningSpriteSheetWidth = ponyRunDesc.Width;
-    _Pony._RunningSpriteSheetHeight = ponyRunDesc.Height;
+    _Pony._Sprite._RunningSpriteSheetWidth = ponyRunDesc.Width;
+    _Pony._Sprite._RunningSpriteSheetHeight = ponyRunDesc.Height;
 
     // Pony Jumping Resources
     ComPtr<ID3D11Resource> ponyJumpResource;
     hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_JUMPING,
-        ponyJumpResource.GetAddressOf(), _Pony._JumpingTile.ReleaseAndGetAddressOf());
+        ponyJumpResource.GetAddressOf(), _Pony._Sprite._JumpingTile.ReleaseAndGetAddressOf());
     DX::ThrowIfFailed(hr);
 
     ComPtr<ID3D11Texture2D> ponyJumpTexture;
@@ -497,8 +440,8 @@ void PonyGame::CreateDevice() {
     ponyJumpTexture->GetDesc(&ponyJumpDesc);
 
     // Get total sprite sheet size
-    _Pony._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
-    _Pony._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
+    _Pony._Sprite._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
+    _Pony._Sprite._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
 
     LoadLevel(_CurrentLevel);
 
@@ -596,7 +539,7 @@ void PonyGame::CreateResources() {
 
 void PonyGame::OnDeviceLost() {
     // Direct3D resource cleanup
-    _Pony.ResetTiles();
+    _Pony._Sprite.ResetTiles();
 
     _SpriteBatch.reset();
     _BackgroundSpriteBatch.reset();

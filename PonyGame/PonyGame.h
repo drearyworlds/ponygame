@@ -43,7 +43,7 @@ namespace ParticleHomeEntertainment {
         LevelScreen _CurrentScreen;
 
         // Sprites
-        std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
+        std::shared_ptr<DirectX::SpriteBatch> _SpriteBatch;
 
         GameStateEnum _GameState = TITLE_SCREEN;
         uint32_t _CurrentLevel;
@@ -53,11 +53,10 @@ namespace ParticleHomeEntertainment {
         DirectX::SimpleMath::Vector2 _OriginLocationPx;
 
         Pony _Pony;
-        Sprite _ZombiePony;
+        //Pony _ZombiePony;
 
         // InputState
         InputState _InputState;
-        void UpdateGameWorld(const DX::StepTimer& timer);
 
         void RenderScene();
 

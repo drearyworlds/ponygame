@@ -15,7 +15,6 @@ Sprite::Sprite() {
     _TotalElapsedSec = 0.f;
     _Facing = SpriteFacingStateEnum::FACING_RIGHT;
     _AnimationState = SpriteAnimationStateEnum::IDLE;
-    _SpecialState = SpriteSpecialStateEnum::ON_GROUND;
 }
 
 Sprite::~Sprite() {
@@ -48,33 +47,31 @@ void Sprite::Animate(const double& elapsedSeconds) {
     }
 }
 
-void Sprite::GetTexture(ID3D11ShaderResourceView* texture, RECT& sourceRectangle, DirectX::SpriteEffects& transform) {
-    texture = nullptr;
-
+void Sprite::UpdateTexture() {
     if (_AnimationState == SpriteAnimationStateEnum::JUMPING) {
-        uint32_t frameWidth = _JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_JumpingSpriteSheetHeight);
-        *texture = *_JumpingTile.Get();
+        _SpriteSheetFrameWidth = _JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
+        _SourceRectangle.left = static_cast<int32_t>(_SpriteSheetFrameWidth * _CurrentFrame);
+        _SourceRectangle.top = 0;
+        _SourceRectangle.right = static_cast<int32_t>(_SourceRectangle.left + _SpriteSheetFrameWidth);
+        _SourceRectangle.bottom = static_cast<int32_t>(_JumpingSpriteSheetHeight);
+        _CurrentTile = _JumpingTile;
     } else if (_AnimationState == SpriteAnimationStateEnum::RUNNING) {
-        uint32_t frameWidth = _RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_RunningSpriteSheetHeight);
-        *texture = *_RunningTile.Get();
+        _SpriteSheetFrameWidth = _RunningSpriteSheetWidth / PONY_RUNNING_FRAMES;
+        _SourceRectangle.left = static_cast<int32_t>(_SpriteSheetFrameWidth * _CurrentFrame);
+        _SourceRectangle.top = 0;
+        _SourceRectangle.right = static_cast<int32_t>(_SourceRectangle.left + _SpriteSheetFrameWidth);
+        _SourceRectangle.bottom = static_cast<int32_t>(_RunningSpriteSheetHeight);
+        _CurrentTile = _RunningTile;
     } else {
-        uint32_t frameWidth = _IdleSpriteSheetWidth / PONY_IDLE_FRAMES;
-        sourceRectangle.left = static_cast<int32_t>(frameWidth * _CurrentFrame);
-        sourceRectangle.top = 0;
-        sourceRectangle.right = static_cast<int32_t>(sourceRectangle.left + frameWidth);
-        sourceRectangle.bottom = static_cast<int32_t>(_IdleSpriteSheetHeight);
-        texture = _IdleTile.Get();
+        _SpriteSheetFrameWidth = _IdleSpriteSheetWidth / PONY_IDLE_FRAMES;
+        _SourceRectangle.left = static_cast<int32_t>(_SpriteSheetFrameWidth * _CurrentFrame);
+        _SourceRectangle.top = 0;
+        _SourceRectangle.right = static_cast<int32_t>(_SourceRectangle.left + _SpriteSheetFrameWidth);
+        _SourceRectangle.bottom = static_cast<int32_t>(_IdleSpriteSheetHeight);
+        _CurrentTile = _IdleTile.Get();
     }
 
-    transform = (_Facing == SpriteFacingStateEnum::FACING_RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+    _Transform = (_Facing == SpriteFacingStateEnum::FACING_RIGHT) ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
 }
 
 void Sprite::ResetTiles() {

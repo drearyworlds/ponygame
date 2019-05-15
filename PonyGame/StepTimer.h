@@ -17,7 +17,7 @@ namespace DX {
         // Derived timing data uses a canonical tick format.
         uint64_t _ElapsedTicks;
         uint64_t _TotalTicks;
-        uint64_t _LeftOverTicks;
+        uint64_t _LeftoverTicks;
 
         // Members for tracking the framerate.
         uint32_t _FrameCount;
@@ -62,6 +62,6 @@ namespace DX {
         void ResetElapsedTime();
 
         // Update timer state, calling the specified Update function the appropriate number of times.
-        void Tick(std::function<void()> update);
+        void Tick(const std::function <void(const double& elapsedSecs)>& update);
     };
 }

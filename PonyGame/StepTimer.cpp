@@ -7,7 +7,7 @@ using namespace DX;
 StepTimer::StepTimer() noexcept(false) :
     _ElapsedTicks(0),
     _TotalTicks(0),
-    _LeftOverTicks(0),
+    _LeftoverTicks(0),
     _FrameCount(0),
     _FramesPerSecond(0),
     _FramesThisSecond(0),
@@ -79,13 +79,13 @@ void StepTimer::ResetElapsedTime() {
         throw std::exception("QueryPerformanceCounter");
     }
 
-    _LeftOverTicks = 0;
+    _LeftoverTicks = 0;
     _FramesPerSecond = 0;
     _FramesThisSecond = 0;
     _QpcSecondCounter = 0;
 }
 
-void StepTimer::Tick(std::function<void()> update) {
+void StepTimer::Tick(const std::function <void(const double& elapsedSecs)>& update) {
     // Query the current time.
     LARGE_INTEGER currentTime;
 
@@ -122,24 +122,24 @@ void StepTimer::Tick(std::function<void()> update) {
             timeDelta = _TargetElapsedTicks;
         }
 
-        _LeftOverTicks += timeDelta;
+        _LeftoverTicks += timeDelta;
 
-        while (_LeftOverTicks >= _TargetElapsedTicks) {
+        while (_LeftoverTicks >= _TargetElapsedTicks) {
             _ElapsedTicks = _TargetElapsedTicks;
             _TotalTicks += _TargetElapsedTicks;
-            _LeftOverTicks -= _TargetElapsedTicks;
+            _LeftoverTicks -= _TargetElapsedTicks;
             _FrameCount++;
 
-            update();
+            update(GetElapsedSeconds());
         }
     } else {
         // Variable timestep update logic.
         _ElapsedTicks = timeDelta;
         _TotalTicks += timeDelta;
-        _LeftOverTicks = 0;
+        _LeftoverTicks = 0;
         _FrameCount++;
 
-        update();
+        update(GetElapsedSeconds());
     }
 
     // Track the current framerate.

@@ -4,7 +4,7 @@
 #include "BackgroundTile.h"
 
 namespace ParticleHomeEntertainment {
-    class Entity : public Sprite {
+    class Entity {
     private:
         std::vector<DirectX::SimpleMath::Vector2> _CollisionTileCoordinatesList;
 
@@ -16,9 +16,15 @@ namespace ParticleHomeEntertainment {
             long height;
         };
 
+        enum EntitySpecialStateEnum {
+            ON_GROUND, IN_AIR
+        };
+
         DirectX::SimpleMath::Vector2 _Location;
         Rectangle _AaBbOffsetLeftFacing;
         Rectangle _AaBbOffsetRightFacing;
+
+        EntitySpecialStateEnum _SpecialState;
 
         DirectX::SimpleMath::Vector2 _Velocity;
 
@@ -28,7 +34,7 @@ namespace ParticleHomeEntertainment {
 
         void MoveY(int velocity);
 
-        virtual void UpdateStates() = 0;
+        virtual void Tick(const double& elapsedSecs) = 0;
 
         bool CollisionWithTile(float x, float y);
 
@@ -37,6 +43,10 @@ namespace ParticleHomeEntertainment {
 
         virtual ~Entity();
 
+        Entity(const Entity&) = delete;
+
+        Entity& operator=(const Entity&) = delete;
+
         DirectX::SimpleMath::Vector2 GetLocation() const;
 
         void SetLocation(const float x, const float y);
@@ -44,5 +54,8 @@ namespace ParticleHomeEntertainment {
         RECT GetBoundingBoxLocation();
 
         std::vector<DirectX::SimpleMath::Vector2>& GetCollisionTileCoordinates();
+
+        // TODO: Make protected and add accessors
+        Sprite _Sprite;
     };
 }

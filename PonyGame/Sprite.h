@@ -17,10 +17,6 @@ namespace ParticleHomeEntertainment {
         IDLE, RUNNING, JUMPING
     };
 
-    enum SpriteSpecialStateEnum {
-        ON_GROUND, IN_AIR
-    };
-
     struct SpriteCollisionResult {
         bool _Top = false;
         bool _Bottom = false;
@@ -29,10 +25,15 @@ namespace ParticleHomeEntertainment {
     };
 
     class Sprite {
+    private:
     public:
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _CurrentTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _IdleTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _RunningTile;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _JumpingTile;
+
+        RECT _SourceRectangle;
+        uint32_t _SpriteSheetFrameWidth;
 
         uint8_t _CurrentFrame;
         uint32_t _IdleSpriteSheetWidth;
@@ -45,7 +46,7 @@ namespace ParticleHomeEntertainment {
 
         SpriteFacingStateEnum _Facing;
         SpriteAnimationStateEnum _AnimationState;
-        SpriteSpecialStateEnum _SpecialState;
+        DirectX::SpriteEffects _Transform;
 
         explicit Sprite();
 
@@ -53,7 +54,7 @@ namespace ParticleHomeEntertainment {
 
         void Animate(const double& elapsedSeconds);
 
-        void GetTexture(ID3D11ShaderResourceView* ponyTexture, RECT& sourceRectangle, DirectX::SpriteEffects& transform);
+        void UpdateTexture();
 
         void ResetTiles();
     };
