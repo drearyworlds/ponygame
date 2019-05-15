@@ -19,7 +19,6 @@ namespace ParticleHomeEntertainment {
         DirectX::SimpleMath::Vector2 _Location;
         Rectangle _AaBbOffsetLeftFacing;
         Rectangle _AaBbOffsetRightFacing;
-        RECT _BoundingBoxLocation;
 
         DirectX::SimpleMath::Vector2 _Velocity;
 

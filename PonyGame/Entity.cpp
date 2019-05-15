@@ -34,28 +34,31 @@ Entity::Entity(const float startingLocationX, const float startingLocationY) {
 Entity::~Entity() {
 }
 
-DirectX::SimpleMath::Vector2 ParticleHomeEntertainment::Entity::GetLocation() const {
+DirectX::SimpleMath::Vector2 Entity::GetLocation() const {
     return _Location;
 }
 
-void ParticleHomeEntertainment::Entity::SetLocation(const float x, const float y) {
+void Entity::SetLocation(const float x, const float y) {
     _Location.x = x;
     _Location.y = y;
-    if (_Facing == SpriteFacingStateEnum::FACING_LEFT) {
-        _BoundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x);
-        _BoundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x + _AaBbOffsetLeftFacing.width);
-        _BoundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y);
-        _BoundingBoxLocation.bottom = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y + _AaBbOffsetLeftFacing.height);
-    } else {
-        _BoundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetRightFacing.x);
-        _BoundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetRightFacing.x + _AaBbOffsetRightFacing.width);
-        _BoundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetRightFacing.y);
-        _BoundingBoxLocation.bottom = static_cast<long>(_Location.y + _AaBbOffsetRightFacing.y + _AaBbOffsetRightFacing.height);
-    }
 }
 
-RECT ParticleHomeEntertainment::Entity::GetBoundingBoxLocation() {
-    return _BoundingBoxLocation;
+RECT Entity::GetBoundingBoxLocation() {
+    RECT boundingBoxLocation;
+
+    if (_Facing == SpriteFacingStateEnum::FACING_LEFT) {
+        boundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x);
+        boundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x + _AaBbOffsetLeftFacing.width);
+        boundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y);
+        boundingBoxLocation.bottom = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y + _AaBbOffsetLeftFacing.height);
+    } else {
+        boundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetRightFacing.x);
+        boundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetRightFacing.x + _AaBbOffsetRightFacing.width);
+        boundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetRightFacing.y);
+        boundingBoxLocation.bottom = static_cast<long>(_Location.y + _AaBbOffsetRightFacing.y + _AaBbOffsetRightFacing.height);
+    }
+
+    return boundingBoxLocation;
 }
 
 void Entity::Move(int xSpeed, int ySpeed) {
@@ -113,15 +116,16 @@ void Entity::Move(int xSpeed, int ySpeed) {
 
 void Entity::MoveX(int velocity) {
     if (velocity > 0) {
+        auto boundingBoxLocation = GetBoundingBoxLocation();
+
         // Moving right
-        float projectedRightTileX = static_cast<float>((_BoundingBoxLocation.right + velocity) / SPRITE_WIDTH_PX);
-        float upperRightYTile = static_cast<float>(_BoundingBoxLocation.top / SPRITE_HEIGHT_PX);
-        float lowerRightYTile = static_cast<float>(_BoundingBoxLocation.bottom / SPRITE_HEIGHT_PX);
+        float projectedRightTileX = static_cast<float>((boundingBoxLocation.right + velocity) / SPRITE_WIDTH_PX);
+        float upperRightYTile = static_cast<float>(boundingBoxLocation.top / SPRITE_HEIGHT_PX);
+        float lowerRightYTile = static_cast<float>(boundingBoxLocation.bottom / SPRITE_HEIGHT_PX);
 
         // Upper right corner or lower right corner
         if (CollisionWithTile(projectedRightTileX, upperRightYTile) || CollisionWithTile(projectedRightTileX, lowerRightYTile)) {
-            MoveX(velocity - 1);
-
+            _Location.x = (projectedRightTileX * SPRITE_WIDTH_PX) - _AaBbOffsetRightFacing.x - _AaBbOffsetRightFacing.width - 1;
 #ifdef _DEBUG
             if (CollisionWithTile(projectedRightTileX, upperRightYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedRightTileX, upperRightYTile });
@@ -133,17 +137,18 @@ void Entity::MoveX(int velocity) {
 #endif
         } else {
             // NO COLLUSION!!
-            SetLocation(_Location.x + velocity, _Location.y);
+            _Location.x += velocity;
         }
     } else if (velocity < 0) {
+        auto boundingBoxLocation = GetBoundingBoxLocation();
+
         // Moving left
-        float projectedLeftTileX = static_cast<float>((_BoundingBoxLocation.left + velocity) / SPRITE_WIDTH_PX);
-        float upperLeftYTile = static_cast<float>(_BoundingBoxLocation.top / SPRITE_HEIGHT_PX);
-        float lowerLeftYTile = static_cast<float>(_BoundingBoxLocation.bottom / SPRITE_HEIGHT_PX);
+        float projectedLeftTileX = static_cast<float>((boundingBoxLocation.left + velocity) / SPRITE_WIDTH_PX);
+        float upperLeftYTile = static_cast<float>(boundingBoxLocation.top / SPRITE_HEIGHT_PX);
+        float lowerLeftYTile = static_cast<float>(boundingBoxLocation.bottom / SPRITE_HEIGHT_PX);
 
         if (CollisionWithTile(projectedLeftTileX, upperLeftYTile) || CollisionWithTile(projectedLeftTileX, lowerLeftYTile)) {
-            MoveX(velocity + 1);
-
+            _Location.x = ((projectedLeftTileX + 1) * SPRITE_WIDTH_PX);
 #ifdef _DEBUG
             if (CollisionWithTile(projectedLeftTileX, upperLeftYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedLeftTileX, upperLeftYTile });
@@ -155,21 +160,21 @@ void Entity::MoveX(int velocity) {
 #endif
         } else {
             // NO COLLUSION!!
-            SetLocation(_Location.x + velocity, _Location.y);
+            _Location.x += velocity;
         }
     }
 }
 
 void Entity::MoveY(int velocity) {
     if (velocity < 0) {
+        auto boundingBoxLocation = GetBoundingBoxLocation();
+
         // Moving up
-        float upperLeftXTile = static_cast<float>(_BoundingBoxLocation.left / SPRITE_WIDTH_PX);
-        float upperRightXTile = static_cast<float>(_BoundingBoxLocation.right / SPRITE_WIDTH_PX);
-        float projectedUpperYTile = static_cast<float>((_BoundingBoxLocation.top + velocity) / SPRITE_HEIGHT_PX);
+        float upperLeftXTile = static_cast<float>(boundingBoxLocation.left / SPRITE_WIDTH_PX);
+        float upperRightXTile = static_cast<float>(boundingBoxLocation.right / SPRITE_WIDTH_PX);
+        float projectedUpperYTile = static_cast<float>((boundingBoxLocation.top + velocity) / SPRITE_HEIGHT_PX);
 
         if (CollisionWithTile(upperLeftXTile, projectedUpperYTile) || CollisionWithTile(upperRightXTile, projectedUpperYTile)) {
-            MoveY(velocity + 1);
-
 #ifdef _DEBUG
             if (CollisionWithTile(upperLeftXTile, projectedUpperYTile)) {
                 _CollisionTileCoordinatesList.push_back({ upperLeftXTile, projectedUpperYTile });
@@ -181,17 +186,17 @@ void Entity::MoveY(int velocity) {
 #endif
         } else {
             // NO COLLUSION!!
-            SetLocation(_Location.x, _Location.y + velocity);
+            _Location.y += velocity;
         }
     } else if (velocity > 0) {
+        auto boundingBoxLocation = GetBoundingBoxLocation();
+
         // Moving down
-        float lowerLeftXTile = static_cast<float>(_BoundingBoxLocation.left / SPRITE_WIDTH_PX);
-        float lowerRightXTile = static_cast<float>(_BoundingBoxLocation.right / SPRITE_WIDTH_PX);
-        float projectedLowerYTile = static_cast<float>((_BoundingBoxLocation.bottom + velocity) / SPRITE_HEIGHT_PX);
+        float lowerLeftXTile = static_cast<float>(boundingBoxLocation.left / SPRITE_WIDTH_PX);
+        float lowerRightXTile = static_cast<float>(boundingBoxLocation.right / SPRITE_WIDTH_PX);
+        float projectedLowerYTile = static_cast<float>((boundingBoxLocation.bottom + velocity) / SPRITE_HEIGHT_PX);
 
         if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile) || CollisionWithTile(lowerRightXTile, projectedLowerYTile)) {
-            MoveY(velocity - 1);
-
 #ifdef _DEBUG
             if (CollisionWithTile(lowerLeftXTile, projectedLowerYTile)) {
                 _CollisionTileCoordinatesList.push_back({ lowerLeftXTile, projectedLowerYTile });
@@ -206,7 +211,7 @@ void Entity::MoveY(int velocity) {
             _Velocity.y = 0;
         } else {
             // NO COLLUSION!!
-            SetLocation(_Location.x, _Location.y + velocity);
+            _Location.y += velocity;
         }
     }
 }
