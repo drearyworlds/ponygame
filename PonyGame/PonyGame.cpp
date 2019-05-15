@@ -12,12 +12,10 @@ using Microsoft::WRL::ComPtr;
 
 #pragma comment(lib, "d3d11.lib")
 
-namespace DX {
-    void ThrowIfFailed(HRESULT hr) {
-        if (FAILED(hr)) {
-            // Set a breakpoint on this line to catch DirectX API errors
-            throw std::exception();
-        }
+void DX::ThrowIfFailed(HRESULT hr) {
+    if (FAILED(hr)) {
+        // Set a breakpoint on this line to catch DirectX API errors
+        throw std::exception();
     }
 }
 
@@ -185,59 +183,7 @@ void PonyGame::InitializeTextures() {
             nullptr, _MoonTileSe._Tile.ReleaseAndGetAddressOf()));
     }
 
-    {
-        //TODO: Pony.Initialize(_D3dDevice) that calls into _Sprite.Initialize(_D3dDevice) to get all these textures set
-
-        _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(_D3dContext.Get());
-
-        // Pony Idle Resources
-        ComPtr<ID3D11Resource> ponyIdleResource;
-        HRESULT hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
-            ponyIdleResource.GetAddressOf(), _Pony._Sprite._IdleTexture.ReleaseAndGetAddressOf());
-        DX::ThrowIfFailed(hr);
-
-        ComPtr<ID3D11Texture2D> ponyIdleTexture;
-        DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
-
-        CD3D11_TEXTURE2D_DESC ponyIdleDesc;
-        ponyIdleTexture->GetDesc(&ponyIdleDesc);
-
-        // Get total sprite sheet size
-        _Pony._Sprite._IdleSpriteSheetWidth = ponyIdleDesc.Width;
-        _Pony._Sprite._IdleSpriteSheetHeight = ponyIdleDesc.Height;
-
-        // Pony Running Resources
-        ComPtr<ID3D11Resource> ponyRunResource;
-        hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
-            ponyRunResource.GetAddressOf(), _Pony._Sprite._RunningTexture.ReleaseAndGetAddressOf());
-        DX::ThrowIfFailed(hr);
-
-        ComPtr<ID3D11Texture2D> ponyRunTexture;
-        DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
-
-        CD3D11_TEXTURE2D_DESC ponyRunDesc;
-        ponyRunTexture->GetDesc(&ponyRunDesc);
-
-        // Get total sprite sheet size
-        _Pony._Sprite._RunningSpriteSheetWidth = ponyRunDesc.Width;
-        _Pony._Sprite._RunningSpriteSheetHeight = ponyRunDesc.Height;
-
-        // Pony Jumping Resources
-        ComPtr<ID3D11Resource> ponyJumpResource;
-        hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_JUMPING,
-            ponyJumpResource.GetAddressOf(), _Pony._Sprite._JumpingTexture.ReleaseAndGetAddressOf());
-        DX::ThrowIfFailed(hr);
-
-        ComPtr<ID3D11Texture2D> ponyJumpTexture;
-        DX::ThrowIfFailed(ponyJumpResource.As(&ponyJumpTexture));
-
-        CD3D11_TEXTURE2D_DESC ponyJumpDesc;
-        ponyJumpTexture->GetDesc(&ponyJumpDesc);
-
-        // Get total sprite sheet size
-        _Pony._Sprite._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
-        _Pony._Sprite._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
-    }
+    _Pony.Initialize(_D3dContext, _D3dDevice);
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -483,7 +429,7 @@ void PonyGame::DrawEnemies() {
 }
 
 void PonyGame::DrawPony() {
-    _Pony.Draw(_D3dDevice, _SpriteBatch, _OriginLocationPx);
+    _Pony.Draw(_D3dDevice, _OriginLocationPx);
 }
 
 void PonyGame::DrawPonyBoundingBox() {
@@ -551,7 +497,6 @@ void PonyGame::OnDeviceLost() {
     // Direct3D resource cleanup
     _Pony.Reset();
 
-    _SpriteBatch.reset();
     _BackgroundSpriteBatch.reset();
 
     _DepthStencilView.Reset();

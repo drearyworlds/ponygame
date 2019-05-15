@@ -11,6 +11,11 @@
 #include <nowarn/algorithm>
 #include <memory>
 
+namespace DX {
+    void ThrowIfFailed(HRESULT hr);
+}
+
+
 namespace ParticleHomeEntertainment {
     enum GameStateEnum {
         TITLE_SCREEN, IN_LEVEL, PAUSED, CREDITS
@@ -41,9 +46,6 @@ namespace ParticleHomeEntertainment {
         BackgroundTile _MoonTileNw, _MoonTileNe, _MoonTileSw, _MoonTileSe;
         std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
         LevelScreen _CurrentScreen;
-
-        // Sprites
-        std::shared_ptr<DirectX::SpriteBatch> _SpriteBatch;
 
         GameStateEnum _GameState = TITLE_SCREEN;
         uint32_t _CurrentLevel;

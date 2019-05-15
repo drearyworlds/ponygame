@@ -52,7 +52,13 @@ namespace ParticleHomeEntertainment {
         uint32_t _JumpingSpriteSheetWidth;
         uint32_t _JumpingSpriteSheetHeight;
 
+        std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
+
         explicit Sprite();
+
+        Sprite(const Sprite&) = delete;
+
+        Sprite& operator=(const Sprite&) = delete;
 
         ~Sprite();
 

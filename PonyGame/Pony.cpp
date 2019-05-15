@@ -4,17 +4,69 @@
 #include "CommonStates.h"
 #include "SpriteBatch.h"
 #include <nowarn/memory>
+#include <DDSTextureLoader.h>
 
 using namespace ParticleHomeEntertainment;
 
-Pony::Pony(const float startingLocationX, const float startingLocationY) : Entity(startingLocationX, startingLocationY) {
+Pony::Pony(const float startingLocationX, const float startingLocationY)
+    : Entity(startingLocationX, startingLocationY) {
 }
 
 Pony::~Pony() {
 }
 
+void Pony::Initialize(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context, Microsoft::WRL::ComPtr<ID3D11Device1> device) {
+    _Sprite._SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
+
+    // Pony Idle Resources
+    Microsoft::WRL::ComPtr<ID3D11Resource> ponyIdleResource;
+    HRESULT hr = DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_PONY_IDLE, ponyIdleResource.GetAddressOf(), _Sprite._IdleTexture.ReleaseAndGetAddressOf());
+    DX::ThrowIfFailed(hr);
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> ponyIdleTexture;
+    DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
+
+    CD3D11_TEXTURE2D_DESC ponyIdleDesc;
+    ponyIdleTexture->GetDesc(&ponyIdleDesc);
+
+    // Get total sprite sheet size
+    _Sprite._IdleSpriteSheetWidth = ponyIdleDesc.Width;
+    _Sprite._IdleSpriteSheetHeight = ponyIdleDesc.Height;
+
+    // Pony Running Resources
+    Microsoft::WRL::ComPtr<ID3D11Resource> ponyRunResource;
+    hr = DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_PONY_RUNNING, ponyRunResource.GetAddressOf(), _Sprite._RunningTexture.ReleaseAndGetAddressOf());
+    DX::ThrowIfFailed(hr);
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> ponyRunTexture;
+    DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
+
+    CD3D11_TEXTURE2D_DESC ponyRunDesc;
+    ponyRunTexture->GetDesc(&ponyRunDesc);
+
+    // Get total sprite sheet size
+    _Sprite._RunningSpriteSheetWidth = ponyRunDesc.Width;
+    _Sprite._RunningSpriteSheetHeight = ponyRunDesc.Height;
+
+    // Pony Jumping Resources
+    Microsoft::WRL::ComPtr<ID3D11Resource> ponyJumpResource;
+    hr = DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_PONY_JUMPING, ponyJumpResource.GetAddressOf(), _Sprite._JumpingTexture.ReleaseAndGetAddressOf());
+    DX::ThrowIfFailed(hr);
+
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> ponyJumpTexture;
+    DX::ThrowIfFailed(ponyJumpResource.As(&ponyJumpTexture));
+
+    CD3D11_TEXTURE2D_DESC ponyJumpDesc;
+    ponyJumpTexture->GetDesc(&ponyJumpDesc);
+
+    // Get total sprite sheet size
+    _Sprite._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
+    _Sprite._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
+}
+
 void Pony::Reset() {
     _Sprite.ResetTextures();
+    _Sprite._SpriteBatch.reset();
 }
 
 void Pony::Tick(const double& elapsedSecs) {
@@ -23,11 +75,11 @@ void Pony::Tick(const double& elapsedSecs) {
     _Sprite.Animate(elapsedSecs);
 }
 
-void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, std::shared_ptr<DirectX::SpriteBatch> spriteBatch, DirectX::SimpleMath::Vector2 originLocationPx) {
+void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, DirectX::SimpleMath::Vector2 originLocationPx) {
     // Rendering code
     DirectX::CommonStates states(device.Get());
 
-    spriteBatch->Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, states.NonPremultiplied());
+    _Sprite._SpriteBatch->Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, states.NonPremultiplied());
 
     _Sprite.UpdateTexture();
 
@@ -35,7 +87,7 @@ void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, std::shared_ptr<Di
         const float ROTATION = 0.f;
         const float SCALE = 1.f;
         const float LAYER_DEPTH = 0.f;
-        spriteBatch->Draw(_Sprite.GetTexture(),
+        _Sprite._SpriteBatch->Draw(_Sprite.GetTexture(),
             GetLocation(),
             &_Sprite.GetSourceRectangle(),
             DirectX::Colors::White,
@@ -48,5 +100,5 @@ void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, std::shared_ptr<Di
         // ponyTexture is nullptr
     }
 
-    spriteBatch->End();
+    _Sprite._SpriteBatch->End();
 }
