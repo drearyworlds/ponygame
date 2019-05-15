@@ -13,6 +13,10 @@ Pony::Pony(const float startingLocationX, const float startingLocationY) : Entit
 Pony::~Pony() {
 }
 
+void Pony::Reset() {
+    _Sprite.ResetTextures();
+}
+
 void Pony::Tick(const double& elapsedSecs) {
     Move(PONY_X_SPEED_PX, 0);
 
@@ -27,18 +31,18 @@ void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, std::shared_ptr<Di
 
     _Sprite.UpdateTexture();
 
-    if (_Sprite._CurrentTile != nullptr) {
+    if (_Sprite.GetTexture() != nullptr) {
         const float ROTATION = 0.f;
         const float SCALE = 1.f;
         const float LAYER_DEPTH = 0.f;
-        spriteBatch->Draw(_Sprite._CurrentTile.Get(),
+        spriteBatch->Draw(_Sprite.GetTexture(),
             GetLocation(),
-            &_Sprite._SourceRectangle,
+            &_Sprite.GetSourceRectangle(),
             DirectX::Colors::White,
             ROTATION,
             originLocationPx,
             SCALE,
-            _Sprite._Transform,
+            _Sprite.GetTransform(),
             LAYER_DEPTH);
     } else {
         // ponyTexture is nullptr

@@ -58,6 +58,12 @@ namespace ParticleHomeEntertainment {
         // InputState
         InputState _InputState;
 
+        void CreateDevice();
+
+        void InitializeTextures();
+
+        void CreateResources();
+
         void RenderScene();
 
         /// <summary>Helper method to clear the back buffers.</summary>
@@ -76,9 +82,6 @@ namespace ParticleHomeEntertainment {
         void DrawPonyBoundingBox();
 
         void Present();
-
-        void CreateDevice();
-        void CreateResources();
 
         void OnDeviceLost();
 

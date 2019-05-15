@@ -45,10 +45,23 @@ void Entity::SetLocation(const float x, const float y) {
     _Location.y = y;
 }
 
+void Entity::SetIdle() {
+    _Sprite.SetAnimationState(SpriteAnimationStateEnum::IDLE);
+}
+
+void Entity::SetRunning() {
+    _Sprite.SetAnimationState(SpriteAnimationStateEnum::RUNNING);
+}
+
+void Entity::SetJumping() {
+    _Sprite.SetAnimationState(SpriteAnimationStateEnum::JUMPING);
+    _SpecialState = EntitySpecialStateEnum::IN_AIR;
+}
+
 RECT Entity::GetBoundingBoxLocation() {
     RECT boundingBoxLocation;
 
-    if (_Sprite._Facing == SpriteFacingStateEnum::FACING_LEFT) {
+    if (_Sprite.IsFacingLeft()) {
         boundingBoxLocation.left = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x);
         boundingBoxLocation.right = static_cast<long>(_Location.x + _AaBbOffsetLeftFacing.x + _AaBbOffsetLeftFacing.width);
         boundingBoxLocation.top = static_cast<long>(_Location.y + _AaBbOffsetLeftFacing.y);
@@ -67,15 +80,15 @@ void Entity::Move(int xSpeed, int ySpeed) {
     bool facingChanged = false;
     // Handle X-Axis movement
     if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)) {
-        facingChanged = (_Sprite._Facing == SpriteFacingStateEnum::FACING_RIGHT);
-        _Sprite._Facing = SpriteFacingStateEnum::FACING_LEFT;
+        facingChanged = _Sprite.IsFacingRight();
+        _Sprite.SetFacing(SpriteFacingStateEnum::FACING_LEFT);
 
         if (!facingChanged) {
             MoveX(-xSpeed);
         }
     } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
-        facingChanged = (_Sprite._Facing == SpriteFacingStateEnum::FACING_LEFT);
-        _Sprite._Facing = SpriteFacingStateEnum::FACING_RIGHT;
+        facingChanged = _Sprite.IsFacingLeft();
+        _Sprite.SetFacing(SpriteFacingStateEnum::FACING_RIGHT);
 
         if (!facingChanged) {
             MoveX(xSpeed);
@@ -94,13 +107,11 @@ void Entity::Move(int xSpeed, int ySpeed) {
             _Velocity.y = PONY_JUMP_Y_VELOCITY;
 
             // Set its states
-            _Sprite._AnimationState = SpriteAnimationStateEnum::JUMPING;
-            _SpecialState = EntitySpecialStateEnum::IN_AIR;
-        } else if (PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Left)
-            || PonyGame::Instance().GetInputState().IsKeyDown(DirectX::Keyboard::Keys::Right)) {
-            _Sprite._AnimationState = SpriteAnimationStateEnum::RUNNING;
+            SetJumping();
+        } else if (PonyGame::Instance().GetInputState().AreAnyKeysDown({ DirectX::Keyboard::Keys::Left, DirectX::Keyboard::Keys::Right })) {
+            SetRunning();
         } else {
-            _Sprite._AnimationState = SpriteAnimationStateEnum::IDLE;
+            SetIdle();
         }
     } else {
         // Keep existing special state while in the air

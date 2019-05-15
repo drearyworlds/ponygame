@@ -3,6 +3,7 @@
 #include <nowarn/windef.h>
 #include <nowarn/Keyboard.h>
 #include <nowarn/Mouse.h>
+#include <nowarn/vector>
 
 namespace ParticleHomeEntertainment {
     class InputState {
@@ -25,6 +26,8 @@ namespace ParticleHomeEntertainment {
         bool WasKeyPressed(DirectX::Keyboard::Keys key);
 
         bool IsKeyDown(DirectX::Keyboard::Keys key);
+
+        bool AreAnyKeysDown(std::vector<DirectX::Keyboard::Keys> keys);
 
         bool WasKeyReleased(DirectX::Keyboard::Keys key);
     };

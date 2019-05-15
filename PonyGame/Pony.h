@@ -13,6 +13,8 @@ namespace ParticleHomeEntertainment {
 
         Pony& operator=(const Pony&) = delete;
 
+        void Reset() override;
+
         void Tick(const double& elapsedSecs) override;
 
         void Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, std::shared_ptr<DirectX::SpriteBatch> spriteBatch, const DirectX::SimpleMath::Vector2 originLocationPx);

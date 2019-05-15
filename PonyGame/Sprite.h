@@ -26,36 +26,54 @@ namespace ParticleHomeEntertainment {
 
     class Sprite {
     private:
-    public:
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _CurrentTile;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _IdleTile;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _RunningTile;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _JumpingTile;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _CurrentTexture;
 
         RECT _SourceRectangle;
         uint32_t _SpriteSheetFrameWidth;
 
         uint8_t _CurrentFrame;
-        uint32_t _IdleSpriteSheetWidth;
-        uint32_t _IdleSpriteSheetHeight;
-        uint32_t _RunningSpriteSheetWidth;
-        uint32_t _RunningSpriteSheetHeight;
-        uint32_t _JumpingSpriteSheetWidth;
-        uint32_t _JumpingSpriteSheetHeight;
+
         double _TotalElapsedSec;
 
         SpriteFacingStateEnum _Facing;
         SpriteAnimationStateEnum _AnimationState;
         DirectX::SpriteEffects _Transform;
 
+    public:
+        // TODO Make all of these fields private:
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _IdleTexture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _RunningTexture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _JumpingTexture;
+
+        uint32_t _IdleSpriteSheetWidth;
+        uint32_t _IdleSpriteSheetHeight;
+        uint32_t _RunningSpriteSheetWidth;
+        uint32_t _RunningSpriteSheetHeight;
+        uint32_t _JumpingSpriteSheetWidth;
+        uint32_t _JumpingSpriteSheetHeight;
+
         explicit Sprite();
 
         ~Sprite();
+
+        bool IsFacingLeft();
+
+        bool IsFacingRight();
+
+        void SetFacing(SpriteFacingStateEnum facing);
+
+        void SetAnimationState(SpriteAnimationStateEnum state);
 
         void Animate(const double& elapsedSeconds);
 
         void UpdateTexture();
 
-        void ResetTiles();
+        ID3D11ShaderResourceView* GetTexture();
+
+        RECT& GetSourceRectangle();
+
+        DirectX::SpriteEffects GetTransform();
+
+        void ResetTextures();
     };
 }

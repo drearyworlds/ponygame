@@ -6,7 +6,6 @@
 #include <nowarn/DirectXColors.h>
 #include <nowarn/DDSTextureLoader.h>
 
-using namespace DirectX;
 using namespace ParticleHomeEntertainment;
 
 using Microsoft::WRL::ComPtr;
@@ -50,7 +49,14 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 
     CreateDevice();
 
+    InitializeTextures();
+
     CreateResources();
+
+    LoadLevel(_CurrentLevel);
+
+    _OriginLocationPx.x = static_cast<float>(0);
+    _OriginLocationPx.y = static_cast<float>(0);
 
     //_Mouse.SetWindow(window);
 
@@ -58,226 +64,6 @@ void PonyGame::Initialize(HWND window, int width, int height) {
     // e.g. for 60 FPS fixed timestep update logic, call:
     _Timer.SetFixedTimeStep(true);
     _Timer.SetTargetElapsedSeconds(1.0 / SECONDS_PER_MINUTE);
-}
-
-void PonyGame::LoadLevel(uint32_t level) {
-
-    //TODO: Move this into a text file
-    //TODO: Draw maps in layers. e.g. empty sky files, then star tiles, then foreground interactive layer
-    if (level == 1) {
-        _CurrentScreen._Tiles = {
-        _GrassTile, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
-        _GrassTile, _SkyTileSe, _SkyTileSw, _MoonTileSw, _MoonTileSe, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
-        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
-        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
-        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
-        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
-        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _GrassTile, _SkyTileNe, _SkyTileNw, _GrassTile, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
-        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _GrassTile, _GrassTile, _SkyTileSw, _SkyTileSe, _GrassTile, _GrassTile, _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
-        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile
-        };
-    }
-}
-
-InputState& PonyGame::GetInputState() {
-    return _InputState;
-}
-
-// Executes the basic game loop.
-void PonyGame::Tick() {
-    _InputState.UpdateKeyStates();
-
-    if (_InputState.IsKeyDown(Keyboard::Keys::Escape)) {
-        ExitGame();
-    }
-
-    if (_GameState == PAUSED) {
-        return;
-    }
-
-    // Update the game world
-    _Timer.Tick([=](const double& elapsedSecs) {
-        _Pony.Tick(elapsedSecs);
-    });
-
-    // Don't try to render anything before the first Update.
-    if (_Timer.GetFrameCount() > 0) {
-        // Draw the frame
-        RenderScene();
-    }
-}
-
-void PonyGame::RenderScene() {
-    Clear();
-
-    DrawBackground();
-
-#ifdef _DEBUG
-    HighlightCollisionTiles();
-#endif
-
-    DrawObstacles();
-
-    DrawEnemies();
-
-    DrawPony();
-
-#ifdef _DEBUG
-    DrawPonyBoundingBox();
-#endif
-
-    Present();
-}
-
-void PonyGame::Clear() {
-    // Clear the views.
-    _D3dContext->ClearRenderTargetView(_RenderTargetView.Get(), Colors::White);
-    _D3dContext->ClearDepthStencilView(_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-    _D3dContext->OMSetRenderTargets(1, _RenderTargetView.GetAddressOf(), _DepthStencilView.Get());
-
-    // Set the viewport.
-    CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(_OutputWidth), static_cast<float>(_OutputHeight));
-    _D3dContext->RSSetViewports(1, &viewport);
-}
-
-void PonyGame::DrawBackground() {
-    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr);
-
-    DirectX::SimpleMath::Vector2 tileLocation = {};
-    RECT tileRectangle {};
-    tileRectangle.left = 0;
-    tileRectangle.top = 0;
-    tileRectangle.right = SPRITE_WIDTH_PX;
-    tileRectangle.bottom = SPRITE_HEIGHT_PX;
-
-    const float ROTATION = 0.f;
-    const float SCALE = 1.f;
-    const float LAYER_DEPTH = 0.f;
-
-    for (float y = 0; y < SCREEN_HEIGHT_TILES; y++) {
-        for (float x = 0; x < SCREEN_WIDTH_TILES; x++) {
-            tileLocation.x = SPRITE_WIDTH_PX * x;
-            tileLocation.y = SPRITE_HEIGHT_PX * y;
-            _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(x, y)._Tile.Get(),
-                tileLocation,
-                &tileRectangle,
-                Colors::White,
-                ROTATION,
-                _OriginLocationPx,
-                SCALE,
-                DirectX::SpriteEffects_None,
-                LAYER_DEPTH);
-        }
-    }
-
-    _BackgroundSpriteBatch->End();
-}
-
-void PonyGame::HighlightCollisionTiles() {
-    _BackgroundSpriteBatch->Begin(SpriteSortMode_Deferred, nullptr, nullptr);
-
-    RECT tileRectangle {};
-    tileRectangle.left = 0;
-    tileRectangle.top = 0;
-    tileRectangle.right = SPRITE_WIDTH_PX;
-    tileRectangle.bottom = SPRITE_HEIGHT_PX;
-
-    const float ROTATION = 0.f;
-    const float SCALE = 1.f;
-    const float LAYER_DEPTH = 0.f;
-
-    while (!_Pony.GetCollisionTileCoordinates().empty()) {
-        DirectX::SimpleMath::Vector2 coords = _Pony.GetCollisionTileCoordinates().back();
-
-        auto rect = _CurrentScreen.GetTileRect(_CurrentScreen.GetTileIndex(coords.x, coords.y));
-        DirectX::SimpleMath::Vector2 tileLocation = { static_cast<float>(rect.left),  static_cast<float>(rect.top) };
-
-        _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(coords.x, coords.y)._Tile.Get(),
-            tileLocation,
-            &tileRectangle,
-            Colors::Black,
-            ROTATION,
-            _OriginLocationPx,
-            SCALE,
-            DirectX::SpriteEffects_None,
-            LAYER_DEPTH);
-
-        _Pony.GetCollisionTileCoordinates().pop_back();
-    }
-
-    _BackgroundSpriteBatch->End();
-
-}
-
-void PonyGame::DrawObstacles() {
-
-}
-
-void PonyGame::DrawEnemies() {
-
-}
-
-void PonyGame::DrawPony() {
-    _Pony.Draw(_D3dDevice, _SpriteBatch ,_OriginLocationPx);
-}
-
-void PonyGame::DrawPonyBoundingBox() {
-
-}
-
-const LevelScreen& PonyGame::GetScreen() const {
-    return _CurrentScreen;
-}
-
-// Presents the back buffer contents to the screen.
-void PonyGame::Present() {
-    // The first argument instructs DXGI to block until VSync, putting the application
-    // to sleep until the next VSync. This ensures we don't waste any cycles rendering
-    // frames that will never be displayed to the screen.
-    HRESULT hr = _SwapChain->Present(1, 0);
-
-    // If the device was reset we must completely reinitialize the renderer.
-    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
-        OnDeviceLost();
-    } else {
-        DX::ThrowIfFailed(hr);
-    }
-}
-
-// Message handlers
-void PonyGame::OnActivated() {
-    // TODO: PonyGame is becoming active window.
-}
-
-void PonyGame::OnDeactivated() {
-    // TODO: PonyGame is becoming background window.
-}
-
-void PonyGame::OnSuspending() {
-    // TODO: PonyGame is being power-suspended (or minimized).
-}
-
-void PonyGame::OnResuming() {
-    _Timer.ResetElapsedTime();
-
-    // TODO: PonyGame is being power-resumed (or returning from minimize).
-}
-
-void PonyGame::OnWindowSizeChanged(int width, int height) {
-    _OutputWidth = std::min(static_cast<int>(SCREEN_WIDTH_PX), std::max(width, 1));
-    _OutputHeight = std::min(static_cast<int>(SCREEN_HEIGHT_PX), std::max(height, 1));
-
-    CreateResources();
-
-    // TODO: PonyGame window is being resized.
-}
-
-// Properties
-void PonyGame::GetDefaultSize(int& width, int& height) const {
-    // Desired default window size (note minimum size is 320x200).
-    width = SCREEN_WIDTH_PX;
-    height = SCREEN_HEIGHT_PX;
 }
 
 // These are the resources that depend on the device.
@@ -344,109 +130,114 @@ void PonyGame::CreateDevice() {
 
     DX::ThrowIfFailed(device.As(&_D3dDevice));
     DX::ThrowIfFailed(context.As(&_D3dContext));
+}
 
-    // Initialize device dependent objects here (independent of window size).
-    _SpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
-    _BackgroundSpriteBatch = std::make_unique<SpriteBatch>(_D3dContext.Get());
+// Initialize device dependent objects here (independent of window size).
+void PonyGame::InitializeTextures() {
+    {
+        //TODO: BackgroundTileManager::Instance().Initialize(_D3dDevice) to get all these textures set
+        _BackgroundSpriteBatch = std::make_unique<DirectX::SpriteBatch>(_D3dContext.Get());
 
-    // Background Tiles
-    _GrassTile._Interactive = BackgroundTile::TileInteractiveEnum::Solid;
-    _GrassTile._TileStyle = BackgroundTile::TileStyleEnum::Grass;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
-        nullptr, _GrassTile._Tile.ReleaseAndGetAddressOf()));
+        // Background Tiles
+        _GrassTile._Interactive = BackgroundTile::TileInteractiveEnum::Solid;
+        _GrassTile._TileStyle = BackgroundTile::TileStyleEnum::Grass;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_GRASS,
+            nullptr, _GrassTile._Tile.ReleaseAndGetAddressOf()));
 
-    _SkyTileNw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _SkyTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNW,
-        nullptr, _SkyTileNw._Tile.ReleaseAndGetAddressOf()));
+        _SkyTileNw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _SkyTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNW,
+            nullptr, _SkyTileNw._Tile.ReleaseAndGetAddressOf()));
 
-    _SkyTileNe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _SkyTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNE,
-        nullptr, _SkyTileNe._Tile.ReleaseAndGetAddressOf()));
+        _SkyTileNe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _SkyTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYNE,
+            nullptr, _SkyTileNe._Tile.ReleaseAndGetAddressOf()));
 
-    _SkyTileSw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _SkyTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSW,
-        nullptr, _SkyTileSw._Tile.ReleaseAndGetAddressOf()));
+        _SkyTileSw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _SkyTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSW,
+            nullptr, _SkyTileSw._Tile.ReleaseAndGetAddressOf()));
 
-    _SkyTileSe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _SkyTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSE,
-        nullptr, _SkyTileSe._Tile.ReleaseAndGetAddressOf()));
+        _SkyTileSe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _SkyTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_SKYSE,
+            nullptr, _SkyTileSe._Tile.ReleaseAndGetAddressOf()));
 
-    _MoonTileNw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _MoonTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNW,
-        nullptr, _MoonTileNw._Tile.ReleaseAndGetAddressOf()));
+        _MoonTileNw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _MoonTileNw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNW,
+            nullptr, _MoonTileNw._Tile.ReleaseAndGetAddressOf()));
 
-    _MoonTileNe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _MoonTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNE,
-        nullptr, _MoonTileNe._Tile.ReleaseAndGetAddressOf()));
+        _MoonTileNe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _MoonTileNe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONNE,
+            nullptr, _MoonTileNe._Tile.ReleaseAndGetAddressOf()));
 
-    _MoonTileSw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _MoonTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSW,
-        nullptr, _MoonTileSw._Tile.ReleaseAndGetAddressOf()));
+        _MoonTileSw._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _MoonTileSw._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSW,
+            nullptr, _MoonTileSw._Tile.ReleaseAndGetAddressOf()));
 
-    _MoonTileSe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
-    _MoonTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
-    DX::ThrowIfFailed(CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSE,
-        nullptr, _MoonTileSe._Tile.ReleaseAndGetAddressOf()));
+        _MoonTileSe._Interactive = BackgroundTile::TileInteractiveEnum::Empty;
+        _MoonTileSe._TileStyle = BackgroundTile::TileStyleEnum::Sky;
+        DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_MOONSE,
+            nullptr, _MoonTileSe._Tile.ReleaseAndGetAddressOf()));
+    }
 
-    // Pony Idle Resources
-    ComPtr<ID3D11Resource> ponyIdleResource;
-    hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
-        ponyIdleResource.GetAddressOf(), _Pony._Sprite._IdleTile.ReleaseAndGetAddressOf());
-    DX::ThrowIfFailed(hr);
+    {
+        //TODO: Pony.Initialize(_D3dDevice) that calls into _Sprite.Initialize(_D3dDevice) to get all these textures set
 
-    ComPtr<ID3D11Texture2D> ponyIdleTexture;
-    DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
+        _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(_D3dContext.Get());
 
-    CD3D11_TEXTURE2D_DESC ponyIdleDesc;
-    ponyIdleTexture->GetDesc(&ponyIdleDesc);
+        // Pony Idle Resources
+        ComPtr<ID3D11Resource> ponyIdleResource;
+        HRESULT hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_IDLE,
+            ponyIdleResource.GetAddressOf(), _Pony._Sprite._IdleTexture.ReleaseAndGetAddressOf());
+        DX::ThrowIfFailed(hr);
 
-    // Get total sprite sheet size
-    _Pony._Sprite._IdleSpriteSheetWidth = ponyIdleDesc.Width;
-    _Pony._Sprite._IdleSpriteSheetHeight = ponyIdleDesc.Height;
+        ComPtr<ID3D11Texture2D> ponyIdleTexture;
+        DX::ThrowIfFailed(ponyIdleResource.As(&ponyIdleTexture));
 
-    // Pony Running Resources
-    ComPtr<ID3D11Resource> ponyRunResource;
-    hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
-        ponyRunResource.GetAddressOf(), _Pony._Sprite._RunningTile.ReleaseAndGetAddressOf());
-    DX::ThrowIfFailed(hr);
+        CD3D11_TEXTURE2D_DESC ponyIdleDesc;
+        ponyIdleTexture->GetDesc(&ponyIdleDesc);
 
-    ComPtr<ID3D11Texture2D> ponyRunTexture;
-    DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
+        // Get total sprite sheet size
+        _Pony._Sprite._IdleSpriteSheetWidth = ponyIdleDesc.Width;
+        _Pony._Sprite._IdleSpriteSheetHeight = ponyIdleDesc.Height;
 
-    CD3D11_TEXTURE2D_DESC ponyRunDesc;
-    ponyRunTexture->GetDesc(&ponyRunDesc);
+        // Pony Running Resources
+        ComPtr<ID3D11Resource> ponyRunResource;
+        hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_RUNNING,
+            ponyRunResource.GetAddressOf(), _Pony._Sprite._RunningTexture.ReleaseAndGetAddressOf());
+        DX::ThrowIfFailed(hr);
 
-    // Get total sprite sheet size
-    _Pony._Sprite._RunningSpriteSheetWidth = ponyRunDesc.Width;
-    _Pony._Sprite._RunningSpriteSheetHeight = ponyRunDesc.Height;
+        ComPtr<ID3D11Texture2D> ponyRunTexture;
+        DX::ThrowIfFailed(ponyRunResource.As(&ponyRunTexture));
 
-    // Pony Jumping Resources
-    ComPtr<ID3D11Resource> ponyJumpResource;
-    hr = CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_JUMPING,
-        ponyJumpResource.GetAddressOf(), _Pony._Sprite._JumpingTile.ReleaseAndGetAddressOf());
-    DX::ThrowIfFailed(hr);
+        CD3D11_TEXTURE2D_DESC ponyRunDesc;
+        ponyRunTexture->GetDesc(&ponyRunDesc);
 
-    ComPtr<ID3D11Texture2D> ponyJumpTexture;
-    DX::ThrowIfFailed(ponyJumpResource.As(&ponyJumpTexture));
+        // Get total sprite sheet size
+        _Pony._Sprite._RunningSpriteSheetWidth = ponyRunDesc.Width;
+        _Pony._Sprite._RunningSpriteSheetHeight = ponyRunDesc.Height;
 
-    CD3D11_TEXTURE2D_DESC ponyJumpDesc;
-    ponyJumpTexture->GetDesc(&ponyJumpDesc);
+        // Pony Jumping Resources
+        ComPtr<ID3D11Resource> ponyJumpResource;
+        hr = DirectX::CreateDDSTextureFromFile(_D3dDevice.Get(), FILE_PATH_SPRITE_PONY_JUMPING,
+            ponyJumpResource.GetAddressOf(), _Pony._Sprite._JumpingTexture.ReleaseAndGetAddressOf());
+        DX::ThrowIfFailed(hr);
 
-    // Get total sprite sheet size
-    _Pony._Sprite._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
-    _Pony._Sprite._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
+        ComPtr<ID3D11Texture2D> ponyJumpTexture;
+        DX::ThrowIfFailed(ponyJumpResource.As(&ponyJumpTexture));
 
-    LoadLevel(_CurrentLevel);
+        CD3D11_TEXTURE2D_DESC ponyJumpDesc;
+        ponyJumpTexture->GetDesc(&ponyJumpDesc);
 
-    _OriginLocationPx.x = static_cast<float>(0);
-    _OriginLocationPx.y = static_cast<float>(0);
+        // Get total sprite sheet size
+        _Pony._Sprite._JumpingSpriteSheetWidth = ponyJumpDesc.Width;
+        _Pony._Sprite._JumpingSpriteSheetHeight = ponyJumpDesc.Height;
+    }
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -537,9 +328,228 @@ void PonyGame::CreateResources() {
     // TODO: Initialize windows-size dependent objects here.
 }
 
+void PonyGame::LoadLevel(uint32_t level) {
+
+    //TODO: Move this into a text file
+    //TODO: Draw maps in layers. e.g. empty sky files, then star tiles, then foreground interactive layer
+    if (level == 1) {
+        _CurrentScreen._Tiles = {
+        _GrassTile, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
+        _GrassTile, _SkyTileSe, _SkyTileSw, _MoonTileSw, _MoonTileSe, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
+        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
+        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
+        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
+        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
+        _GrassTile, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _GrassTile, _SkyTileNe, _SkyTileNw, _GrassTile, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
+        _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _GrassTile, _GrassTile, _SkyTileSw, _SkyTileSe, _GrassTile, _GrassTile, _GrassTile, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
+        _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile, _GrassTile
+        };
+    }
+}
+
+// Executes the basic game loop.
+void PonyGame::Tick() {
+    _InputState.UpdateKeyStates();
+
+    if (_InputState.IsKeyDown(DirectX::Keyboard::Keys::Escape)) {
+        ExitGame();
+    }
+
+    if (_GameState == PAUSED) {
+        return;
+    }
+
+    // Update the game world
+    _Timer.Tick([=](const double& elapsedSecs) {
+        _Pony.Tick(elapsedSecs);
+    });
+
+    // Don't try to render anything before the first Update.
+    if (_Timer.GetFrameCount() > 0) {
+        // Draw the frame
+        RenderScene();
+    }
+}
+
+void PonyGame::RenderScene() {
+    Clear();
+
+    DrawBackground();
+
+#ifdef _DEBUG
+    HighlightCollisionTiles();
+#endif
+
+    DrawObstacles();
+
+    DrawEnemies();
+
+    DrawPony();
+
+#ifdef _DEBUG
+    DrawPonyBoundingBox();
+#endif
+
+    Present();
+}
+
+void PonyGame::Clear() {
+    // Clear the views.
+    _D3dContext->ClearRenderTargetView(_RenderTargetView.Get(), DirectX::Colors::White);
+    _D3dContext->ClearDepthStencilView(_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+    _D3dContext->OMSetRenderTargets(1, _RenderTargetView.GetAddressOf(), _DepthStencilView.Get());
+
+    // Set the viewport.
+    CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(_OutputWidth), static_cast<float>(_OutputHeight));
+    _D3dContext->RSSetViewports(1, &viewport);
+}
+
+void PonyGame::DrawBackground() {
+    _BackgroundSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, nullptr, nullptr);
+
+    DirectX::SimpleMath::Vector2 tileLocation = {};
+    RECT tileRectangle {};
+    tileRectangle.left = 0;
+    tileRectangle.top = 0;
+    tileRectangle.right = SPRITE_WIDTH_PX;
+    tileRectangle.bottom = SPRITE_HEIGHT_PX;
+
+    const float ROTATION = 0.f;
+    const float SCALE = 1.f;
+    const float LAYER_DEPTH = 0.f;
+
+    for (float y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+        for (float x = 0; x < SCREEN_WIDTH_TILES; x++) {
+            tileLocation.x = SPRITE_WIDTH_PX * x;
+            tileLocation.y = SPRITE_HEIGHT_PX * y;
+            _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(x, y)._Tile.Get(),
+                tileLocation,
+                &tileRectangle,
+                DirectX::Colors::White,
+                ROTATION,
+                _OriginLocationPx,
+                SCALE,
+                DirectX::SpriteEffects_None,
+                LAYER_DEPTH);
+        }
+    }
+
+    _BackgroundSpriteBatch->End();
+}
+
+void PonyGame::HighlightCollisionTiles() {
+    _BackgroundSpriteBatch->Begin(DirectX::SpriteSortMode_Deferred, nullptr, nullptr);
+
+    RECT tileRectangle {};
+    tileRectangle.left = 0;
+    tileRectangle.top = 0;
+    tileRectangle.right = SPRITE_WIDTH_PX;
+    tileRectangle.bottom = SPRITE_HEIGHT_PX;
+
+    const float ROTATION = 0.f;
+    const float SCALE = 1.f;
+    const float LAYER_DEPTH = 0.f;
+
+    while (!_Pony.GetCollisionTileCoordinates().empty()) {
+        DirectX::SimpleMath::Vector2 coords = _Pony.GetCollisionTileCoordinates().back();
+
+        auto rect = _CurrentScreen.GetTileRect(_CurrentScreen.GetTileIndex(coords.x, coords.y));
+        DirectX::SimpleMath::Vector2 tileLocation = { static_cast<float>(rect.left),  static_cast<float>(rect.top) };
+
+        _BackgroundSpriteBatch->Draw(_CurrentScreen.GetTile(coords.x, coords.y)._Tile.Get(),
+            tileLocation,
+            &tileRectangle,
+            DirectX::Colors::Black,
+            ROTATION,
+            _OriginLocationPx,
+            SCALE,
+            DirectX::SpriteEffects_None,
+            LAYER_DEPTH);
+
+        _Pony.GetCollisionTileCoordinates().pop_back();
+    }
+
+    _BackgroundSpriteBatch->End();
+
+}
+
+void PonyGame::DrawObstacles() {
+
+}
+
+void PonyGame::DrawEnemies() {
+
+}
+
+void PonyGame::DrawPony() {
+    _Pony.Draw(_D3dDevice, _SpriteBatch, _OriginLocationPx);
+}
+
+void PonyGame::DrawPonyBoundingBox() {
+
+}
+
+// Presents the back buffer contents to the screen.
+void PonyGame::Present() {
+    // The first argument instructs DXGI to block until VSync, putting the application
+    // to sleep until the next VSync. This ensures we don't waste any cycles rendering
+    // frames that will never be displayed to the screen.
+    HRESULT hr = _SwapChain->Present(1, 0);
+
+    // If the device was reset we must completely reinitialize the renderer.
+    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
+        OnDeviceLost();
+    } else {
+        DX::ThrowIfFailed(hr);
+    }
+}
+
+InputState& PonyGame::GetInputState() {
+    return _InputState;
+}
+
+const LevelScreen& PonyGame::GetScreen() const {
+    return _CurrentScreen;
+}
+
+void PonyGame::GetDefaultSize(int& width, int& height) const {
+    // Desired default window size (note minimum size is 320x200).
+    width = SCREEN_WIDTH_PX;
+    height = SCREEN_HEIGHT_PX;
+}
+
+// Message handlers
+void PonyGame::OnActivated() {
+    // TODO: PonyGame is becoming active window.
+}
+
+void PonyGame::OnDeactivated() {
+    // TODO: PonyGame is becoming background window.
+}
+
+void PonyGame::OnSuspending() {
+    // TODO: PonyGame is being power-suspended (or minimized).
+}
+
+void PonyGame::OnResuming() {
+    _Timer.ResetElapsedTime();
+
+    // TODO: PonyGame is being power-resumed (or returning from minimize).
+}
+
+void PonyGame::OnWindowSizeChanged(int width, int height) {
+    _OutputWidth = std::min(static_cast<int>(SCREEN_WIDTH_PX), std::max(width, 1));
+    _OutputHeight = std::min(static_cast<int>(SCREEN_HEIGHT_PX), std::max(height, 1));
+
+    CreateResources();
+
+    // TODO: PonyGame window is being resized.
+}
+
 void PonyGame::OnDeviceLost() {
     // Direct3D resource cleanup
-    _Pony._Sprite.ResetTiles();
+    _Pony.Reset();
 
     _SpriteBatch.reset();
     _BackgroundSpriteBatch.reset();

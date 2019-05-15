@@ -47,9 +47,17 @@ namespace ParticleHomeEntertainment {
 
         Entity& operator=(const Entity&) = delete;
 
+        virtual void Reset() = 0;
+
         DirectX::SimpleMath::Vector2 GetLocation() const;
 
         void SetLocation(const float x, const float y);
+
+        void SetIdle();
+
+        void SetRunning();
+
+        void SetJumping();
 
         RECT GetBoundingBoxLocation();
 
