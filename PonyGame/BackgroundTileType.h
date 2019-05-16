@@ -24,16 +24,16 @@ namespace ParticleHomeEntertainment {
         Solid = 1
     };
 
-    class TileType {
+    class BackgroundTileType {
     private:
         TileTypeEnum _Type;
         TileInteractiveEnum _Interactive;
         std::wstring _FilePath;
 
     public:
-        TileType(TileTypeEnum type, TileInteractiveEnum interactive);
+        BackgroundTileType(TileTypeEnum type, TileInteractiveEnum interactive);
 
-        ~TileType();
+        ~BackgroundTileType();
 
         TileInteractiveEnum GetInteractive();
 

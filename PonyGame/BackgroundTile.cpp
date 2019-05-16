@@ -1,5 +1,4 @@
 #include "BackgroundTile.h"
-#include "TileType.h"
 #include "Constants.h"
 
 using namespace ParticleHomeEntertainment;
@@ -13,6 +12,6 @@ BackgroundTile::BackgroundTile(Microsoft::WRL::ComPtr<ID3D11Device1> device, Til
 BackgroundTile::~BackgroundTile() {
 }
 
-TileType BackgroundTile::GetTileType() {
+BackgroundTileType BackgroundTile::GetTileType() {
     return _TileType;
 }

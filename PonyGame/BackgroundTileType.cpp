@@ -1,26 +1,26 @@
-#include "TileType.h"
+#include "BackgroundTileType.h"
 #include "Constants.h"
 
 using namespace ParticleHomeEntertainment;
 
-TileType::TileType(TileTypeEnum type, TileInteractiveEnum interactive) {
+BackgroundTileType::BackgroundTileType(TileTypeEnum type, TileInteractiveEnum interactive) {
     _Type = type;
     _Interactive = interactive;
-    _FilePath = TileType::GetFilePathForTileTypeEnum(type);
+    _FilePath = BackgroundTileType::GetFilePathForTileTypeEnum(type);
 }
 
-TileType::~TileType() {
+BackgroundTileType::~BackgroundTileType() {
 }
 
-TileInteractiveEnum TileType::GetInteractive() {
+TileInteractiveEnum BackgroundTileType::GetInteractive() {
     return _Interactive;
 }
 
-std::wstring TileType::GetFilePath() {
+std::wstring BackgroundTileType::GetFilePath() {
     return _FilePath;
 }
 
-std::wstring TileType::GetFilePathForTileTypeEnum(TileTypeEnum type) {
+std::wstring BackgroundTileType::GetFilePathForTileTypeEnum(TileTypeEnum type) {
     switch (type) {
     case TileTypeEnum::Grass:
         return FILE_PATH_SPRITE_GRASS;
