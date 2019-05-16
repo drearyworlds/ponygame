@@ -166,6 +166,7 @@
     <ClCompile Include="PonyGame.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StepTimer.cpp" />
+    <ClCompile Include="TileType.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackgroundSprite.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="PonyGame.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="TileType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

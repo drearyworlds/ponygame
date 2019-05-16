@@ -12,8 +12,6 @@ namespace ParticleHomeEntertainment {
     public:
         std::vector<std::shared_ptr<LevelScreen>> _Screens;
 
-        Level();
-
         Level(uint32_t levelNumber);
 
         Level(const Level&) = delete;

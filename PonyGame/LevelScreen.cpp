@@ -11,33 +11,15 @@ LevelScreen::LevelScreen() {
 
 void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
-
-    _GrassTile = std::make_shared<BackgroundTile>(TileInteractiveEnum::Solid);
-    _GrassTile->_Sprite->SetTexture(device, FILE_PATH_SPRITE_GRASS);
-
-    _SkyTileNw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _SkyTileNw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNW);
-
-    _SkyTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _SkyTileNe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNE);
-
-    _SkyTileSw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _SkyTileSw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNW);
-
-    _SkyTileSe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _SkyTileSe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYSE);
-
-    _MoonTileNw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileNw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONNW);
-
-    _MoonTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileNe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONNE);
-
-    _MoonTileSw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileSw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONSW);
-
-    _MoonTileSe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileSe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONSE);
+    _GrassTile = std::make_shared<BackgroundTile>(device, TileTypeEnum::Grass, TileInteractiveEnum::Solid);
+    _SkyTileNw = std::make_shared<BackgroundTile>(device, TileTypeEnum::SkyNw, TileInteractiveEnum::Empty);
+    _SkyTileNe = std::make_shared<BackgroundTile>(device, TileTypeEnum::SkyNe, TileInteractiveEnum::Empty);
+    _SkyTileSw = std::make_shared<BackgroundTile>(device, TileTypeEnum::SkySw, TileInteractiveEnum::Empty);
+    _SkyTileSe = std::make_shared<BackgroundTile>(device, TileTypeEnum::SkySe, TileInteractiveEnum::Empty);
+    _MoonTileNw = std::make_shared<BackgroundTile>(device, TileTypeEnum::MoonNw, TileInteractiveEnum::Empty);
+    _MoonTileNe = std::make_shared<BackgroundTile>(device, TileTypeEnum::MoonNe, TileInteractiveEnum::Empty);
+    _MoonTileSw = std::make_shared<BackgroundTile>(device, TileTypeEnum::MoonSw, TileInteractiveEnum::Empty);
+    _MoonTileSe = std::make_shared<BackgroundTile>(device, TileTypeEnum::MoonSe, TileInteractiveEnum::Empty);
 }
 
 void LevelScreen::Load() {
@@ -59,7 +41,7 @@ constexpr size_t LevelScreen::GetTileIndex(const size_t x, const size_t y) const
 }
 
 const TileInteractiveEnum LevelScreen::GetTileInteractivity(const size_t x, const size_t y) const {
-    return _Tiles.at(GetTileIndex(x, y))->_Interactive;
+    return _Tiles.at(GetTileIndex(x, y))->GetTileType().GetInteractive();
 }
 
 RECT LevelScreen::GetTileRect(const size_t index) const {

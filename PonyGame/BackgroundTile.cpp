@@ -1,15 +1,18 @@
 #include "BackgroundTile.h"
+#include "TileType.h"
 #include "Constants.h"
+
 using namespace ParticleHomeEntertainment;
 
-BackgroundTile::BackgroundTile() {
+BackgroundTile::BackgroundTile(Microsoft::WRL::ComPtr<ID3D11Device1> device, TileTypeEnum type, TileInteractiveEnum interactivity)
+    : _TileType(type, interactivity) {
     _Sprite = std::make_shared<BackgroundSprite>();
-}
-
-BackgroundTile::BackgroundTile(TileInteractiveEnum interactivity = TileInteractiveEnum::Empty) {
-    _Interactive = interactivity;
-    _Sprite = std::make_shared<BackgroundSprite>();
+    _Sprite->SetTexture(device, _TileType.GetFilePath());
 }
 
 BackgroundTile::~BackgroundTile() {
+}
+
+TileType BackgroundTile::GetTileType() {
+    return _TileType;
 }

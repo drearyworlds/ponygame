@@ -2,10 +2,6 @@
 
 using namespace ParticleHomeEntertainment;
 
-Level::Level() {
-    _LevelNumber = 0;
-}
-
 Level::Level(uint32_t levelNumber) {
     _LevelNumber = levelNumber;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
 #pragma warning (push)
-#pragma warning (disable: 4365 4514 4774)
+#pragma warning (disable: 4365 4514 4625 4626 4774)
 #include <string>
 #pragma warning (pop)
