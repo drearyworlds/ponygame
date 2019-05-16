@@ -25,6 +25,8 @@ namespace ParticleHomeEntertainment {
 
         void Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context);
 
+        void Load();
+
         constexpr size_t GetTileIndex(const size_t x, const size_t y) const;
 
         const TileInteractiveEnum GetTileInteractivity(const size_t x, const size_t y) const;

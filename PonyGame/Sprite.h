@@ -6,11 +6,11 @@
 #include <nowarn/wrl/client.h>
 #include <nowarn/SpriteBatch.h>
 #include <nowarn/vector>
+#include <nowarn/string>
 
 namespace ParticleHomeEntertainment {
     class Sprite {
     protected:
-    public:
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _CurrentTexture;
 
         RECT _SourceRectangle;
@@ -32,13 +32,17 @@ namespace ParticleHomeEntertainment {
 
         virtual void Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) = 0;
 
-        const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture() const;
+        void SetTexture(Microsoft::WRL::ComPtr<ID3D11Device1> device, const std::wstring& filePath);
 
-        RECT& GetSourceRectangle();
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture();
+
+        RECT GetSourceRectangle();
 
         void SetSourceRectangle(const RECT sourceRectangle);
 
         DirectX::SpriteEffects GetTransform();
+
+        void SetTransform(DirectX::SpriteEffects effects);
 
         virtual void ResetTextures() = 0;
     };

@@ -1,7 +1,9 @@
 #include "Sprite.h"
+#include "PonyGame.h"
 #include "Constants.h"
 #include "BackgroundTile.h"
 #include <nowarn/CommonStates.h>
+#include <DDSTextureLoader.h>
 
 using namespace ParticleHomeEntertainment;
 
@@ -13,11 +15,15 @@ Sprite::Sprite() {
 Sprite::~Sprite() {
 }
 
-const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& Sprite::GetTexture() const {
+void Sprite::SetTexture(Microsoft::WRL::ComPtr<ID3D11Device1> device, const std::wstring& filePath) {
+    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), filePath.c_str(), nullptr, _CurrentTexture.ReleaseAndGetAddressOf()));
+}
+
+Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& Sprite::GetTexture() {
     return _CurrentTexture;
 }
 
-RECT& Sprite::GetSourceRectangle() {
+RECT Sprite::GetSourceRectangle() {
     return _SourceRectangle;
 }
 
@@ -28,4 +34,8 @@ void Sprite::SetSourceRectangle(const RECT sourceRectangle) {
 
 DirectX::SpriteEffects Sprite::GetTransform() {
     return _Transform;
+}
+
+void Sprite::SetTransform(DirectX::SpriteEffects effects) {
+    _Transform = effects;
 }

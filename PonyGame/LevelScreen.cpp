@@ -11,27 +11,36 @@ LevelScreen::LevelScreen() {
 
 void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
+
     _GrassTile = std::make_shared<BackgroundTile>(TileInteractiveEnum::Solid);
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_GRASS, nullptr, _GrassTile->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
+    _GrassTile->_Sprite->SetTexture(device, FILE_PATH_SPRITE_GRASS);
 
     _SkyTileNw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _SkyTileNw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNW);
+
     _SkyTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _SkyTileNe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNE);
+
     _SkyTileSw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _SkyTileSw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYNW);
+
     _SkyTileSe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYNW, nullptr, _SkyTileNw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYNE, nullptr, _SkyTileNe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYSW, nullptr, _SkyTileSw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYSE, nullptr, _SkyTileSe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
+    _SkyTileSe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_SKYSE);
 
     _MoonTileNw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileSw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    _MoonTileSe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONNW, nullptr, _MoonTileNw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONNE, nullptr, _MoonTileNe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONSW, nullptr, _MoonTileSw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONSE, nullptr, _MoonTileSe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
+    _MoonTileNw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONNW);
 
+    _MoonTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _MoonTileNe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONNE);
+
+    _MoonTileSw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _MoonTileSw->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONSW);
+
+    _MoonTileSe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
+    _MoonTileSe->_Sprite->SetTexture(device, FILE_PATH_SPRITE_MOONSE);
+}
+
+void LevelScreen::Load() {
     _Tiles = {
         _GrassTile, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
         _GrassTile, _SkyTileSe, _SkyTileSw, _MoonTileSw, _MoonTileSe, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _SkyTileSe, _SkyTileSw, _GrassTile,
@@ -78,17 +87,6 @@ void LevelScreen::Draw() {
             tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
 
             _Tiles.at(GetTileIndex(x, y))->_Sprite->Draw(*_SpriteBatch, tileLocation);
-
-            //_SpriteBatch->Draw(_Tiles.at(tileIndex)->_Sprite->_CurrentTexture.Get(),
-            //    tileLocation,
-            //    &tileRectangle,
-            //    DirectX::Colors::White,
-            //    0,
-            //    { 0,0 },
-            //    1,
-            //    DirectX::SpriteEffects::SpriteEffects_None,
-            //    0
-            //);
         }
     }
 
