@@ -16,6 +16,6 @@ namespace ParticleHomeEntertainment {
 
         Level& operator=(const Level&) = delete;
 
-        void Draw();
+        void Draw(uint32_t screen);
     };
 }

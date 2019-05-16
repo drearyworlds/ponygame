@@ -13,8 +13,6 @@ namespace ParticleHomeEntertainment {
 
         BackgroundSprite& operator=(const BackgroundSprite&) = delete;
 
-        void UpdateTexture() override;
-
         void Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) override;
 
         void ResetTextures() override;

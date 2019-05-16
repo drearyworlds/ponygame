@@ -19,6 +19,8 @@ namespace ParticleHomeEntertainment {
             ON_GROUND, IN_AIR
         };
 
+        ForegroundSprite _Sprite;
+
         DirectX::SimpleMath::Vector2 _Location;
         Rectangle _AaBbOffsetLeftFacing;
         Rectangle _AaBbOffsetRightFacing;
@@ -61,8 +63,5 @@ namespace ParticleHomeEntertainment {
         RECT GetBoundingBoxLocation();
 
         std::vector<DirectX::SimpleMath::Vector2>& GetCollisionTileCoordinates();
-
-        // TODO: Make protected and add accessors
-        ForegroundSprite _Sprite;
     };
 }

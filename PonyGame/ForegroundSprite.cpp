@@ -66,7 +66,7 @@ void ForegroundSprite::Animate(const double& elapsedSeconds) {
     }
 }
 
-void ForegroundSprite::UpdateTexture() {
+void ForegroundSprite::UpdateSpriteFrame() {
     if (_AnimationState == SpriteAnimationStateEnum::JUMPING) {
         _SpriteSheetFrameWidth = _JumpingSpriteSheetWidth / PONY_JUMPING_FRAMES;
         _SourceRectangle.left = static_cast<int32_t>(_SpriteSheetFrameWidth * _CurrentFrame);
@@ -94,8 +94,6 @@ void ForegroundSprite::UpdateTexture() {
 }
 
 void ForegroundSprite::Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) {
-    UpdateTexture();
-
     spriteBatch.Draw(GetTexture().Get(),
         location,
         &_SourceRectangle,

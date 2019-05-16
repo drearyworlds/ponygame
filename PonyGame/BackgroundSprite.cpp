@@ -10,9 +10,6 @@ BackgroundSprite::~BackgroundSprite() {
     ResetTextures();
 }
 
-void BackgroundSprite::UpdateTexture() {
-}
-
 void BackgroundSprite::Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) {
     spriteBatch.Draw(_CurrentTexture.Get(),
         location,

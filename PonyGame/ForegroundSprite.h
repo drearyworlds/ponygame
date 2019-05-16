@@ -52,7 +52,7 @@ namespace ParticleHomeEntertainment {
 
         void Animate(const double& elapsedSeconds);
 
-        void UpdateTexture() override;
+        void UpdateSpriteFrame();
 
         void Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) override;
 

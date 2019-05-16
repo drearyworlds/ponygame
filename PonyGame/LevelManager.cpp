@@ -42,11 +42,11 @@ void LevelManager::LoadLevel(Microsoft::WRL::ComPtr<ID3D11Device1> device, Micro
 }
 
 void LevelManager::Draw() {
-    _Levels[_CurrentLevel - 1]->Draw();
+    // Draw the current level
+    _Levels[_CurrentLevel - 1]->Draw(_CurrentScreen);
 
 
 }
 
 void LevelManager::Reset() {
-    //_TileFactory.Reset();
 }

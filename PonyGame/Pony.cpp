@@ -76,6 +76,8 @@ void Pony::Tick(const double& elapsedSecs) {
 }
 
 void Pony::Draw() {
+    _Sprite.UpdateSpriteFrame();
+
     _SpriteBatch->Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, nullptr);
     _Sprite.Draw(*_SpriteBatch, _Location);
     _SpriteBatch->End();

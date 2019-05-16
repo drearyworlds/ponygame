@@ -30,13 +30,13 @@ namespace ParticleHomeEntertainment {
 
         virtual ~Sprite();
 
-        virtual void UpdateTexture() = 0;
-
         virtual void Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) = 0;
 
         const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture() const;
 
         RECT& GetSourceRectangle();
+
+        void SetSourceRectangle(const RECT sourceRectangle);
 
         DirectX::SpriteEffects GetTransform();
 

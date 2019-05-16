@@ -67,36 +67,28 @@ RECT LevelScreen::GetTileRect(const size_t index) const {
 }
 
 void LevelScreen::Draw() {
-    DirectX::SimpleMath::Vector2 tileLocation = {};
-    RECT tileRectangle;
-    tileRectangle.left = 0;
-    tileRectangle.top = 0;
-    tileRectangle.right = SPRITE_WIDTH_PX;
-    tileRectangle.bottom = SPRITE_HEIGHT_PX;
-
+    // Draw the level screen's tile sprites
     _SpriteBatch->Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, nullptr);
+
+    DirectX::SimpleMath::Vector2 tileLocation = {};
 
     for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
         for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
             tileLocation.x = SPRITE_WIDTH_PX * static_cast<float>(x);
             tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
 
-            size_t tileIndex = static_cast<size_t>(SCREEN_WIDTH_TILES * static_cast<size_t>(y) + static_cast<size_t>(x));
-            if (tileIndex > _Tiles.size()) {
-                tileIndex = _Tiles.size() - 1;
-            }
+            _Tiles.at(GetTileIndex(x, y))->_Sprite->Draw(*_SpriteBatch, tileLocation);
 
-            _SpriteBatch->Draw(_Tiles.at(tileIndex)->_Sprite->_CurrentTexture.Get(),
-                tileLocation,
-                &tileRectangle,
-                DirectX::Colors::White,
-                0,
-                { 0,0 },
-                1,
-                DirectX::SpriteEffects::SpriteEffects_None,
-                0
-            );
-            //_GrassTile->_Sprite->Draw(*_SpriteBatch, tileLocation);
+            //_SpriteBatch->Draw(_Tiles.at(tileIndex)->_Sprite->_CurrentTexture.Get(),
+            //    tileLocation,
+            //    &tileRectangle,
+            //    DirectX::Colors::White,
+            //    0,
+            //    { 0,0 },
+            //    1,
+            //    DirectX::SpriteEffects::SpriteEffects_None,
+            //    0
+            //);
         }
     }
 

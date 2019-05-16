@@ -6,7 +6,7 @@
 using namespace ParticleHomeEntertainment;
 
 Sprite::Sprite() {
-    _SourceRectangle = {};
+    _SourceRectangle = { 0,0,SPRITE_WIDTH_PX, SPRITE_HEIGHT_PX };
     _Transform = DirectX::SpriteEffects::SpriteEffects_None;
 }
 
@@ -19,6 +19,11 @@ const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& Sprite::GetTexture() con
 
 RECT& Sprite::GetSourceRectangle() {
     return _SourceRectangle;
+}
+
+void Sprite::SetSourceRectangle(const RECT sourceRectangle) {
+    _SourceRectangle = sourceRectangle;
+
 }
 
 DirectX::SpriteEffects Sprite::GetTransform() {
