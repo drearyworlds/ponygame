@@ -22,13 +22,10 @@ TileInteractiveEnum LevelManager::GetTileInteractivity(uint32_t x, uint32_t y) {
 
 void LevelManager::SetLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     _CurrentLevel = level;
-    LoadLevel(_CurrentLevel, device, context);
+    LoadLevel(device, context);
 }
 
-void LevelManager::LoadLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
-    // Level array is 0-indexed
-    uint32_t levelIndex = level -1;
-
+void LevelManager::LoadLevel(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     //TODO: Move this into a text file
     //TODO: Draw LevelScreens in layers. e.g. empty sky files, then star tiles, then foreground interactive layer
 
@@ -41,8 +38,7 @@ void LevelManager::LoadLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device
     levelOne->_Screens[0] = std::make_shared<LevelScreen>();
     levelOne->_Screens[0]->Initialize(device, context);
 
-    _Levels[levelIndex] = levelOne;
-    _CurrentLevel = level;
+    _Levels[_CurrentLevel - 1] = levelOne;
 }
 
 void LevelManager::Draw() {

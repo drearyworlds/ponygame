@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Level.h"
-#include "TileFactory.h"
 #include <nowarn/vector>
 
 namespace ParticleHomeEntertainment {
@@ -16,7 +15,6 @@ namespace ParticleHomeEntertainment {
 
     public:
         std::vector<std::shared_ptr<BackgroundTile>> _Tiles;
-        //TileFactory _TileFactory;
 
         LevelManager();
 
@@ -32,7 +30,7 @@ namespace ParticleHomeEntertainment {
 
         void SetLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context);
 
-        void LoadLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context);
+        void LoadLevel(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context);
 
         void Draw();
 

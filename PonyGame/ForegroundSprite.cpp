@@ -94,27 +94,17 @@ void ForegroundSprite::UpdateTexture() {
 }
 
 void ForegroundSprite::Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) {
-    // Rendering code
-//    DirectX::CommonStates states(device);
-    spriteBatch.Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, nullptr);
-
     UpdateTexture();
 
-    if (GetTexture() != nullptr) {
-        spriteBatch.Draw(GetTexture().Get(),
-            location,
-            &_SourceRectangle,
-            DirectX::Colors::White,
-            _Rotation,
-            _OriginLocationPx,
-            _Scale,
-            _Transform,
-            _LayerDepth);
-    } else {
-        // Texture is null
-    }
-
-    spriteBatch.End();
+    spriteBatch.Draw(GetTexture().Get(),
+        location,
+        &_SourceRectangle,
+        DirectX::Colors::White,
+        _Rotation,
+        _OriginLocationPx,
+        _Scale,
+        _Transform,
+        _LayerDepth);
 }
 
 void ForegroundSprite::ResetTextures() {

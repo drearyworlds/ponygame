@@ -54,9 +54,6 @@
     <ClCompile Include="BackgroundTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TileFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ForegroundSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

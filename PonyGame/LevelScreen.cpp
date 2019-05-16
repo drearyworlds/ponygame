@@ -11,7 +11,6 @@ LevelScreen::LevelScreen() {
 
 void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
-    //_TileFactory.Initialize(device);
     _GrassTile = std::make_shared<BackgroundTile>(TileInteractiveEnum::Solid);
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_GRASS, nullptr, _GrassTile->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
 
@@ -23,10 +22,6 @@ void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Micro
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYNE, nullptr, _SkyTileNe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYSW, nullptr, _SkyTileSw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_SKYSE, nullptr, _SkyTileSe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    //_Tiles[TileStyleEnum::SkyNw] = skyTileNw;
-    //_Tiles[TileStyleEnum::SkyNe] = skyTileNe;
-    //_Tiles[TileStyleEnum::SkySw] = skyTileSw;
-    //_Tiles[TileStyleEnum::SkySe] = skyTileSe;
 
     _MoonTileNw = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
     _MoonTileNe = std::make_shared<BackgroundTile>(TileInteractiveEnum::Empty);
@@ -36,10 +31,6 @@ void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Micro
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONNE, nullptr, _MoonTileNe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONSW, nullptr, _MoonTileSw->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(DirectX::CreateDDSTextureFromFile(device.Get(), FILE_PATH_SPRITE_MOONSE, nullptr, _MoonTileSe->_Sprite->_CurrentTexture.ReleaseAndGetAddressOf()));
-    //_Tiles[TileStyleEnum::MoonNw] = moonTileNw;
-    //_Tiles[TileStyleEnum::MoonNe] = moonTileNe;
-    //_Tiles[TileStyleEnum::MoonSw] = moonTileSw;
-    //_Tiles[TileStyleEnum::MoonSe] = moonTileSe;
 
     _Tiles = {
         _GrassTile, _SkyTileNe, _SkyTileNw, _MoonTileNw, _MoonTileNe, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _SkyTileNe, _SkyTileNw, _GrassTile,
@@ -54,13 +45,8 @@ void LevelScreen::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Micro
     };
 }
 
-size_t LevelScreen::GetTileIndex(const size_t x, const size_t y) const {
-    size_t tileIndex = static_cast<size_t>(SCREEN_WIDTH_TILES * static_cast<size_t>(y) + static_cast<size_t>(x));
-    if (tileIndex > _Tiles.size()) {
-        tileIndex = _Tiles.size() - 1;
-    }
-
-    return tileIndex;
+constexpr size_t LevelScreen::GetTileIndex(const size_t x, const size_t y) const {
+    return static_cast<size_t>(SCREEN_WIDTH_TILES * std::min<size_t>(y, SCREEN_HEIGHT_TILES - 1) + std::min<size_t>(x, SCREEN_WIDTH_TILES - 1));
 }
 
 const TileInteractiveEnum LevelScreen::GetTileInteractivity(const size_t x, const size_t y) const {
