@@ -4,7 +4,7 @@
 #include "CommonStates.h"
 #include "SpriteBatch.h"
 #include <nowarn/memory>
-#include <DDSTextureLoader.h>
+#include <nowarn/DDSTextureLoader.h>
 
 using namespace ParticleHomeEntertainment;
 
@@ -16,7 +16,7 @@ Pony::~Pony() {
 }
 
 void Pony::Initialize(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context, Microsoft::WRL::ComPtr<ID3D11Device1> device) {
-    _Sprite._SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
+    _SpriteBatch = std::make_unique<DirectX::SpriteBatch>(context.Get());
 
     // Pony Idle Resources
     Microsoft::WRL::ComPtr<ID3D11Resource> ponyIdleResource;
@@ -66,7 +66,7 @@ void Pony::Initialize(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context, Micr
 
 void Pony::Reset() {
     _Sprite.ResetTextures();
-    _Sprite._SpriteBatch.reset();
+    _SpriteBatch.reset();
 }
 
 void Pony::Tick(const double& elapsedSecs) {
@@ -75,30 +75,6 @@ void Pony::Tick(const double& elapsedSecs) {
     _Sprite.Animate(elapsedSecs);
 }
 
-void Pony::Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, DirectX::SimpleMath::Vector2 originLocationPx) {
-    // Rendering code
-    DirectX::CommonStates states(device.Get());
-
-    _Sprite._SpriteBatch->Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, states.NonPremultiplied());
-
-    _Sprite.UpdateTexture();
-
-    if (_Sprite.GetTexture() != nullptr) {
-        const float ROTATION = 0.f;
-        const float SCALE = 1.f;
-        const float LAYER_DEPTH = 0.f;
-        _Sprite._SpriteBatch->Draw(_Sprite.GetTexture(),
-            GetLocation(),
-            &_Sprite.GetSourceRectangle(),
-            DirectX::Colors::White,
-            ROTATION,
-            originLocationPx,
-            SCALE,
-            _Sprite.GetTransform(),
-            LAYER_DEPTH);
-    } else {
-        // ponyTexture is nullptr
-    }
-
-    _Sprite._SpriteBatch->End();
+void Pony::Draw() {
+    _Sprite.Draw(*_SpriteBatch, _Location);
 }

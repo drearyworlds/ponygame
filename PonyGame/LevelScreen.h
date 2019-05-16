@@ -2,17 +2,31 @@
 
 #include "BackgroundTile.h"
 #include "Constants.h"
+#include "SpriteBatch.h"
 #include <nowarn/vector>
 
 namespace ParticleHomeEntertainment {
     class LevelScreen {
+    private:
+        //DirectX::SpriteBatch _SpriteBatch;
+
     public:
-        std::vector<BackgroundTile> _Tiles;
+        std::vector<std::shared_ptr<BackgroundTile>> _Tiles;
 
-        size_t GetTileIndex(const float x, const float y) const;
+        LevelScreen();
 
-        BackgroundTile GetTile(const float x, const float y) const;
+        LevelScreen(const LevelScreen&) = delete;
+
+        LevelScreen& operator=(const LevelScreen&) = delete;
+
+        size_t GetTileIndex(const size_t x, const size_t y) const;
+
+        const TileInteractiveEnum GetTileInteractivity(const size_t x, const size_t y) const;
 
         RECT GetTileRect(const size_t index) const;
+
+        void Draw();
+
+        void Reset();
     };
 }

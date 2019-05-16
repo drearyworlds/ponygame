@@ -6,80 +6,40 @@
 #include <nowarn/wrl/client.h>
 #include <nowarn/SpriteBatch.h>
 #include <nowarn/vector>
-#include "LevelScreen.h"
 
 namespace ParticleHomeEntertainment {
-    enum SpriteFacingStateEnum {
-        FACING_LEFT, FACING_RIGHT
-    };
-
-    enum SpriteAnimationStateEnum {
-        IDLE, RUNNING, JUMPING
-    };
-
-    struct SpriteCollisionResult {
-        bool _Top = false;
-        bool _Bottom = false;
-        bool _Left = false;
-        bool _Right = false;
-    };
-
     class Sprite {
-    private:
+    protected:
+    public:
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _CurrentTexture;
 
         RECT _SourceRectangle;
-        uint32_t _SpriteSheetFrameWidth;
-
-        uint8_t _CurrentFrame;
-
-        double _TotalElapsedSec;
-
-        SpriteFacingStateEnum _Facing;
-        SpriteAnimationStateEnum _AnimationState;
         DirectX::SpriteEffects _Transform;
 
+        const DirectX::SimpleMath::Vector2 _OriginLocationPx { 0, 0 };
+        const float _Rotation = 0.f;
+        const float _Scale = 1.f;
+        const float _LayerDepth = 0.f;
+
     public:
-        // TODO Make all of these fields private:
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _IdleTexture;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _RunningTexture;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> _JumpingTexture;
-
-        uint32_t _IdleSpriteSheetWidth;
-        uint32_t _IdleSpriteSheetHeight;
-        uint32_t _RunningSpriteSheetWidth;
-        uint32_t _RunningSpriteSheetHeight;
-        uint32_t _JumpingSpriteSheetWidth;
-        uint32_t _JumpingSpriteSheetHeight;
-
-        std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
-
         explicit Sprite();
 
         Sprite(const Sprite&) = delete;
 
         Sprite& operator=(const Sprite&) = delete;
 
-        ~Sprite();
+        virtual ~Sprite();
 
-        bool IsFacingLeft();
+        virtual void UpdateTexture() = 0;
 
-        bool IsFacingRight();
+        virtual void Draw(DirectX::SpriteBatch& spriteBatch, const DirectX::SimpleMath::Vector2& location) = 0;
 
-        void SetFacing(SpriteFacingStateEnum facing);
-
-        void SetAnimationState(SpriteAnimationStateEnum state);
-
-        void Animate(const double& elapsedSeconds);
-
-        void UpdateTexture();
-
-        ID3D11ShaderResourceView* GetTexture();
+        const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture() const;
 
         RECT& GetSourceRectangle();
 
         DirectX::SpriteEffects GetTransform();
 
-        void ResetTextures();
+        virtual void ResetTextures() = 0;
     };
 }

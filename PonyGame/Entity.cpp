@@ -1,5 +1,7 @@
 #include "Entity.h"
+#include "ForegroundSprite.h"
 #include "PonyGame.h"
+#include "Sprite.h"
 #include <nowarn/iostream>
 
 using namespace ParticleHomeEntertainment;
@@ -231,7 +233,7 @@ void Entity::MoveY(int velocity) {
 }
 
 bool Entity::CollisionWithTile(float x, float y) {
-    return PonyGame::Instance().GetScreen().GetTile(x, y)._TileStyle == BackgroundTile::TileInteractiveEnum::Solid;
+    return PonyGame::Instance().GetLevelManager().GetTileInteractivity(static_cast<uint32_t>(x), static_cast<uint32_t>(y)) == TileInteractiveEnum::Solid;
 }
 
 std::vector<DirectX::SimpleMath::Vector2>& Entity::GetCollisionTileCoordinates() {

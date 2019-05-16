@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Entity.h"
+#include "SpriteBatch.h"
 
 namespace ParticleHomeEntertainment {
     class Pony : public Entity {
+    private:
+        std::unique_ptr<DirectX::SpriteBatch> _SpriteBatch;
+
     public:
         explicit Pony(const float x, const float y);
 
@@ -19,6 +23,6 @@ namespace ParticleHomeEntertainment {
 
         void Tick(const double& elapsedSecs) override;
 
-        void Draw(Microsoft::WRL::ComPtr<ID3D11Device1> device, const DirectX::SimpleMath::Vector2 originLocationPx);
+        void Draw();
     };
 }

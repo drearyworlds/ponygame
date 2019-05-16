@@ -1,8 +1,14 @@
 #include "LevelScreen.h"
+#include "SimpleMath.h"
+#include "LevelManager.h"
+#include "PonyGame.h"
 
 using namespace ParticleHomeEntertainment;
 
-size_t LevelScreen::GetTileIndex(const float x, const float y) const {
+LevelScreen::LevelScreen() {
+}
+
+size_t LevelScreen::GetTileIndex(const size_t x, const size_t y) const {
     size_t tileIndex = static_cast<size_t>(SCREEN_WIDTH_TILES * static_cast<size_t>(y) + static_cast<size_t>(x));
     if (tileIndex > _Tiles.size()) {
         tileIndex = _Tiles.size() - 1;
@@ -11,8 +17,8 @@ size_t LevelScreen::GetTileIndex(const float x, const float y) const {
     return tileIndex;
 }
 
-BackgroundTile LevelScreen::GetTile(const float x, const float y) const {
-    return _Tiles.at(GetTileIndex(x, y));
+const TileInteractiveEnum LevelScreen::GetTileInteractivity(const size_t x, const size_t y) const {
+    return _Tiles.at(GetTileIndex(x, y))->_Interactive;
 }
 
 RECT LevelScreen::GetTileRect(const size_t index) const {
@@ -26,4 +32,28 @@ RECT LevelScreen::GetTileRect(const size_t index) const {
     tileRect.left = static_cast<long>(SPRITE_WIDTH_PX * static_cast<float>(x));
     tileRect.right = static_cast<long>(SPRITE_WIDTH_PX * static_cast<float>(x) + SPRITE_WIDTH_PX);
     return tileRect;
+}
+
+void LevelScreen::Draw() {
+    //DirectX::SimpleMath::Vector2 tileLocation = {};
+    //RECT tileRectangle;
+    //tileRectangle.left = 0;
+    //tileRectangle.top = 0;
+    //tileRectangle.right = SPRITE_WIDTH_PX;
+    //tileRectangle.bottom = SPRITE_HEIGHT_PX;
+
+    //_SpriteBatch.Begin(DirectX::SpriteSortMode::SpriteSortMode_Deferred, nullptr);
+
+    //for (size_t y = 0; y < SCREEN_HEIGHT_TILES; y++) {
+    //    for (size_t x = 0; x < SCREEN_WIDTH_TILES; x++) {
+    //        tileLocation.x = SPRITE_WIDTH_PX * static_cast<float>(x);
+    //        tileLocation.y = SPRITE_HEIGHT_PX * static_cast<float>(y);
+    //        _Tiles[GetTileIndex(x, y)]->_Sprite->Draw(_SpriteBatch, tileLocation);
+    //    }
+    //}
+
+    //_SpriteBatch.End();
+}
+
+void LevelScreen::Reset() {
 }

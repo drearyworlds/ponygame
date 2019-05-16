@@ -2,8 +2,9 @@
 
 #include "Pony.h"
 #include "StepTimer.h"
-#include "LevelScreen.h"
+#include "Level.h"
 #include "InputState.h"
+#include "LevelManager.h"
 #include <nowarn/SimpleMath.h>
 #include <nowarn/SpriteBatch.h>
 #include <nowarn/Mouse.h>
@@ -40,16 +41,8 @@ namespace ParticleHomeEntertainment {
         // Rendering loop timer.
         DX::StepTimer _Timer;
 
-        // Background tiles
-        BackgroundTile _GrassTile;
-        BackgroundTile _SkyTileNw, _SkyTileNe, _SkyTileSw, _SkyTileSe;
-        BackgroundTile _MoonTileNw, _MoonTileNe, _MoonTileSw, _MoonTileSe;
-        std::unique_ptr<DirectX::SpriteBatch> _BackgroundSpriteBatch;
-        LevelScreen _CurrentScreen;
-
         GameStateEnum _GameState = TITLE_SCREEN;
-        uint32_t _CurrentLevel;
-        LevelScreen _CurrentLevelScreen;
+        LevelManager _LevelManager;
 
         // Other
         DirectX::SimpleMath::Vector2 _OriginLocationPx;
@@ -96,8 +89,6 @@ namespace ParticleHomeEntertainment {
         // Initialization and management
         void Initialize(HWND window, int width, int height);
 
-        void LoadLevel(uint32_t level);
-
         // Basic game loop
         void Tick();
 
@@ -111,7 +102,7 @@ namespace ParticleHomeEntertainment {
         // Properties
         void GetDefaultSize(int& width, int& height) const;
 
-        const LevelScreen& GetScreen() const;
+        LevelManager& GetLevelManager();
 
         InputState& GetInputState();
     };

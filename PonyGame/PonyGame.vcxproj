@@ -153,25 +153,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BackgroundSprite.cpp" />
+    <ClCompile Include="BackgroundTile.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="ForegroundSprite.cpp" />
     <ClCompile Include="InputState.cpp" />
+    <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LevelScreen.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pony.cpp" />
     <ClCompile Include="PonyGame.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="StepTimer.cpp" />
+    <ClCompile Include="TileFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackgroundSprite.h" />
     <ClInclude Include="BackgroundTile.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="ForegroundSprite.h" />
     <ClInclude Include="InputState.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LevelScreen.h" />
     <ClInclude Include="Pony.h" />
     <ClInclude Include="PonyGame.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

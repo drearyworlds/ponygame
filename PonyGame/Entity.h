@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Sprite.h"
-#include "BackgroundTile.h"
+#include "ForegroundSprite.h"
 
 namespace ParticleHomeEntertainment {
     class Entity {
@@ -64,6 +63,6 @@ namespace ParticleHomeEntertainment {
         std::vector<DirectX::SimpleMath::Vector2>& GetCollisionTileCoordinates();
 
         // TODO: Make protected and add accessors
-        Sprite _Sprite;
+        ForegroundSprite _Sprite;
     };
 }
