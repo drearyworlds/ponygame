@@ -52,7 +52,7 @@ void PonyGame::Initialize(HWND window, int width, int height) {
 
     _LevelManager.Initialize(_D3dDevice, _D3dContext);
 
-    _LevelManager.SetLevel(1, _D3dContext.Get());
+    _LevelManager.SetLevel(1, _D3dDevice, _D3dContext);
     //_TileFactory.Initialize(device);
 
     _OriginLocationPx.x = static_cast<float>(0);
