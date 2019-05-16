@@ -17,7 +17,7 @@ void LevelManager::Initialize(Microsoft::WRL::ComPtr<ID3D11Device1> device, Micr
 }
 
 TileInteractiveEnum LevelManager::GetTileInteractivity(uint32_t x, uint32_t y) {
-    return _Levels[_CurrentLevel - 1]->_Screens[_CurrentScreen]->GetTileInteractivity(x, y);
+    return _Levels[_CurrentLevel - 1]->GetTileInteractivity(_CurrentScreen, x, y);
 }
 
 void LevelManager::SetLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
@@ -28,7 +28,7 @@ void LevelManager::SetLevel(uint32_t level, Microsoft::WRL::ComPtr<ID3D11Device1
 
 void LevelManager::Load(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     // Load the current level
-    std::shared_ptr<Level> level = std::make_shared<Level>(1);
+    std::shared_ptr<Level> level = std::make_shared<Level>(_CurrentLevel);
     level->Load(device, context);
 
     if (_Levels.size() < _CurrentLevel) {
