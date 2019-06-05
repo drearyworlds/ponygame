@@ -29,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nowarn", "nowarn", "{A1C75B
 		include\nowarn\DirectXColors.h = include\nowarn\DirectXColors.h
 		include\nowarn\DirectXMath.h = include\nowarn\DirectXMath.h
 		include\nowarn\exception = include\nowarn\exception
+		include\nowarn\filesystem = include\nowarn\filesystem
 		include\nowarn\fstream = include\nowarn\fstream
 		include\nowarn\functional = include\nowarn\functional
 		include\nowarn\future = include\nowarn\future

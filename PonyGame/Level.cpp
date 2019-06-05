@@ -1,4 +1,5 @@
 #include "Level.h"
+#include <nowarn/filesystem>
 
 using namespace ParticleHomeEntertainment;
 
@@ -9,14 +10,18 @@ Level::Level(uint32_t levelNumber) {
 void Level::Load(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::ComPtr<ID3D11DeviceContext1> context) {
     //TODO: Read level metadata from file. Get number of screens, then read each screen in the loop
     // OR read one file of all the screens and locations of each screen
+//    std::filesystem::path levelPath(L"assets/levels/01-01.json");
+//    if (levelPath.has_filename()) {
+//    std::filesystem::
+//        levelPath.filename();
+        // For now, assume 1 screen
+        _Screens.resize(1);
 
-    // For now, assume 1 screen
-    _Screens.resize(1);
-
-    for (size_t screenNumber = 0; screenNumber < _Screens.size(); screenNumber++) {
-        _Screens[screenNumber] = std::make_shared<LevelScreen>();
-        _Screens[screenNumber]->Initialize(device, context);
-        _Screens[screenNumber]->Load();
+        for (size_t screenNumber = 0; screenNumber < _Screens.size(); screenNumber++) {
+            _Screens[screenNumber] = std::make_shared<LevelScreen>();
+            _Screens[screenNumber]->Initialize(device, context);
+            _Screens[screenNumber]->Load();
+        }
     }
 }
 
