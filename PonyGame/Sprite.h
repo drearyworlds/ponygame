@@ -25,7 +25,6 @@ namespace ParticleHomeEntertainment {
         explicit Sprite();
 
         Sprite(const Sprite&) = delete;
-
         Sprite& operator=(const Sprite&) = delete;
 
         virtual ~Sprite();

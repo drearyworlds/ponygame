@@ -22,7 +22,7 @@ void Level::Load(Microsoft::WRL::ComPtr<ID3D11Device1> device, Microsoft::WRL::C
             _Screens[screenNumber]->Initialize(device, context);
             _Screens[screenNumber]->Load();
         }
-    }
+    //}
 }
 
 TileInteractiveEnum Level::GetTileInteractivity(uint32_t screen, uint32_t x, uint32_t y) {

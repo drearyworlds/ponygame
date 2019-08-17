@@ -238,10 +238,15 @@ void PonyGame::Tick() {
         return;
     }
 
+
+
+#pragma warning (push)
+#pragma warning (disable: 4626)
     // Update the game world
-    _Timer.Tick([=](const double& elapsedSecs) {
+    _Timer.Tick([&](const double& elapsedSecs) {
         _Pony.Tick(elapsedSecs);
     });
+#pragma warning (pop)
 
     // Don't try to render anything before the first Update.
     if (_Timer.GetFrameCount() > 0) {

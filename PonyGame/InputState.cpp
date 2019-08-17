@@ -33,9 +33,14 @@ bool InputState::IsKeyDown(DirectX::Keyboard::Keys key) {
 }
 
 bool InputState::AreAnyKeysDown(std::vector<DirectX::Keyboard::Keys> keys) {
-    return std::any_of(keys.begin(), keys.end(), [&](DirectX::Keyboard::Keys key) {
+#pragma warning (push)
+#pragma warning (disable: 4626)
+    auto lambdaAnyKeyDown = [&](const DirectX::Keyboard::Keys& key) {
         return _Keyboard->GetState().IsKeyDown(key);
-    });
+    };
+#pragma warning (pop)
+
+    return std::any_of(keys.begin(), keys.end(), lambdaAnyKeyDown);
 }
 
 bool InputState::WasKeyReleased(DirectX::Keyboard::Keys key) {
