@@ -201,11 +201,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DirectXTK\DirectXTK_Desktop_2017.vcxproj">
-      <Project>{e0b52ae7-e160-4d32-bf3f-910b785e5a8e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="assets\grass_tile.DDS" />
     <Image Include="assets\grass_tile1.DDS" />
     <Image Include="assets\grass_tile_orig.DDS" />
@@ -220,6 +215,11 @@
     <Image Include="assets\sky_nw.DDS" />
     <Image Include="assets\sky_se.DDS" />
     <Image Include="assets\sky_sw.DDS" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DirectXTK\DirectXTK_Desktop_2019_Win10.vcxproj">
+      <Project>{be589a0e-8b74-445f-a290-1e0848843a0d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
