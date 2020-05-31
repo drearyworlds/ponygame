@@ -13,21 +13,21 @@ Entity::Entity(const float startingLocationX, const float startingLocationY) {
 
     // Facing left
     //=======37px======//
-    //=2px=PONY==26px==//
+    //=9px=PONY==19px==//
     //========0px======//
-    _AaBbOffsetLeftFacing.x = 2;
+    _AaBbOffsetLeftFacing.x = 9;
     _AaBbOffsetLeftFacing.y = 37;
     _AaBbOffsetLeftFacing.width = 36;
     _AaBbOffsetLeftFacing.height = 26;
 
     // Facing right
     //=======37px======//
-    //==26px==PONY=2px=//
+    //==19px==PONY=9px=//
     //========0px======//
-    _AaBbOffsetRightFacing.x = 26;
-    _AaBbOffsetRightFacing.y = _AaBbOffsetLeftFacing.y;
-    _AaBbOffsetRightFacing.width = _AaBbOffsetLeftFacing.width;
-    _AaBbOffsetRightFacing.height = _AaBbOffsetLeftFacing.height;
+    _AaBbOffsetRightFacing.x = 19;
+    _AaBbOffsetRightFacing.y = 37;
+    _AaBbOffsetRightFacing.width = 36;
+    _AaBbOffsetRightFacing.height = 26;
 
     // Sets location and bounding box coordinates based on offsets above
     SetLocation(startingLocationX, startingLocationY);
@@ -163,7 +163,7 @@ void Entity::MoveX(int velocity) {
         float lowerLeftYTile = static_cast<float>(boundingBoxLocation.bottom / SPRITE_HEIGHT_PX);
 
         if (CollisionWithTile(projectedLeftTileX, upperLeftYTile) || CollisionWithTile(projectedLeftTileX, lowerLeftYTile)) {
-            _Location.x = ((projectedLeftTileX + 1) * SPRITE_WIDTH_PX);
+            _Location.x = ((projectedLeftTileX + 1) * SPRITE_WIDTH_PX) - _AaBbOffsetLeftFacing.x;
 #ifdef _DEBUG
             if (CollisionWithTile(projectedLeftTileX, upperLeftYTile)) {
                 _CollisionTileCoordinatesList.push_back({ projectedLeftTileX, upperLeftYTile });

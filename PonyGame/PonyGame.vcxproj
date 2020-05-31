@@ -209,8 +209,11 @@
     <Image Include="assets\moon_se.DDS" />
     <Image Include="assets\moon_sw.DDS" />
     <Image Include="assets\pony_idle.DDS" />
+    <Image Include="assets\pony_idle_debug.DDS" />
     <Image Include="assets\pony_jumping.DDS" />
+    <Image Include="assets\pony_jumping_debug.DDS" />
     <Image Include="assets\pony_running.DDS" />
+    <Image Include="assets\pony_running_debug.DDS" />
     <Image Include="assets\sky_ne.DDS" />
     <Image Include="assets\sky_nw.DDS" />
     <Image Include="assets\sky_se.DDS" />

@@ -15,7 +15,7 @@ namespace ParticleHomeEntertainment {
             long height;
         };
 
-        enum EntitySpecialStateEnum {
+        enum class EntitySpecialStateEnum {
             ON_GROUND, IN_AIR
         };
 

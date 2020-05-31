@@ -37,9 +37,14 @@ constexpr wchar_t* FILE_PATH_SPRITE_MOONNE = L"assets/moon_ne.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_MOONSW = L"assets/moon_sw.dds";
 constexpr wchar_t* FILE_PATH_SPRITE_MOONSE = L"assets/moon_se.dds";
 
-constexpr wchar_t* FILE_PATH_SPRITE_PONY_IDLE = L"assets/pony_idle.dds";
-constexpr wchar_t* FILE_PATH_SPRITE_PONY_RUNNING = L"assets/pony_running.dds";
-constexpr wchar_t* FILE_PATH_SPRITE_PONY_JUMPING = L"assets/pony_jumping.dds";
+constexpr wchar_t* FILE_PATH_SPRITE_PONY_IDLE = L"assets/pony_idle_debug.dds";
+constexpr wchar_t* FILE_PATH_SPRITE_PONY_RUNNING = L"assets/pony_running_debug.dds";
+constexpr wchar_t* FILE_PATH_SPRITE_PONY_JUMPING = L"assets/pony_jumping_debug.dds";
+
+//constexpr wchar_t* FILE_PATH_SPRITE_PONY_IDLE = L"assets/pony_idle.dds";
+//constexpr wchar_t* FILE_PATH_SPRITE_PONY_RUNNING = L"assets/pony_running.dds";
+//constexpr wchar_t* FILE_PATH_SPRITE_PONY_JUMPING = L"assets/pony_jumping.dds";
+
 constexpr bool FULLSCREEN = false;
 // Integer format represents time using 10,000,000 ticks per second.
 constexpr uint64_t TICKS_PER_SECOND = 10000000;

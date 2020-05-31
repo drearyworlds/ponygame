@@ -185,5 +185,14 @@
     <Image Include="assets\sky_sw.DDS">
       <Filter>Resource Files\assets</Filter>
     </Image>
+    <Image Include="assets\pony_idle_debug.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\pony_jumping_debug.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
+    <Image Include="assets\pony_running_debug.DDS">
+      <Filter>Resource Files\assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

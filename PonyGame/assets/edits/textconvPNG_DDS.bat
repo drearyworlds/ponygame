@@ -1,0 +1,1 @@
+texconv.exe inputfile.png ouputfile.dds -pmalpha -y
